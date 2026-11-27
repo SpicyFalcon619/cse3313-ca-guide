@@ -51,7 +51,7 @@ def build():
     ct2_course = "\n".join(read(name) for name in (
         "ct2-foundations.html", "ct2-basics.html", "ct2-bits.html",
         "ct2-memory.html", "ct2-control.html", "ct2-functions.html",
-        "ct2-encoding.html", "ct2-exercises.html", "ct2-index.html",
+        "ct2-encoding.html", "ct2-exercises.html", "ct2-index.html", "ct2-simulator.html",
     ))
     html = (
         HEAD
@@ -62,7 +62,7 @@ def build():
         .replace("<!-- Midterm review -->", read("midterm-review.html"))
         .replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
         + "\n<script>\n"
-        + "\n".join(read(name) for name in ("dropdown.js", "ui.js", "engine.js", "practice.js", "mips.js", "mips-ui.js", "ct2-labs.js"))
+        + "\n".join(read(name) for name in ("dropdown.js", "ui.js", "engine.js", "practice.js", "mips.js", "mips-ui.js", "ct2-labs.js", "ct2-simulator-data.js", "ct2-simulator.js"))
         + "</script>\n</body>\n</html>\n"
     )
     os.makedirs(DIST, exist_ok=True)

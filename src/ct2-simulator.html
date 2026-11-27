@@ -1,0 +1,52 @@
+  <article class="page foundation" id="ct2-simulator" data-title="Simulator lab" data-group="CT-2 course" data-skip="1" hidden>
+    <header class="hero">
+      <h1>CT-2 simulator lab</h1>
+      <p class="lede">Pick an example, change the inputs, and see what happens one step at a time.</p>
+    </header>
+    <section class="sim ct2-simulator" aria-label="CT-2 simulator" data-ct2-simulator>
+      <div class="sim-top ct2-sim-picker">
+        <label>Topic <select data-sim-topic aria-label="Topic"></select></label>
+        <label>Example <select data-sim-example aria-label="Example"></select></label>
+        <a data-sim-lesson>Read the lesson</a>
+      </div>
+      <form class="ct2-sim-inputs" data-sim-config>
+        <div class="ct2-sim-fields" data-sim-fields></div>
+        <button class="btn" type="submit">Apply inputs</button>
+      </form>
+      <p class="ct2-sim-error" data-sim-error role="alert" hidden></p>
+      <div class="ctrl ct2-sim-controls">
+        <button class="btn" type="button" data-sim-reset>Restart</button>
+        <button class="btn" type="button" data-sim-back>Back</button>
+        <button class="btn pri" type="button" data-sim-next>Next</button>
+        <button class="btn" type="button" data-sim-play>Play</button>
+        <label class="ct2-sim-range"><input type="range" min="0" value="0" aria-label="Trace step" data-sim-range></label>
+        <span class="cnt" data-sim-count></span>
+        <label class="ct2-sim-predict"><input type="checkbox" data-sim-predict> Predict mode</label>
+      </div>
+      <div class="ct2-sim-body">
+        <div class="ct2-sim-trace">
+          <h2>Trace</h2>
+          <ol start="0" data-sim-trace aria-label="Trace steps"></ol>
+        </div>
+        <div class="ct2-sim-main">
+          <div class="ct2-sim-event" aria-live="polite">
+            <code data-sim-instruction></code>
+            <p data-sim-explanation></p>
+          </div>
+          <form data-sim-guess-panel hidden class="ct2-sim-guess">
+            <label><span data-sim-question></span><input type="text" data-sim-guess autocomplete="off" required></label>
+            <button class="btn" type="submit">Check</button>
+            <button class="btn" type="button" data-sim-reveal>Show step</button>
+          </form>
+          <p data-sim-answer role="status" class="ct2-sim-answer" hidden></p>
+          <h2 data-sim-state-title>Current state</h2>
+          <dl class="ct2-sim-state" data-sim-state></dl>
+          <section class="ct2-sim-stack" data-sim-stack-panel hidden>
+            <h2>Active stack</h2>
+            <dl data-sim-stack></dl>
+          </section>
+        </div>
+      </div>
+    </section>
+    <noscript><p>Turn on JavaScript to use the simulator.</p></noscript>
+  </article>

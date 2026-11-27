@@ -225,7 +225,7 @@ const mipsProcedures = {
   },
 };
 
-function traceProcedure(key) {
+function traceProcedure(key, { argument } = {}) {
   const demo = mipsProcedures[key];
   const registers = new Int32Array(32);
   const read = name => registers[register(name)];
@@ -235,7 +235,10 @@ function traceProcedure(key) {
   for (const [name, value] of Object.entries(demo.initial)) write(name, value);
   const labels = new Map();
   const code = [];
-  for (const line of demo.source) {
+  for (const [index, original] of demo.source.entries()) {
+    const line = index === 0 && argument !== undefined && original.startsWith('addi $a0, $zero, ')
+      ? 'addi $a0, $zero, ' + integer(argument, 'Function argument', key === 'factorial' ? 0 : -32768, key === 'factorial' ? 7 : 32767)
+      : original;
     const parts = line.split(':');
     if (parts.length > 1) labels.set(parts[0], start + 4 * code.length);
     const instruction = parts.at(-1).trim();

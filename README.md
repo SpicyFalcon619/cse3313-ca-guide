@@ -6,6 +6,8 @@ Learn how a processor runs a program, how to measure its performance, and how MI
 
 ## Start studying
 
+- **Want to experiment?** Open the [CT-2 simulator lab](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-simulator), choose an example, edit its inputs, and step through changes to registers, memory, stack frames, or instruction fields.
+
 - **Starting CT-2?** Take the [beginner course](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-start). Its 22 lessons start with how a computer runs a program and build up to full exam questions. Use the [instruction and term index](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-words) for a quick lookup.
 - **New to computer architecture?** Follow one instruction from storage to the CPU in [How a computer runs a program](https://spicyfalcon619.github.io/cse3313-ca-guide/#earlier).
 - **Preparing for the midterm?** Use the [Midterm study route](https://spicyfalcon619.github.io/cse3313-ca-guide/#midterm) to see what to study in order, then work through [past midterm questions](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-past).
