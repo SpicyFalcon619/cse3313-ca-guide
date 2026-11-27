@@ -52,7 +52,9 @@ def build():
         HEAD
         + read("style.css")
         + "</style>\n</head>\n<body>\n"
-        + read("pages.html").replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
+        + read("pages.html")
+        .replace("<!-- Midterm review -->", read("midterm-review.html"))
+        .replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
         + "\n<script>\n"
         + "\n".join(read(name) for name in ("dropdown.js", "ui.js", "engine.js", "practice.js", "mips.js", "mips-ui.js"))
         + "</script>\n</body>\n</html>\n"

@@ -63,3 +63,14 @@ test('Instructor CT-1 key: 22 cycles, 11 ns, CPI 5.5 and 1.375× overall', () =>
   assert.equal(math.improvedTime(6, 5, 2), 8);
   assert.equal(math.speedup(11, 8), 1.375);
 });
+
+test('Midterm notebook: compare CPU time, power and the whole-program impact of an upgrade', () => {
+  approximately(math.cpuTime(1.5, 3e9), 0.50e-9);
+  approximately(math.cpuTime(1.0, 2.5e9), 0.40e-9);
+  approximately(math.cpuTime(2.2, 4e9), 0.55e-9);
+  approximately(math.dynamicPowerRatio(0.85, 0.85, 0.85), 0.52200625);
+  assert.equal(math.improvedTime(80, 200, 20), 204);
+  assert.equal(280 - math.improvedTime(80, 200, 20), 76);
+  assert.equal(math.requiredSpeedup(180, 100, 140), 4.5);
+  assert.equal(math.requiredSpeedup(100, 60, 160 / 3), Infinity);
+});

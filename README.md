@@ -6,7 +6,7 @@ An interactive study guide for CSE 3313. Start with how a computer runs one inst
 
 | Part | Topics |
 |---|---|
-| Start here | Computer basics, a study map, a glossary, and common exam question types |
+| Start here | Computer basics, a midterm study route based on the handwritten class notes, a glossary, and common exam question types |
 | Performance (CT-1) | Response and CPU time, clock rate, instruction count, CPI, power, multicore processing, and Amdahl’s law |
 | Lecture 5 | Byte and word addresses, load and store, arrays, alignment, byte order, labels, branches and loops |
 | Lecture 6 | Arguments, return values, calls, the stack, saved registers, and recursion |

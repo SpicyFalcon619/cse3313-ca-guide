@@ -1,0 +1,201 @@
+  <article class="page" id="midterm" data-title="Midterm study route" data-group="Start here" data-skip="1" hidden>
+    <header class="hero">
+      <p class="eyebrow"><b>CSE 3313</b> &middot; Midterm review</p>
+      <h1>What to study for the midterm</h1>
+      <p class="lede">Start with one worked example at a time. Then close the answer and solve a similar question on paper.</p>
+    </header>
+    <section class="plan-wrap">
+      <h2>Study in this order</h2>
+      <ol class="plan">
+        <li><a href="#performance-review"><span class="pn" aria-hidden="true">1</span><span class="pt"><b>Measure performance</b><span>Compare run times, calculate CPU time from a clock rate and CPI, then work through power and Amdahl’s law.</span></span></a></li>
+        <li><a href="#midterm-mips"><span class="pn" aria-hidden="true">2</span><span class="pt"><b>Read and write MIPS</b><span>Follow data from registers to arrays, trace branches and functions, then encode instructions as bits.</span></span></a></li>
+        <li><a href="#s-past"><span class="pn" aria-hidden="true">3</span><span class="pt"><b>Try a past question</b><span>Start with Trimester 233 Q1 for performance. Then try a worked CT-2 question under the matching MIPS topic.</span></span></a></li>
+      </ol>
+      <p>If <em>register</em>, <em>memory</em> or <em>instruction</em> feels unfamiliar, read <a href="#earlier">How a computer runs a program</a> first. Use the topics in your instructor’s exam announcement to decide how far to go.</p>
+      <p>The last three notebook pages cover <a href="#midterm-multiply">unsigned multiplication</a>. Review that after the core topics if it is in your exam scope.</p>
+    </section>
+    <section class="lesson" aria-label="How to use this review">
+      <div class="ls-bar"><b>Check your understanding</b></div>
+      <div class="ls-main">
+        <p>For a performance problem, write the given numbers with units and circle what you need to find. For MIPS, write down what each register holds before tracing the first instruction.</p>
+        <p>When you can explain where each number or register came from, try the <a href="#s-drill">performance drill</a> or the <a href="#practice">performance quiz</a> without looking at the worked answers.</p>
+      </div>
+      <p class="lesson-source">Based on the 33-page CA midterm notebook, with corrections checked against the relevant course slides and past papers.</p>
+    </section>
+  </article>
+
+  <article class="page" id="performance-review" data-title="Performance study order" data-group="Performance" hidden>
+    <header class="hero">
+      <p class="eyebrow"><b>Lecture 4</b> &middot; Midterm review</p>
+      <h1>Performance in four steps</h1>
+      <p class="lede">Start with how long one task takes. Then learn to calculate that time and predict which changes will shorten it.</p>
+    </header>
+    <section class="lesson" aria-label="Performance study steps">
+      <div class="ls-bar"><b>Work through these in order</b></div>
+      <div class="ls-main">
+        <div class="beat"><span class="bn" aria-hidden="true">1</span><div>
+          <h2>Compare the time for the same task</h2>
+          <p>Suppose your program finishes in 10 seconds on A and 15 seconds on B. A is faster by a factor of 15 ÷ 10 = <b>1.5×</b>. Use <b>old time ÷ new time</b> for speedup.</p>
+          <p><b>Response time</b> measures how long one task takes. <b>Throughput</b> measures how many tasks finish per unit of time. An extra core may finish more independent tasks each hour while the time for one single-threaded task stays the same.</p>
+          <p><b>Elapsed time</b> is what a stopwatch measures from start to finish. <b>CPU time</b> is the time the CPU spends working on the task, including operating-system CPU work on its behalf. For a simple single-threaded example, 5 s of user CPU work, 1 s of system CPU work and 4 s of waiting gives 6 s of CPU time and 10 s elapsed.</p>
+          <p>Read the full lessons on <a href="#s-define">performance</a> and <a href="#s-time">elapsed and CPU time</a>.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">2</span><div>
+          <h2>Calculate CPU time</h2>
+          <p>A <b>clock cycle</b> is one tick of the CPU’s clock. At 2.5 GHz, there are 2.5 billion ticks per second, or 2.5 ticks per nanosecond. If a program uses 10 cycles, it takes 10 ÷ 2.5 = 4 ns at that clock rate.</p>
+          <p><b>Instruction count</b> is the number of instructions that actually ran. <b>CPI</b> is the average number of cycles per instruction. Multiply instruction count by CPI to get cycles, then divide by clock rate to get CPU time. When each instruction type has its own CPI, multiply each count by its CPI and add those results. Divide total cycles by total instructions only if asked for average CPI.</p>
+          <details class="exam"><summary>Worked question &middot; Which of three processors is fastest?</summary><div class="in">
+            <p>Assume the same instruction count on all three processors. Comparing CPU time per instruction is enough. Divide CPI by the rate in GHz to get ns per instruction.</p>
+            <div class="scroll"><table class="ls-t">
+              <thead><tr><th scope="col">Processor</th><th scope="col">Rate</th><th scope="col">CPI</th><th scope="col">Time per instruction</th></tr></thead>
+              <tbody>
+                <tr><td>P1</td><td>3 GHz</td><td>1.5</td><td>0.50 ns</td></tr>
+                <tr><td>P2</td><td>2.5 GHz</td><td>1.0</td><td>0.40 ns</td></tr>
+                <tr><td>P3</td><td>4 GHz</td><td>2.2</td><td>0.55 ns</td></tr>
+              </tbody>
+            </table></div>
+            <p>P2 is fastest. It is 0.50 ÷ 0.40 = 1.25× as fast as P1. Sharing an instruction set only means the processors understand the same instructions. Check that they run the same number of instructions before using this shortcut.</p>
+            <p>If the question gives <b>10 seconds of CPU time</b> instead, first multiply time by rate. P1 runs 10 × 3 billion = 30 billion cycles, and 30 billion ÷ 1.5 = 20 billion instructions.</p>
+          </div></details>
+          <p>Practise <a href="#s-clock-calc">clock calculations</a>, <a href="#s-cpi">weighted CPI</a> and <a href="#s-eq">the CPU time equation</a>.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">3</span><div>
+          <h2>Compare power before and after a change</h2>
+          <p>Voltage supplies the electrical push. A <b>15% drop</b> leaves 85% of the original voltage. In the lecture’s dynamic power model, voltage is squared, so if only voltage changes, new power ÷ old power = 0.85² = 0.7225. That is <b>72.25% of the old power</b>, or a <b>27.75% drop</b>.</p>
+          <p>Dynamic power is the power used to switch the circuits. The model multiplies effective capacitance (how much charge switches at a given voltage), voltage squared and clock frequency. To compare two settings, multiply the new-to-old ratio for each factor, squaring the voltage ratio. If all three factors drop by 15%, the power ratio is 0.85⁴ ≈ 0.522.</p>
+          <p><a href="#s-power">The power wall</a> explains how power and heat constrain clock speed.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">4</span><div>
+          <h2>Keep the part of a program that stays the same</h2>
+          <p>A 280 ns program uses 80 ns for floating-point (FP) arithmetic, 180 ns for loads and stores, and 20 ns for branches. If FP runs <b>20× as fast</b>, only the 80 ns changes. It becomes 80 ÷ 20 = 4 ns. Add the fixed 200 ns to get <b>204 ns total</b>, so you save <b>76 ns</b>.</p>
+          <p>That is Amdahl’s law in time units. Split the old time into <b>affected</b> and <b>fixed</b> parts. Divide the affected time by its speedup and add the fixed time.</p>
+          <details class="exam"><summary>When a question says “reduced by 20”</summary><div class="in">
+            <p>Trimester 233 Q1(b)(i) gives “20” without specifying the unit in the question. State what you are assuming and show the line where you use it.</p>
+            <div class="scroll"><table class="ls-t">
+              <thead><tr><th scope="col">Assumption</th><th scope="col">New FP time</th><th scope="col">New total</th><th scope="col">Time saved</th></tr></thead>
+              <tbody>
+                <tr><td>20% less FP time</td><td>80 × 0.8 = 64 ns</td><td>264 ns</td><td>16 ns</td></tr>
+                <tr><td>20 ns less FP time</td><td>80 − 20 = 60 ns</td><td>260 ns</td><td>20 ns</td></tr>
+                <tr><td>20× FP speedup</td><td>80 ÷ 20 = 4 ns</td><td>204 ns</td><td>76 ns</td></tr>
+              </tbody>
+            </table></div>
+          </div></details>
+          <details class="exam"><summary>Worked questions &middot; Can the whole program reach a target speed?</summary><div class="in">
+            <p>For a <b>2× overall speedup</b> on the 280 ns program, the target is 140 ns. Improving only loads and stores leaves 80 + 20 = 100 ns fixed. That gives loads and stores 140 − 100 = 40 ns, down from 180 ns. They need a <b>4.5×</b> speedup.</p>
+            <p>In a 160 ns program with 100 ns affected and 60 ns fixed, a <b>3× overall speedup</b> would require about 53.33 ns. Even making the affected part take zero time would leave 60 ns. The theoretical ceiling is 160 ÷ 60 ≈ <b>2.67×</b>.</p>
+          </div></details>
+          <p>Try more problems in <a href="#s-amdahl">Amdahl’s law</a> and <a href="#s-past">past midterms</a>.</p>
+        </div></div>
+      </div>
+      <section class="ls-check" aria-label="Check yourself">
+        <span class="k">Check yourself</span>
+        <details><summary>How long do 12 cycles take at 3 GHz?</summary><p>12 ÷ 3 = 4 ns. At 3 GHz the clock ticks three times per nanosecond.</p></details>
+        <details><summary>What if the affected 30 ns of a 100 ns program becomes three times as fast?</summary><p>The fixed part is 70 ns. The affected part becomes 10 ns. The new total is 80 ns and the overall speedup is 100 ÷ 80 = 1.25×.</p></details>
+      </section>
+      <p class="lesson-source">Sources • CA midterm notebook, pp. 1–7. Lecture 4, slides 4–10, 13–26, 39–42 and 47–53. Trimester 233 Q1.</p>
+    </section>
+  </article>
+
+  <article class="page" id="midterm-mips" data-title="MIPS study order" data-group="MIPS" hidden>
+    <header class="hero">
+      <p class="eyebrow"><b>Lectures 5–7</b> &middot; Midterm review</p>
+      <h1>Read, trace and encode MIPS</h1>
+      <p class="lede">Start by following one value. Then follow where the processor goes next, and finish by turning a whole instruction into bits.</p>
+    </header>
+    <section class="lesson" aria-label="MIPS study steps">
+      <div class="ls-bar"><b>Work through these in order</b></div>
+      <div class="ls-main">
+        <div class="beat"><span class="bn" aria-hidden="true">1</span><div>
+          <h2>Do the arithmetic in registers</h2>
+          <p>A register holds a number inside the CPU. If <code>$s0</code> holds <code>x</code> and <code>$s1</code> holds <code>y</code>, you can calculate <code>z = x*8 + y/2 - 7</code> in <code>$s2</code> with the following instructions, taking <code>y</code> to be nonnegative and the signed intermediate values and result to fit.</p>
+          <pre><code>sll  $t0, $s0, 3
+srl  $t1, $s1, 1
+add  $s2, $t0, $t1
+addi $s2, $s2, -7</code></pre>
+          <p>Moving a bit one place left doubles its value, so a left shift by 3 gives a factor of 8. A logical right shift by 1 divides an unsigned or nonnegative value by 2 and discards the remainder. To get the unsigned remainder after division by 4, use <code>andi</code> with 3 to keep the bottom two bits. For <code>x*5</code>, compute <code>x*4</code> and add <code>x</code>.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">2</span><div>
+          <h2>Find a word before you read or write it</h2>
+          <p>If a four-byte integer array starts at byte 100, <code>A[3]</code> is three elements after the start. Its byte offset is 3 × 4 = 12, so its address is 112. <code>lw</code> reads one word from that address into a register. <code>sw</code> writes one word from a register there.</p>
+          <details class="exam"><summary>Worked example &middot; Turn <code>A[10] = h + B[i]</code> into MIPS</summary><div class="in">
+            <p>Set <code>$s0</code> to A’s base address, <code>$s1</code> to B’s base, <code>$s2</code> to <code>h</code> (230 in the lecture) and <code>$s3</code> to <code>i</code>. Use a register to hold the address of <code>B[i]</code>. The offset written inside <code>lw</code> has to be a number, so use 0 when the base register already holds the full address.</p>
+            <pre><code>sll $t1, $s3, 2
+add $t1, $s1, $t1
+lw  $t0, 0($t1)
+add $t2, $s2, $t0
+sw  $t2, 40($s0)</code></pre>
+            <p>For a constant index you can write the byte offset directly. For <code>A[12] = h + A[8]</code>, load at offset 32, add <code>h</code> to the loaded value and store at offset 48.</p>
+          </div></details>
+          <p>Try this with the <a href="#mips-memory">word memory visualiser</a>. To practise, translate <code>k = B[3] + 5</code> by loading at offset 12 and adding 5 to the loaded value.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">3</span><div>
+          <h2>Trace the next instruction</h2>
+          <p>A <b>label</b> names a place in the program. <code>beq</code> jumps there when two registers are equal. <code>bne</code> jumps there when they differ. <code>slt</code> and <code>slti</code> put 1 in a register when the first value is less than the second, and 0 otherwise.</p>
+          <details class="exam"><summary>Worked example &middot; Check <code>i &lt;= 10</code> at the end of a loop</summary><div class="in">
+            <p>For integer <code>i</code>, <code>i &lt;= 10</code> means <code>i &lt; 11</code>. With <code>i</code> in <code>$s0</code>, write these two lines after the loop body.</p>
+            <pre><code>slti $t0, $s0, 11
+bne  $t0, $zero, Loop</code></pre>
+            <p>A <code>do</code> loop starts with the body and checks at the end. A <code>while</code> or <code>for</code> checks before each body. In a <code>for</code> loop, initialise once, then check, run the body, update and go back to the check. If a <code>while</code> condition compares <code>save[5]</code> with <code>k</code> and the body only changes <code>i</code>, the body leaves the comparison unchanged.</p>
+            <p>For <code>i &lt; j &amp;&amp; i != k</code>, test the first condition and branch past the body when it fails. Then test the second and do the same. Keep the register map nearby so an update to <code>j</code> changes the register for <code>j</code>.</p>
+          </div></details>
+          <p>Trace more <a href="#mips-control">branches and loops</a>.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">4</span><div>
+          <h2>Follow a function call and its stack space</h2>
+          <p>Before calling <code>add(5, 10)</code>, put the two arguments in <code>$a0</code> and <code>$a1</code>. <code>jal</code> saves the resume address in <code>$ra</code> and jumps to the function. The function puts 15 in <code>$v0</code> and <code>jr $ra</code> resumes the caller. Put helper code after an exit or explicit jump so that normal execution skips it after resuming.</p>
+          <details class="exam"><summary>Worked example &middot; Four saved registers</summary><div class="in">
+            <p><code>$sp</code> holds the stack pointer. Reserve four words by subtracting 16 from it. Save the four registers your function needs to preserve at offsets 12, 8, 4 and 0 from the new <code>$sp</code>. Before returning, reload each register from its own address and add 16 back to <code>$sp</code>. If this function calls another function and then returns, preserve its incoming <code>$ra</code> across that call, since <code>jal</code> writes a new one.</p>
+            <p>In the notebook’s nested example, <code>x = 15</code> and <code>y = 7</code> give <code>m = x+y+10 = 32</code> and <code>n = m-2*x = 2</code>. Then <code>f(15, 7, 32, 2)</code> returns <code>50+(15+7)-(32+2) = 38</code>. The caller subtracts <code>y</code> and gets 31.</p>
+          </div></details>
+          <p>Watch a call happen in <a href="#mips-functions">the function and stack visualiser</a>.</p>
+        </div></div>
+        <div class="beat"><span class="bn" aria-hidden="true">5</span><div>
+          <h2>Write the fields for one instruction</h2>
+          <p>A <b>field</b> is a group of bits in an instruction. For <code>lw $s1, 200($s2)</code>, write the I-format fields in this order. The opcode is 35, the base register <code>$s2</code> is 18, the destination <code>$s1</code> is 17 and the offset is 200 bytes. Encode those values in 6, 5, 5 and 16 bits respectively.</p>
+          <details class="exam"><summary>Worked examples &middot; Arithmetic, a branch and a jump</summary><div class="in">
+            <p>R-format uses <code>opcode / rs / rt / rd / shamt / funct</code> at widths 6/5/5/5/5/6. For <code>add $s1, $s2, $t1</code>, those values are <code>0 / 18 / 9 / 17 / 0 / 32</code>. For <code>srl $s1, $s2, 20</code>, they are <code>0 / 0 / 18 / 17 / 20 / 2</code>. For <code>jr $ra</code>, they are <code>0 / 31 / 0 / 0 / 0 / 8</code>.</p>
+            <p>I-format uses <code>opcode / rs / rt / immediate</code>. For <code>andi $s1, $s2, 223</code>, write <code>12 / 18 / 17 / 223</code>. <code>andi</code> treats that 16-bit field as unsigned.</p>
+            <p>For <code>bne $s1, $s2, target</code> at PC 1000 with a target at byte 1104, the register fields are <code>rs = 17</code> and <code>rt = 18</code>. The displacement from the next instruction at 1004 is 100 bytes, so the immediate is 100 ÷ 4 = 25. Start with <b>target − (PC + 4)</b> to find the displacement.</p>
+            <p>J-format has a 6-bit opcode and a 26-bit target field. For <code>j 2000</code> in the low address region, the target field is 2000 ÷ 4 = 500. The processor supplies the upper four address bits from <code>PC + 4</code>. Five bits can name 32 registers, so a design with 64 registers needs six bits per register field.</p>
+          </div></details>
+          <p>Check the bits with <a href="#mips-machine">the instruction encoder</a> and review <a href="#mips-targets">branch and jump fields</a>.</p>
+        </div></div>
+      </div>
+      <section class="ls-check" aria-label="Check yourself">
+        <span class="k">Check yourself</span>
+        <details><summary>What is the byte offset for <code>A[5]</code> in a four-byte array?</summary><p>5 × 4 = 20 bytes.</p></details>
+        <details><summary>Which register holds the address that <code>jr $ra</code> uses?</summary><p><code>$ra</code>. After a call made with <code>jal</code>, it holds the address where the caller resumes in the course’s simplified model.</p></details>
+      </section>
+      <p class="lesson-source">Sources • CA midterm notebook, pp. 8–30. Lectures 5–7.</p>
+    </section>
+  </article>
+
+  <article class="page" id="midterm-multiply" data-title="Unsigned multiplication" data-group="MIPS" hidden>
+    <header class="hero">
+      <p class="eyebrow"><b>Arithmetic</b> &middot; Midterm review</p>
+      <h1>Unsigned multiplication by shifts and adds</h1>
+      <p class="lede">Multiply 6 by 7 using four-bit inputs. Follow where the bits go at each step.</p>
+    </header>
+    <section class="lesson" aria-label="Worked example">
+      <div class="ls-bar"><b>Worked example</b></div>
+      <div class="ls-main">
+        <p>Use one eight-bit register split into an upper half and a lower half. Start with 0 in the upper half and 7 (<code>0111</code>) in the lower half. Keep 6 (<code>0110</code>) in a separate register. The space between the two groups of bits marks the split.</p>
+        <p>Look at the rightmost bit. If it is 1, add 6 to the upper half. Then shift both halves right together by one bit, carrying any overflow from the upper-half addition into the shift. Repeat once for each of the four multiplier bits.</p>
+        <div class="scroll"><table class="ls-t">
+          <thead><tr><th scope="col">Step</th><th scope="col">Starting value</th><th scope="col">Upper-half work</th><th scope="col">After the shift</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>0000 0111</code></td><td>Rightmost bit 1. Upper becomes <code>0110</code>.</td><td><code>0011 0011</code></td></tr>
+            <tr><td>2</td><td><code>0011 0011</code></td><td>Rightmost bit 1. Upper becomes <code>1001</code>.</td><td><code>0100 1001</code></td></tr>
+            <tr><td>3</td><td><code>0100 1001</code></td><td>Rightmost bit 1. Upper becomes <code>1010</code>.</td><td><code>0101 0100</code></td></tr>
+            <tr><td>4</td><td><code>0101 0100</code></td><td>Rightmost bit 0. Upper stays <code>0101</code> before the shift.</td><td><code>0010 1010</code></td></tr>
+          </tbody>
+        </table></div>
+        <p>The final register holds <code>0010 1010</code>, which is 32 + 8 + 2 = <b>42</b>. In step 2 the low bit of <code>1001</code> moves across the split and becomes the first bit of the lower half.</p>
+      </div>
+      <section class="ls-check" aria-label="Check yourself">
+        <span class="k">Check yourself</span>
+        <details><summary>If the rightmost bit is zero, what do you do in that step?</summary><p>Skip the addition and still shift the combined register right by one bit.</p></details>
+      </section>
+      <p class="lesson-source">Sources • CA midterm notebook, pp. 31–33. Patterson and Hennessy, 5th ed., §3.3.</p>
+    </section>
+  </article>
