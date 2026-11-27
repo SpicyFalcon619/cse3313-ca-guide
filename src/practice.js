@@ -94,9 +94,10 @@
     $('a-av').textContent = a; $('a-nv').textContent = n;
     $('a-t').textContent = fmt(tn, 4) + ' s'; $('a-s').textContent = fmt(performanceMath.speedup(100, tn), 3) + '×';
     $('a-m').textContent = fmt(100 / u, 3) + '×';
-    $('a-b1').innerHTML = '<i class="aff" style="width:' + a + '%">affected ' + a + ' s</i><i class="una" style="width:' + u + '%">unaffected ' + u + ' s</i>';
-    $('a-b2').innerHTML = '<i class="aff" style="width:' + (a / n) + '%"></i><i class="una" style="width:' + u + '%">unaffected ' + u + ' s</i>';
-    $('a-b2l').textContent = 'AFTER (' + fmt(tn, 4) + ' s): affected part is now ' + fmt(a / n, 3) + ' s';
+    $('a-b1l').textContent = 'Before (100 s) · ' + a + ' s affected · ' + u + ' s unchanged';
+    $('a-b1').innerHTML = '<i class="aff" style="width:' + a + '%"></i><i class="una" style="width:' + u + '%"></i>';
+    $('a-b2l').textContent = 'After (' + fmt(tn, 4) + ' s) · ' + fmt(a / n, 3) + ' s affected · ' + u + ' s unchanged';
+    $('a-b2').innerHTML = '<i class="aff" style="width:' + (a / n) + '%"></i><i class="una" style="width:' + u + '%"></i>';
   }
   ['a-a', 'a-n'].forEach(function (id) { $(id).addEventListener('input', calcAmdahl); }); calcAmdahl();
 
