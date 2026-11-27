@@ -1,58 +1,53 @@
-# CSE 3313 Computer Architecture Guide
+# CSE 3313 · Computer Architecture Study Guide
 
-An interactive study guide for CSE 3313. Start with how a computer runs one instruction, then build up to processor performance and MIPS. Lessons use examples from the course slides, with worked tables, self-check questions and exam practice.
+**[Open the live Computer Architecture guide](https://spicyfalcon619.github.io/cse3313-ca-guide/)**
 
-## What it covers
+Learn how a processor runs a program, how to measure its performance, and how MIPS instructions work. The guide uses examples from the course slides, step-by-step visualisers and worked past-paper questions.
 
-| Part | Topics |
-|---|---|
-| Start here | Computer basics, a midterm study route based on the handwritten class notes, a glossary, and common exam question types |
-| Performance (CT-1) | Response and CPU time, clock rate, instruction count, CPI, power, multicore processing, and Amdahl’s law |
-| Lecture 5 | Byte and word addresses, load and store, arrays, alignment, byte order, labels, branches and loops |
-| Lecture 6 | Arguments, return values, calls, the stack, saved registers, and recursion |
-| Lecture 7 | R-, I- and J-type fields, binary and hex, branch and jump targets, and modified instruction formats |
-| Exam | Worked CT-1 and CT-2 questions from the 20-paper collection, Class Test 1, calculators, drills, and a 39-question quiz |
+## Start studying
 
-## Study tools
+- **New to computer architecture?** Follow one instruction from storage to the CPU in [How a computer runs a program](https://spicyfalcon619.github.io/cse3313-ca-guide/#earlier).
+- **Preparing for the midterm?** Use the [Midterm study route](https://spicyfalcon619.github.io/cse3313-ca-guide/#midterm) to see what to study in order, then work through [past midterm questions](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-past).
+- **Reviewing a calculation?** Start with [Performance in four steps](https://spicyfalcon619.github.io/cse3313-ca-guide/#performance-review), then check your work with the [calculators](https://spicyfalcon619.github.io/cse3313-ca-guide/#calculators).
 
-- **Performance calculators.** Find CPU time and clock period, compare power, and check what an upgrade can do for the whole program.
-- **Word memory.** Enter a base and byte offset, load or store one word, and see which four bytes change.
-- **Function calls.** Step forward or back through calls and recursion while watching the registers and active stack words.
-- **Instruction encoder and decoder.** Convert an assembly instruction or hex word, and inspect each field, its width and its decimal value. Use numeric byte targets for branch and jump examples.
-- **Progress and themes.** Choose paper, dark or charcoal, toggle background animation, and mark pages as understood. The guide saves these preferences in your browser.
+## Course coverage
 
-## Run it locally
+| Topic | What you can learn and practise |
+| --- | --- |
+| Performance · CT-1 | Compare CPU and elapsed time, calculate cycles and CPI, and work through dynamic power and Amdahl’s law. |
+| [Memory and word addressing](https://spicyfalcon619.github.io/cse3313-ca-guide/#mips-memory) · Lecture 5 | Find a word’s byte address. Run a load or store and see which four bytes it reads or writes. |
+| [Functions and the stack](https://spicyfalcon619.github.io/cse3313-ca-guide/#mips-functions) · Lecture 6 | Step through a call or recursive function and watch registers, return addresses and stack words change. |
+| [Machine language](https://spicyfalcon619.github.io/cse3313-ca-guide/#mips-machine) · Lecture 7 | Encode or decode an instruction. Inspect its R-, I- or J-format fields and calculate branch and jump targets. |
+| Exam practice | Work through questions from 20 past midterms, practise with random drills, or take the 39-question performance quiz. |
 
-Use Python 3.12 or later to build and Node.js 24 to run the tests. The build and tests use standard libraries.
+The guide runs in your browser. It saves your progress and your choice of paper, dark or charcoal theme on that device.
+
+## Build and test locally
+
+Use Python 3.12 or later and Node.js 24. The build and tests use their standard libraries.
 
 ```sh
 node --test 'tests/*.test.js'
 python build.py
 ```
 
-Open `dist/index.html` in your browser. The build inlines the site’s pages, styles and scripts. The original design’s fonts load from Google Fonts when available, and the site uses system fonts offline.
+Open `dist/index.html` in your browser. The build bundles the lessons, styles and scripts into that one file.
 
-## Project layout
+## Repository layout
 
-| Path | Contents |
-|---|---|
-| `src/pages.html` | Course map, lessons, CT-1 notes and practice |
-| `src/ct2-papers.html` | CT-2 questions, explanations and machine-code tables |
-| `src/style.css` | Theme tokens, responsive layout and components |
-| `src/ui.js`, `src/dropdown.js` | Navigation, browser preferences, and themed selects |
-| `src/engine.js`, `src/practice.js` | Performance formulas, calculators, drills and quiz |
-| `src/mips.js`, `src/mips-ui.js` | Instruction fields, memory bytes, procedure traces and the visualisers |
-| `tests/` | Numerical and instruction-field checks |
-| `build.py` | Builds the single HTML file in `dist/` |
-| `.github/workflows/pages.yml` | Tests, builds and deploys to Pages when run manually |
+| Path | Purpose |
+| --- | --- |
+| `src/pages.html`, `src/midterm-review.html`, `src/ct2-papers.html` | Lessons, midterm review and worked questions |
+| `src/engine.js`, `src/practice.js` | Performance calculations, drills and quiz |
+| `src/mips.js`, `src/mips-ui.js` | MIPS instruction fields, memory and stack traces, and visualisers |
+| `src/style.css`, `src/ui.js`, `src/dropdown.js` | Themes, navigation and browser interactions |
+| `tests/`, `build.py` | Checks against the course examples and the static HTML build |
 
-## How the answers are checked
-
-The tests use Lecture 4 and the Class Test 1 answer key for performance, Lecture 5 and the course textbook for memory, Lecture 6 for calls and stack addresses, and Lecture 7 for machine-code fields and recursive factorial. The past-paper notes spell out assumptions about signed offsets, byte addressing and ambiguous C code. The stack tool uses the lectures’ simplified execution model where a function call links to `PC + 4`.
+The tests check calculations and instruction encodings against worked examples from the lecture slides, class tests and course textbook. The call visualiser follows the lecture model in which `jal` saves `PC + 4`.
 
 ## GitHub Pages
 
-The Pages workflow has a manual trigger. When publishing is authorised, select GitHub Actions as the Pages source and run the workflow. It uploads only the built `dist/` folder. [GitHub Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+The [Pages workflow](.github/workflows/pages.yml) runs on manual dispatch. It runs the tests, builds `dist/index.html`, and publishes the result. [Deployment history](https://github.com/SpicyFalcon619/cse3313-ca-guide/actions/workflows/pages.yml)
 
 ## Author
 
