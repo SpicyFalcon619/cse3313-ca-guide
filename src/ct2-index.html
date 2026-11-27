@@ -1,0 +1,67 @@
+  <article class="page foundation" id="ct2-words" data-title="Instruction and term index" data-group="CT-2 beginner path" data-skip="1" hidden>
+    <header class="hero"><h1>Instruction and term index</h1><p class="lede">Look up a word, register, symbol, or instruction, then open the lesson where it is used.</p></header>
+    <div class="foundation-body">
+      <p><a href="#ct2-start">Back to the course outline</a></p>
+      <div class="foundation-search" hidden>
+        <label for="ct2-term-query">Find a term or instruction</label>
+        <input id="ct2-term-query" type="search" placeholder="Try addi, slt, or stack" autocomplete="off">
+        <p data-course-term-status role="status"></p>
+      </div>
+      <section data-course-term-section>
+        <h2>Read the instruction</h2>
+        <dl class="foundation-terms">
+          <div data-course-term><dt>instruction, mnemonic, operand</dt><dd>An instruction is one job. Its mnemonic is the short name, such as add. Its operands tell it what to read, write, or use.</dd></div>
+          <div data-course-term><dt>$ and register names</dt><dd>A name starting with $ denotes a register. $t0 is a named CPU slot (register 8). Its contents change while its name stays the same.</dd></div>
+          <div data-course-term><dt>$zero, $0</dt><dd>Register 0 always reads as zero. Use it to initialise a register or copy a value by adding zero.</dd></div>
+          <div data-course-term><dt>$t0–$t9 and $s0–$s7</dt><dd>The t names are temporary registers. A caller must save any t value it still needs after a call. A called function restores any s registers it changes.</dd></div>
+          <div data-course-term><dt>$a0–$a3 and $v0–$v1</dt><dd>The a registers pass the first four arguments. The v registers can return results. A single integer result in our examples goes in $v0.</dd></div>
+          <div data-course-term><dt>$sp, $ra, PC</dt><dd>$sp holds the current stack address. $ra holds the return address. PC is the program counter, the current instruction address in these examples.</dd></div>
+          <div data-course-term><dt>C, int, =, ==, !=, ++, +=</dt><dd>C is a source language. int declares a whole-number value. = assigns, == compares for equality, != compares for difference, ++ adds one in place, and x += y means x = x + y.</dd></div>
+          <div data-course-term><dt>label, colon, comma, parentheses, #</dt><dd>A label names an address and is defined with a colon. Commas divide operands. In 4($s0), the parentheses hold the base register. # starts a comment.</dd></div>
+          <div data-course-term><dt>ISA, RISC, assembly, compiler, assembler</dt><dd>An ISA defines the processor’s instruction rules and registers. RISC describes a design approach using simple regular instructions. A compiler can turn C into assembly. An assembler turns assembly into machine code.</dd></div>
+        </dl>
+        <p><a href="#ct2-registers">Open the lesson for this group</a></p>
+      </section>
+      <section data-course-term-section>
+        <h2>Calculate with values</h2>
+        <dl class="foundation-terms">
+          <div data-course-term><dt>add, sub</dt><dd>add $t0, $t1, $t2 writes $t1 + $t2 to $t0. sub with the same operands writes $t1 − $t2 to $t0.</dd></div>
+          <div data-course-term><dt>addi, immediate, subi</dt><dd>addi $t0, $t1, 5 adds the constant 5 to $t1. The constant written in the instruction is an immediate. For subtraction of 5 use addi with −5.</dd></div>
+          <div data-course-term><dt>move, li, pseudoinstruction</dt><dd>Some assemblers accept shorthand. move copies a register, and li loads a constant into a register. For a short signed constant you can use addi with $zero. Large constants can need more than one real instruction. Check what the exam asks you to encode.</dd></div>
+          <div data-course-term><dt>bit, byte, word, binary, hex, 0x</dt><dd>A bit is 0 or 1. A byte has eight bits. A word here has 32 bits or four bytes. Binary is base 2 and hexadecimal is base 16. 0x marks a following number as hexadecimal.</dd></div>
+          <div data-course-term><dt>signed, unsigned, two’s complement, sign extension</dt><dd>Signed values include negatives. Two’s complement gives the top bit a negative place value. Unsigned values use only nonnegative numbers. To widen a signed value, copy its top bit into the added positions.</dd></div>
+          <div data-course-term><dt>sll, srl, sl</dt><dd>sll shifts bits left, srl shifts bits right, and both fill the empty positions with zeros. For example, 5 shifted left once gives 10, and shifted right once gives 2. In this course, write the full mnemonic. The letters sl alone could be a misreading of sll or slt.</dd></div>
+          <div data-course-term><dt>and, or, nor, andi, ori, &amp;, |, ~</dt><dd>AND keeps positions with two 1s. OR keeps positions with at least one 1. NOR flips the OR result. andi and ori take a constant. C writes AND as &amp;, OR as |, and bitwise NOT as ~.</dd></div>
+          <div data-course-term><dt>mul, div, mflo, mfhi, /, %</dt><dd>mul writes a product to its destination. div computes a quotient in LO and a remainder in HI. mflo and mfhi copy those results out. C uses / for division and % for remainder.</dd></div>
+        </dl>
+        <p><a href="#ct2-c">Open the lesson for this group</a></p>
+      </section>
+      <section data-course-term-section>
+        <h2>Move data or change direction</h2>
+        <dl class="foundation-terms">
+          <div data-course-term><dt>address, base, offset, index, alignment</dt><dd>An address identifies a byte location. Base is the starting address. Offset is the byte distance from it. An index counts elements. A standard MIPS word’s start aligns to a multiple of four.</dd></div>
+          <div data-course-term><dt>lw, sw</dt><dd>lw loads a word from memory to a register. sw stores a word from a register to memory. Both use the address formed by adding a constant byte offset to a base register’s value.</dd></div>
+          <div data-course-term><dt>big-endian, little-endian</dt><dd>The big-endian order places the highest-value byte first at the lowest address. Little-endian puts the lowest-value byte there. Both store the same four bytes.</dd></div>
+          <div data-course-term><dt>spilling</dt><dd>Temporarily save a register value to memory to make room for other work.</dd></div>
+          <div data-course-term><dt>slt, slti</dt><dd>Set if less than. slt compares two registers and writes 1 or 0. slti compares a register and a constant. Neither redirects execution.</dd></div>
+          <div data-course-term><dt>beq, bne</dt><dd>beq branches if two registers are equal. bne branches if the two registers differ. If the test fails, the next line runs.</dd></div>
+          <div data-course-term><dt>j, jal, jr</dt><dd>j jumps to a label. jal jumps and saves the next address in $ra in the lecture model. jr jumps to the address stored in a register. jr $ra returns.</dd></div>
+          <div data-course-term><dt>&amp;&amp; and ||</dt><dd>In C, &amp;&amp; requires both conditions to be true. || requires at least one condition to be true. Checking may stop as soon as the outcome is known.</dd></div>
+          <div data-course-term><dt>caller, callee, argument, return value</dt><dd>The caller asks a function to run, and the callee is that function. Arguments are its inputs. A return value is the result it passes back.</dd></div>
+          <div data-course-term><dt>stack, frame, leaf, recursion</dt><dd>The stack holds data temporarily during calls. A frame belongs to one active call. A leaf function makes no further call. Recursion means a function calls itself.</dd></div>
+        </dl>
+        <p><a href="#ct2-memory">Open the lesson for this group</a></p>
+      </section>
+      <section data-course-term-section>
+        <h2>Write the bits of an instruction</h2>
+        <dl class="foundation-terms">
+          <div data-course-term><dt>field, opcode, funct, shamt</dt><dd>A field is a group of bits. The opcode identifies an operation or group. funct selects an operation within R format. shamt is the number of places to shift.</dd></div>
+          <div data-course-term><dt>rs, rt, rd</dt><dd>These are register fields in an instruction. R-format arithmetic commonly reads rs and rt and writes rd. Their roles vary by instruction, so start from the example for that instruction.</dd></div>
+          <div data-course-term><dt>R, I, J, encode, decode</dt><dd>MIPS has register, immediate and jump formats. Encoding turns assembly into numeric fields and bits. Decoding reads the bits back as assembly.</dd></div>
+          <div data-course-term><dt>PC-relative, target, displacement, delay slot</dt><dd>A branch’s target is where it tries to go. The displacement is the distance from PC + 4, encoded in instruction words. A delay slot is the next instruction that some MIPS models execute even during a jump. The class examples use a simplified model without it.</dd></div>
+        </dl>
+        <p><a href="#ct2-encode">Open the lesson for this group</a></p>
+      </section>
+      <p><a href="#ct2-division">Division and special registers</a> · <a href="#ct2-shifts">Bitwise instructions and shifts</a> · <a href="#ct2-logic">Comparisons and if/else</a></p>
+    </div>
+  </article>

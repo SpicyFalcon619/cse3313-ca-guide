@@ -1,0 +1,58 @@
+  <article class="page foundation" id="ct2-signed" data-title="Negative numbers and field widths" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Negative numbers and field widths</h1><p class="lede">Use a fixed number of bits to write −5 and recognise a number that will not fit.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 5 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>See what eight 1s can mean</h2>
+      <p><code>11111111</code> means 255 when we read it as <strong>unsigned</strong>, so every position adds its positive place value. If the same eight bits are read as <strong>signed two’s complement</strong>, the leftmost place is −128 and the other places add up to 127. The result is −1. The bits stay the same. The instruction or the question tells you how to read them.</p>
+      <h2>Write a negative number</h2>
+      <p>Start with +5 in eight positions. Flip every bit, then add 1 in binary. Any extra carry outside the eight positions is discarded. The last line is how −5 fits into eight bits.</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Step</th><th scope="col">Eight bits</th></tr></thead><tbody><tr><td>Write +5</td><td><code>00000101</code></td></tr><tr><td>Flip bits</td><td><code>11111010</code></td></tr><tr><td>Add 1</td><td><code>11111011</code></td></tr></tbody></table></div>
+      <p>To make a signed value wider while preserving it, copy its leftmost bit into the new positions. This is <strong>sign extension</strong>. So −5 becomes <code>11111111 11111011</code> in 16 bits. To extend an unsigned value, add zeros on the left. That is <strong>zero extension</strong>.</p>
+      <h2>Count what can fit</h2>
+      <p>Each bit doubles the possible patterns. Eight bits give 2<sup>8</sup> = 256 patterns. Unsigned uses 0 through 255. Signed uses −128 through 127. For <var>n</var> bits, unsigned is 0 through 2<sup>n</sup> − 1, signed is −2<sup>n−1</sup> through 2<sup>n−1</sup> − 1. <code>addi</code> uses a signed 16-bit immediate, from −32,768 to 32,767, and sign-extends it to the 32-bit register width. Overflow means an arithmetic result falls outside its available range.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>Read 1111 as a four-bit unsigned number and then as a four-bit signed number.</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>Unsigned gives 8 + 4 + 2 + 1 = 15. Signed gives −8 + 4 + 2 + 1 = −1.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-bits">Previous lesson</a>
+        <a class="btn pri" href="#ct2-shifts">Next · Shift bits, AND, OR, and NOR</a>
+      </nav>
+      <p class="lesson-source">Sources · Lectures 2–3, slides 32–36.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-shifts" data-title="Shifts and bitwise operations" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Shifts and bitwise operations</h1><p class="lede">Watch bits slide, then compare them one column at a time.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 6 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>What does sll mean?</h2>
+      <p><code>sll</code> stands for <strong>shift left logical</strong>. In <code>sll $t0, $t1, 2</code>, <code>$t0</code> is where the result goes, <code>$t1</code> supplies the bits, and 2 is how many places to shift. Each move fills the new rightmost place with 0 and discards whichever bit leaves the left edge. “Logical” means the new places are filled with zeros. The small display below shows eight of the register’s 32 positions.</p>
+      <div class="foundation-values foundation-bits"><span><small>Start</small><code>00000101</code><b>5</b></span><span><small>Left one</small><code>00001010</code><b>10</b></span><span class="foundation-active"><small>Left two</small><code>00010100</code><b>20</b></span></div>
+      <p>For small numbers that fit, one left shift doubles the number. Two make it four times as large. <code>srl</code> stands for <strong>shift right logical</strong>. It fills from the left with 0 and drops bits on the right. For an unsigned value, one right shift divides by two and drops the remainder. So 5 becomes 2. For signed negative numbers, logical right shift does a different job from signed division.</p>
+      <div class="foundation-trace" data-foundation-trace data-trace-label="Next shift">
+        <div class="foundation-trace-controls" hidden><button type="button" class="btn" data-trace-back>Back</button><button type="button" class="btn pri" data-trace-next>Next shift</button><span data-trace-count></span></div>
+        <div class="foundation-trace-steps" aria-live="polite">
+          <div data-trace-step><b>Before shifting</b><p>The value 5 ends with these eight bits.</p><div class="foundation-values"><span class="foundation-active"><small>Starting value</small><strong>00000101</strong></span></div></div>
+          <div data-trace-step><b>Shift left once</b><p>Each 1 moves one place to the left. A zero appears in the rightmost position. Now the 1s are in the 8 and 2 places.</p><div class="foundation-values"><span class="foundation-active"><small>After one left shift</small><strong>00001010</strong></span></div></div>
+          <div data-trace-step><b>Shift left again</b><p>Each 1 moves left again. Now the 1s are in the 16 and 4 places, giving 20.</p><div class="foundation-values"><span class="foundation-active"><small>After two left shifts</small><strong>00010100</strong></span></div></div>
+        </div>
+      </div>
+      <h2>What does bitwise mean?</h2>
+      <p>Work with each pair of bits independently, with no carry from the next column. In the four low positions, use 5 (<code>0101</code>) and 3 (<code>0011</code>).</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Instruction</th><th scope="col">When is the output bit 1?</th><th scope="col">Low four bits</th></tr></thead><tbody><tr><td><code>and</code></td><td>Both input bits are 1</td><td><code>0001</code></td></tr><tr><td><code>or</code></td><td>At least one input bit is 1</td><td><code>0111</code></td></tr><tr><td><code>nor</code></td><td>Neither input bit is 1</td><td><code>1000</code></td></tr></tbody></table></div>
+      <p><code>andi</code> and <code>ori</code> do AND and OR with an immediate. <code>andi $t0, $t1, 3</code> keeps only the two low bits because 3 ends in <code>11</code> and every other bit of the mask is zero. A <strong>mask</strong> is a bit pattern used to select positions.</p>
+      <p>C writes bitwise AND as <code>&amp;</code>, OR as <code>|</code>, and NOT as <code>~</code>. NOT flips every bit. MIPS can flip a value by using <code>nor</code> with <code>$zero</code>. Read <code>~(a | 5)</code> in two parts. First <code>ori $t1, $t0, 5</code>. Then <code>nor $t1, $t1, $zero</code>. The same pattern handles <code>~(a &amp; n)</code> by starting with <code>and</code> if <code>n</code> is in a register.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>If $t1 contains 5, what does sll $t0, $t1, 1 put in $t0? What does andi $t0, $t1, 3 put there?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The shift gives 10. The AND gives 1, because 0101 AND 0011 has just the ones place left.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-signed">Previous lesson</a>
+        <a class="btn pri" href="#ct2-memory">Next · Load and store four bytes</a>
+      </nav>
+      <p class="lesson-source">Sources · Lectures 2–3, slides 37–48.</p>
+    </div>
+  </article>

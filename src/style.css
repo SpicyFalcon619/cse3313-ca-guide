@@ -1097,12 +1097,28 @@
   .foundation-body { width: min(100%, 720px); margin-inline: auto; min-width: 0; }
   .foundation-body h2 { margin-block: 28px 8px; }
   .foundation-body p { max-width: 70ch; }
+  .foundation-body .ls-t { display: table; }
+  .foundation-body .ls-t :is(th, td) { white-space: normal; }
   .foundation .pager { display: none; }
   .foundation-position, .foundation .lesson-source { color: var(--muted); font-size: .91rem; }
+  .foundation-lookup { margin-inline-start: 8px; }
+  .foundation-actions { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
   .foundation-road { margin: 20px 0; padding-inline-start: 28px; }
   .foundation-road li { padding: 11px 4px; border-bottom: 1px solid var(--rule); }
   .foundation-road a { display: block; width: fit-content; font-weight: 700; }
   .foundation-road span { color: var(--muted); }
+  .foundation-list { padding-inline-start: 1.35em; }
+  .foundation-list li { margin-block: 10px; }
+  .foundation-outline summary small { display: block; color: var(--muted); font-weight: 400; }
+  .foundation-outline .foundation-road { margin-block: 0 12px; }
+  .foundation-outline .course-learned::after { content: " · Understood"; font-weight: 400; color: var(--muted); }
+  .foundation-search { margin-block: 16px; }
+  .foundation-search label { display: block; margin-bottom: 4px; font-weight: 700; }
+  .foundation-search input { width: min(100%, 26em); padding: 8px 10px; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+  .foundation-terms { margin: 0; }
+  .foundation-terms > div { padding: 11px 0; border-top: 1px solid var(--rule); }
+  .foundation-terms dt { font-weight: 700; }
+  .foundation-terms dd { margin-inline-start: 0; }
   .foundation-flow, .foundation-values { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; margin: 12px 0; }
   .foundation-flow > span { display: grid; place-items: center; }
   .foundation-flow > div, .foundation-values > span { display: grid; align-content: center; gap: 4px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
@@ -1126,9 +1142,11 @@
   .foundation-process li { margin-block: 8px; }
   .foundation-check { margin-top: 30px; padding-top: 1px; border-top: 1px solid var(--rule); }
   .foundation-next { justify-content: space-between; margin-block: 20px; }
+  .foundation-next .btn { max-width: 100%; white-space: normal; text-align: center; }
   @media (max-width: 480px) {
     .foundation-flow > div { flex-basis: 60px; padding-inline: 5px; }
     .foundation-bits > span { padding-inline: 6px; }
+    .foundation-body .ls-t :is(th, td) { padding-inline: 6px; }
     .foundation-bytes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .foundation-encoding { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }

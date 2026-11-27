@@ -1,0 +1,61 @@
+  <article class="page foundation" id="ct2-logic" data-title="If, else, and two conditions" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>If, else, and two conditions</h1><p class="lede">Use a 0 or 1 from a comparison to choose where the program goes.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 10 of 22 / Lecture 5 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Set a register first, then branch</h2>
+      <p><code>slt</code> means <strong>set if less than</strong>. In <code>slt $t0, $s0, $s1</code>, ask whether <code>$s0</code> is less than <code>$s1</code>. Write 1 to <code>$t0</code> for yes and 0 for no. This instruction always continues to the next line. <code>slti $t0, $s0, 5</code> compares <code>$s0</code> with the immediate 5 instead.</p>
+      <p>Translate <code>if (i &lt; j) f = g + h; else f = g - h;</code>. Here <code>if</code> means run the first assignment when the test is true, and <code>else</code> gives the other path. Let <code>$s0</code> and <code>$s1</code> hold i and j, <code>$s2</code> and <code>$s3</code> hold g and h, and <code>$s4</code> hold f.</p>
+      <pre><code>      slt $t0, $s0, $s1
+      beq $t0, $zero, Else
+      add $s4, $s2, $s3
+      j Done
+Else: sub $s4, $s2, $s3
+Done:</code></pre>
+      <p>If i is 3 and j is 5, the compare produces 1. The branch to <code>Else</code> fails, so the addition runs. The jump to <code>Done</code> skips the subtraction. If i is 5 and j is 3, the compare produces 0 and the branch takes the subtraction path.</p>
+      <h2>Turn other comparisons into tests you already know</h2>
+      <p><code>i &lt;= j</code> stays true as long as <code>j &lt; i</code> is false. Swap the inputs to <code>slt</code>, then branch to the else path if it produced 1. For <code>i &lt; j &amp;&amp; i != k</code>, both tests must pass. Use <code>slt</code> and a branch to reject <code>i &lt; j</code> when false. Then <code>beq</code> can reject <code>i != k</code> when i and k match. C uses <code>==</code> to ask if two values match, <code>!=</code> to ask if they differ, and <code>&amp;&amp;</code> for a two-condition test. That last operator is different from bitwise <code>&amp;</code>, which works one bit at a time.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>Does slt $t0, $s0, $s1 jump? If both source registers hold 5, what goes in $t0?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>It writes 0 because 5 is equal to 5. The next line runs normally. A separate branch instruction can read the 0 and decide where to go.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-branches">Previous lesson</a>
+        <a class="btn pri" href="#ct2-loops">Next · Write and trace loops</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 5, slides 13 and 18–21.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-loops" data-title="While, for, and do-while loops" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>While, for, and do-while loops</h1><p class="lede">Mark the check, the work, and the way back. Then trace just two passes.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 11 of 22 / Lecture 5 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Test before doing the work</h2>
+      <p>A <strong>loop</strong> repeats a set of instructions called its <strong>body</strong>. In C, <code>while (i &lt; 5)</code> checks the condition before each pass. The body can change i with <code>i++</code>, meaning add 1 to i. If i starts at 4, the body runs once, then i is 5 and the next check ends the loop.</p>
+      <p>For Lecture 5’s example <code>while (i &lt; 5) { A[i] = A[i] + 2; i++; }</code>, suppose <code>$s0</code> holds i and <code>$s1</code> holds A’s base. Follow the check and the body separately.</p>
+      <pre><code>Check: slti $t0, $s0, 5
+       beq  $t0, $zero, Done
+       sll  $t1, $s0, 2
+       add  $t1, $s1, $t1
+       lw   $t2, 0($t1)
+       addi $t2, $t2, 2
+       sw   $t2, 0($t1)
+       addi $s0, $s0, 1
+       j    Check
+Done:</code></pre>
+      <p>If i starts at 4, we change only <code>A[4]</code>, then leave. If i starts at 5, we reach <code>Done</code> before the load. A loop that tests the same unchanging values and gets true on every check can keep running. Trace which values the body actually changes.</p>
+      <h2>Where do the other loop styles put the check?</h2>
+      <ul class="foundation-list"><li><b>for</b> lists a starting assignment, a check, and an update together. <code>for (i = 0; i &lt; 5; i++)</code> initializes once, then repeats check → work → update. In assembly, put the initialization before <code>Check</code>.</li><li><b>do-while</b> runs the body before the first check. Put its label on the body and branch back only when the condition holds. It executes at least once.</li></ul>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>If i starts at 5, what gets loaded in the while example? Would a do-while with the same starting value still run its first body?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The while loop goes to Done immediately, so nothing gets loaded. The do-while runs its body once before checking.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-logic">Previous lesson</a>
+        <a class="btn pri" href="#ct2-call">Next · Pass arguments and get a result</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 5, slides 22–23; lecture 7, slides 37–40.</p>
+    </div>
+  </article>

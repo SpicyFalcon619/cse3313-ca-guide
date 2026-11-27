@@ -1,0 +1,147 @@
+  <article class="page foundation" id="ct2-division" data-title="Division, remainder, HI and LO" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Division, remainder, HI and LO</h1><p class="lede">Split 45 by 32 and copy both answers into ordinary registers.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 19 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>There are two answers to integer division</h2>
+      <p>From 45 you can take out one complete group of 32, with 13 left over. That makes 1 the <strong>quotient</strong> and 13 the <strong>remainder</strong>. C writes whole-number division with <code>/</code> and remainder with <code>%</code>.</p>
+      <pre><code>addi $t0, $zero, 45
+addi $t1, $zero, 32
+div  $t0, $t1
+mflo $t2
+mfhi $t3</code></pre>
+      <p><code>div</code> means divide. Its two operands are the values to divide, in order. It puts 1 in the special register <code>LO</code> and 13 in the special register <code>HI</code>. <code>mflo</code> means move from LO. It copies 1 into <code>$t2</code>. <code>mfhi</code> means move from HI. It copies 13 into <code>$t3</code>. These special registers hold division results separately from the numbered general-purpose registers.</p>
+      <h2>Follow signed remainder when the input can be negative</h2>
+      <p>For −17 divided by 32, the signed quotient truncates toward zero, so the quotient is 0 and the remainder is −17. This is why a mask that keeps the low five bits gives a different result here. For nonnegative values, keeping the low five bits gives the remainder after division by 32. For signed cases such as Lecture 7’s <code>(~(arr[b] * 16)) % 32</code>, use <code>div</code> and <code>mfhi</code>.</p>
+      <p>If <code>arr[b]</code> holds 1, multiplying by 16 gives 16 and bitwise NOT gives −17 in signed two’s complement. The remainder is −17. Unpack the expression in order. Load the array value, shift left by four, flip the bits with <code>nor</code>, then divide and read HI.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>For 25 % 16, which instruction retrieves the answer after div, and what is it?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>Use mfhi. One group of 16 fits in 25 and 9 remains, so HI holds 9.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-widths">Previous lesson</a>
+        <a class="btn pri" href="#ct2-translation">Next · Translate a whole C function</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 41–46.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-translation" data-title="Translate a full C function" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Translate a full C function</h1><p class="lede">Build a real Lecture 7 answer one block at a time, then trace it by hand.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 20 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Read the job and label the values</h2>
+      <pre><code>int fill(int i, int n, int arr[]) {
+    int a = 10;
+    for (i = 0; i &lt;= n; i++) {
+        arr[i * 2] = ~(a &amp; n);
+    }
+    return a;
+}</code></pre>
+      <p>This function overwrites its local copy of i with 0. It writes every second array element, including element 0. It returns the value a. Use <code>$a0</code> for i, <code>$a1</code> for n, and <code>$a2</code> for the array’s base. The slide assigns a to <code>$s0</code>, so preserve the old value of that register. Choose temporary registers for the comparison, address, and value to store.</p>
+      <h2>Build the answer in four chunks</h2>
+      <details class="foundation-more" open><summary>1. Save the caller’s value and set our starting values</summary><pre><code>fill: addi $sp, $sp, -4
+      sw   $s0, 0($sp)
+      addi $s0, $zero, 10
+      addi $a0, $zero, 0</code></pre></details>
+      <details class="foundation-more"><summary>2. Exit when i is greater than n</summary><pre><code>Check: slt $t0, $a1, $a0
+       bne $t0, $zero, Done</code></pre><p>Read the compare as “is n less than i?” If the answer is yes, the loop must stop.</p></details>
+      <details class="foundation-more"><summary>3. Calculate the byte address and then the value</summary><pre><code>sll $t1, $a0, 3
+add $t1, $a2, $t1
+and $t2, $s0, $a1
+nor $t2, $t2, $zero
+sw  $t2, 0($t1)
+addi $a0, $a0, 1
+j Check</code></pre><p>Each index is <code>i * 2</code>. Each integer takes four bytes, so the byte distance is <code>i * 8</code>. A left shift by three multiplies by eight. Then add the base. The store’s address and the bitwise value are separate calculations.</p></details>
+      <details class="foundation-more"><summary>4. Return a and restore the saved register</summary><pre><code>Done: add $v0, $s0, $zero
+      lw $s0, 0($sp)
+      addi $sp, $sp, 4
+      jr $ra</code></pre><p>Copy the result to <code>$v0</code> before restoring the old <code>$s0</code>. This function makes no other call, so <code>$ra</code> still has its original return address.</p></details>
+      <p>Check the first passes with n = 2. i takes the values 0, 1, 2, so the function writes indices 0, 2, 4. <code>10 &amp; 2</code> has value 2, and <code>~2</code> is −3 as a signed word. The caller still gets 10 as the function result.</p>
+      <h2>Try the other two Lecture 7 problem patterns</h2>
+      <p>For the loop that adds signed remainders, start with sum at 0, test whether <code>b &lt; a</code> to exit, and do the same array-address calculation for <code>arr[b]</code>. The course solution assumes the printed C intended <code>sum += (~(arr[b] * 16)) % 32</code>. This assumption makes the initial sum and parentheses explicit.</p>
+      <p>For the problem that chooses which pair to pass to <code>myfunction(y, x)</code>, compute <code>25 % 16 = 9</code>, <code>~(25 | 5) = -30</code>, and <code>~9 = -10</code> first. The test <code>c &gt;= d</code> fails, so pass a = 25 as the first argument and b = 9 as the second. The helper returns <code>x − y = 9 − 25 = −16</code>. Follow the full listings under Fall 2025 and Spring 2026 in the <a href="#s-ct2-papers">worked midterms</a>.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>Why does the loop use sll by 3 for arr[i * 2], while arr[i] used sll by 2?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The index in this question is twice i. Four bytes per element times two indices per step is eight bytes. One left shift gives two, two give four, and three give eight.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-division">Previous lesson</a>
+        <a class="btn pri" href="#ct2-recursion">Next · Trace recursive factorial</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 37–52.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-recursion" data-title="Recursion and factorial" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Recursion and factorial</h1><p class="lede">Follow several calls to the same function and see what each call needs to remember.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 21 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Work out factorial without assembly</h2>
+      <p><strong>Factorial</strong> multiplies the integers from 1 up to a number. For example, 3 factorial is 3 × 2 × 1 = 6. The lecture expresses that as <code>fact(3) = 3 * fact(2)</code>. A function that calls itself is <strong>recursive</strong>. The <strong>base case</strong> stops the calls. Here, <code>fact(0)</code> returns 1 immediately. In the deck, the test is <code>n &lt; 1</code>.</p>
+      <h2>What must survive the next call?</h2>
+      <p>When <code>fact(3)</code> asks for <code>fact(2)</code>, it needs both its old n (3) for the final multiply and its old <code>$ra</code> for the return. Save those two words before changing <code>$a0</code> or running <code>jal</code>. This example uses eight bytes per call.</p>
+      <pre><code>fact: addi $sp, $sp, -8
+      sw   $ra, 4($sp)
+      sw   $a0, 0($sp)
+      slti $t0, $a0, 1
+      bne  $t0, $zero, Base
+      addi $a0, $a0, -1
+      jal  fact
+      lw   $a0, 0($sp)
+      mul  $v0, $a0, $v0
+      j    Return
+Base: addi $v0, $zero, 1
+Return: lw $ra, 4($sp)
+      addi $sp, $sp, 8
+      jr   $ra</code></pre>
+      <p><code>mul $v0, $a0, $v0</code> multiplies the two source values and writes their product to <code>$v0</code>. This listing uses a shared cleanup at <code>Return</code>. The slide arranges the same cleanup separately for the base case and the recursive case.</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Call</th><th scope="col">Frame starts at</th><th scope="col">Return value</th></tr></thead><tbody><tr><td>fact(3)</td><td>992</td><td>3 × 2 = 6</td></tr><tr><td>fact(2)</td><td>984</td><td>2 × 1 = 2</td></tr><tr><td>fact(1)</td><td>976</td><td>1 × 1 = 1</td></tr><tr><td>fact(0)</td><td>968</td><td>1</td></tr></tbody></table></div>
+      <p>The table starts from <code>$sp = 1000</code>. There are four active calls at the bottom, so 32 bytes are reserved. The calls finish in reverse order, <code>fact(0)</code> first and <code>fact(3)</code> last. This is called <strong>unwinding</strong>. Try “Recursive fact(3)” in the <a href="#mips-functions">stack visualiser</a> and watch for the point where the calls start returning.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>Why does fact(3) reload 3 after fact(2) returns?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>$a0 was changed to 2 for the smaller call. The old 3 is still in fact(3)’s own frame, and the next multiply needs it to turn the returned 2 into 6.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-translation">Previous lesson</a>
+        <a class="btn pri" href="#ct2-check">Next · Try a practice problem on your own</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 54–63.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-check" data-title="First CT-2 practice" data-group="CT-2 beginner path" hidden>
+    <header class="hero">
+      <h1>Can you trace the whole example?</h1>
+      <p class="lede">Try this on paper one question at a time and reveal each answer when you’re ready.</p>
+    </header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 22 of 22 / CT-2 practice <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p>Array <code>A</code> starts at byte 100 and holds <code>[5, 3, 0]</code>. <code>$s0</code> holds 100. You want to pass the first two values to a function and write the answer into <code>A[2]</code>. Assume the course’s simplified call model.</p>
+      <details class="foundation-more"><summary>1. What two instructions put the inputs in $a0 and $a1?</summary><pre><code>lw $a0, 0($s0)
+lw $a1, 4($s0)</code></pre><p>The first word starts at the base. The second starts four bytes later.</p></details>
+      <details class="foundation-more"><summary>2. If jal is at 1008, where does the function return?</summary><p>It returns to 1012. <code>jal</code> saves 1012 to <code>$ra</code>. The function returns with <code>jr $ra</code>.</p></details>
+      <details class="foundation-more"><summary>3. What result does the function return, and how do you store it?</summary><pre><code>add $v0, $a0, $a1   # in the function
+sw  $v0, 8($s0)     # in the caller, after return</code></pre><p>The sum 8 returns in <code>$v0</code>. <code>A[2]</code> is eight bytes past the base.</p></details>
+      <details class="foundation-more"><summary>4. What would change if the function called a helper?</summary><p>If it needs to return through its original <code>$ra</code>, save that value before the new <code>jal</code> and restore it before returning. One saved word needs four bytes.</p></details>
+      <details class="foundation-more"><summary>5. What are the four decimal fields for sw $v0, 8($s0)?</summary><p><code>43 / 16 / 2 / 8</code>. The opcode is 43 for <code>sw</code>. The base goes in <code>rs</code> (<code>$s0</code> is number 16), the register containing the value goes in <code>rt</code> (<code>$v0</code> is number 2), and 8 is the byte offset.</p></details>
+      <h2>Pick a real exam question after this</h2>
+      <ol class="foundation-process">
+        <li>Try <b>Spring 2026 Q2(b)</b> for decimal fields. Write the format above each instruction before filling a register or a distance.</li>
+        <li>Try <b>Summer 2025 Q2(c)</b> for a modified machine. State the unit and the range before counting elements.</li>
+        <li>Try <b>Summer 2025 Q2(a)</b> for a full translation. Write the register map, then the loop check, the body, and the return. These questions and answers are in the <a href="#s-ct2-papers">worked midterms</a>.</li>
+      </ol>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>Change the first value to 7 and the second to 4. Which part of the program changes to produce the new sum?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The inputs in memory change. The two loads still use offsets 0 and 4, the function still adds the argument registers, and the caller still stores at offset 8. The new result is 11.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-recursion">Previous lesson</a>
+        <a class="btn pri" href="#s-ct2-papers">Next · Worked past papers</a>
+      </nav>
+      <p class="lesson-source">Sources · Practice combines Lectures 5–7. Opcode and register numbers follow Lecture 7, slide 20.</p>
+    </div>
+  </article>

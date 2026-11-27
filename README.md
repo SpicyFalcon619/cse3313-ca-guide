@@ -6,7 +6,7 @@ Learn how a processor runs a program, how to measure its performance, and how MI
 
 ## Start studying
 
-- **Missed Lectures 2–3?** Follow [CT-2 from scratch](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-start) from your first MIPS instructions to memory, function calls, and machine code.
+- **Starting CT-2?** Take the [beginner course](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-start). Its 22 lessons start with how a computer runs a program and build up to full exam questions. Use the [instruction and term index](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-words) for a quick lookup.
 - **New to computer architecture?** Follow one instruction from storage to the CPU in [How a computer runs a program](https://spicyfalcon619.github.io/cse3313-ca-guide/#earlier).
 - **Preparing for the midterm?** Use the [Midterm study route](https://spicyfalcon619.github.io/cse3313-ca-guide/#midterm) to see what to study in order, then work through [past midterm questions](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-past).
 - **Reviewing a calculation?** Start with [Performance in four steps](https://spicyfalcon619.github.io/cse3313-ca-guide/#performance-review), then check your work with the [calculators](https://spicyfalcon619.github.io/cse3313-ca-guide/#calculators).
@@ -38,7 +38,7 @@ Open `dist/index.html` in your browser. The build bundles the lessons, styles an
 
 | Path | Purpose |
 | --- | --- |
-| `src/pages.html`, `src/ct2-foundations.html`, `src/midterm-review.html`, `src/ct2-papers.html` | Lessons, beginner path, midterm review and worked questions |
+| `src/pages.html`, `src/ct2-*.html`, `src/midterm-review.html` | Main lessons, CT-2 course and worked questions, and midterm review |
 | `src/engine.js`, `src/practice.js` | Performance calculations, drills and quiz |
 | `src/mips.js`, `src/mips-ui.js` | MIPS instruction fields, memory and stack traces, and visualisers |
 | `src/style.css`, `src/ui.js`, `src/dropdown.js` | Themes, navigation and browser interactions |

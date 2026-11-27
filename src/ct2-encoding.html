@@ -1,0 +1,103 @@
+  <article class="page foundation" id="ct2-encode" data-title="Machine code from scratch" data-group="CT-2 beginner path" hidden>
+    <header class="hero">
+      <h1>How do instructions become bits?</h1>
+      <p class="lede">Turn your first addition into one 32-bit instruction.</p>
+    </header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 15 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Give each part of the instruction its own space</h2>
+      <p>Think back to <code>add $t0, $t1, $t2</code>. The CPU needs to know the operation, the two inputs and where the answer goes. The assembler puts that information in separate groups of bits called <strong>fields</strong>. It writes register numbers (8 for <code>$t0</code>, 9 for <code>$t1</code>, 10 for <code>$t2</code>). The current numbers inside those registers, such as 5 and 3, stay in the registers.</p>
+      <p>The format for this instruction is <strong>R type</strong>. For a regular <code>add</code>, the opcode is 0, the function code is 32 and the unused shift amount is 0. The <code>rs</code> and <code>rt</code> fields name the two inputs. <code>rd</code> names the destination.</p>
+      <div class="foundation-values foundation-encoding" aria-label="R-type fields in order"><span><small>op · 6 bits</small><code>000000</code></span><span><small>rs · 5 bits</small><code>01001</code></span><span><small>rt · 5 bits</small><code>01010</code></span><span class="foundation-active"><small>rd · 5 bits</small><code>01000</code></span><span><small>shamt · 5 bits</small><code>00000</code></span><span><small>funct · 6 bits</small><code>100000</code></span></div>
+      <p>Write the fields left to right. Notice that <code>$t0</code> appears first in the assembly text but its number goes in <code>rd</code>, the fourth field in the bits. To write the whole instruction in <b>hexadecimal</b>, split the final bit string into groups of four. Each group becomes one hex digit. Here the result is <code>0x012A4020</code>.</p>
+      <h2>Read a machine word back into assembly</h2>
+      <p>Hexadecimal uses 0–9 then A, B, C, D, E and F for 10–15. A leading <code>0x</code> marks hex. Each digit represents four bits. For example, A is 10, which is 8 + 2, so it becomes <code>1010</code>.</p>
+      <p>To decode <code>0x012A4020</code>, write all eight hex digits as four bits each, including the leading zero. Cut the resulting 32 bits at widths 6 / 5 / 5 / 5 / 5 / 6. Opcode 0 and function code 32 identify <code>add</code>. The register fields say 9, 10 and 8, which are <code>$t1</code>, <code>$t2</code> and <code>$t0</code>. Put the destination first when you write assembly. The answer is <code>add $t0, $t1, $t2</code>.</p>
+      <h2>Notice which fields some instructions leave unused</h2>
+      <p><code>sll $t0, $t1, 2</code> reads <code>$t1</code> through <code>rt</code>, writes <code>$t0</code> in <code>rd</code>, and puts 2 in <code>shamt</code> (shift amount). It leaves <code>rs</code> at zero. <code>jr $ra</code> uses only <code>rs</code> to name register 31. Its function code is 8 and the other operand fields are zero.</p>
+      <p>Check these using the <a href="#mips-machine">instruction encoder</a>. It can also decode hex. On an exam, fill the decimal fields first, then write bits or hex if the question asks for them.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>In add $t0, $t1, $t2, what decimal value belongs in rd?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>8, the number of $t0. That register will receive the result. Its number goes in rd even if the result it will hold happens to be 8 as well.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-nested">Previous lesson</a>
+        <a class="btn pri" href="#ct2-immediate">Next · Encode an I-type instruction</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 2–20.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-immediate" data-title="I-format instructions" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>I-format instructions</h1><p class="lede">Read the 16-bit field in context. It can hold a number, a byte distance, or a branch distance.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 16 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Start with addi</h2>
+      <p><code>addi $t0, $t1, 5</code> needs an operation, one input register, one output register, and the number 5. Its <strong>I format</strong> (immediate format) has exactly four fields. Use the opcode table and the register numbers.</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Field</th><th scope="col">Why this value?</th><th scope="col">Bits</th></tr></thead><tbody><tr><td><code>op</code></td><td>Opcode 8 selects <code>addi</code></td><td><code>001000</code></td></tr><tr><td><code>rs</code></td><td>Input <code>$t1</code> is register 9</td><td><code>01001</code></td></tr><tr><td><code>rt</code></td><td>Destination <code>$t0</code> is register 8</td><td><code>01000</code></td></tr><tr><td><code>immediate</code></td><td>The instruction says add 5</td><td><code>0000000000000101</code></td></tr></tbody></table></div>
+      <p>The widths are 6 / 5 / 5 / 16. If the question asks for decimal fields, write <code>8 / 9 / 8 / 5</code>. If it asks for binary, write each field at its required width. For −5, the last 16 bits are <code>1111111111111011</code>, from the signed-number lesson.</p>
+      <h2>Find the roles before filling rs and rt</h2>
+      <ul class="foundation-list"><li><b>Arithmetic and bitwise.</b> <code>addi</code>, <code>andi</code>, <code>ori</code>, and <code>slti</code> read <code>rs</code> and write <code>rt</code>. <code>addi</code> and <code>slti</code> read a signed immediate. <code>andi</code> and <code>ori</code> zero-extend theirs.</li><li><b>Memory.</b> In <code>lw $s1, 200($s2)</code>, the base goes in <code>rs</code>, the destination in <code>rt</code>, and 200 goes in the last field as a signed byte offset. For <code>sw</code>, <code>rt</code> supplies the value to write. Decimal fields for the load are <code>35 / 18 / 17 / 200</code>.</li><li><b>Conditional branches.</b> <code>beq</code> and <code>bne</code> put the compared registers in <code>rs</code> and <code>rt</code>. Both are inputs. The 16-bit field uses a signed instruction distance, which you will calculate in the next lesson.</li></ul>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>For sw $s1, 200($s2), which register supplies the address? Which supplies the stored value? Do you divide 200 by four?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>$s2 supplies the base (rs). $s1 supplies the value to store (rt). Keep 200 as written because the load/store field already counts bytes.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-encode">Previous lesson</a>
+        <a class="btn pri" href="#ct2-targets">Next · Count branch and jump distances</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 12–18 and 20.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-targets" data-title="Branch distances and J format" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Branch distances and J format</h1><p class="lede">Work backwards from a label’s byte address, then decode the target from the field.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 17 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Count from the next instruction for a branch</h2>
+      <p>In the lecture’s example, a <code>bne</code> at byte 1000 has a target at 1104. <strong>Target</strong> is the place you want to reach. Start from <code>PC + 4</code>, 1004, then ask how many four-byte instructions away the target is.</p>
+      <div class="foundation-values"><span><small>Branch at</small><b>1000</b></span><span><small>Start counting at</small><b>1004</b></span><span class="foundation-active"><small>Target</small><b>1104</b></span></div>
+      <p>The difference is 100 bytes. Divide by four to get 25 instruction words. That 25 goes in the 16-bit field. To decode the target, multiply the field by four and add <code>PC + 4</code>. If the target comes before <code>PC + 4</code>, the distance is negative. For a branch at 108 back to 100, the field is (100 − 112) ÷ 4 = −3.</p>
+      <h2>Use a different rule for j and jal</h2>
+      <p><strong>J format</strong> has two fields, a 6-bit opcode and a 26-bit target field. The target must be divisible by four, so its last two binary bits are zeros. Store bits 27 through 2 of the target address. When decoding, append two zeros on the right and take the upper four bits from <code>PC + 4</code>. A jump can reach targets that share those upper four bits.</p>
+      <p>For a low address such as <code>j 2000</code>, the upper four bits are all zero, so the field is simply 2000 ÷ 4 = 500. The opcode for <code>j</code> is 2 and the opcode for <code>jal</code> is 3. Neither field uses the branch subtraction formula.</p>
+      <h2>Try one question from the slide set</h2>
+      <p>At 108, encode <code>beq $t0, $zero, END</code> where <code>END</code> is 124. Write opcode 4, register 8, register 0, then (124 − 112) ÷ 4 = 3. A label names an address and uses no extra bytes. You can check yourself in the <a href="#mips-machine">instruction encoder</a> by replacing the label with the target address and setting the PC to 108.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>If a j instruction in the low address region targets byte address 100, what goes in its 26-bit field?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>25, because 100 ÷ 4 = 25. Subtract PC + 4 only when finding the signed field of a conditional branch.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-immediate">Previous lesson</a>
+        <a class="btn pri" href="#ct2-widths">Next · Check what fits on a modified processor</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 17–28.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-widths" data-title="Modified MIPS and what fits" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Modified MIPS and what fits</h1><p class="lede">Count the patterns, then check how many bytes or elements a field can describe.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 18 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Find the number of bits needed for a register name</h2>
+      <p>Each extra bit doubles the number of names. Four bits name 16 registers. For 1000 registers, nine bits give only 512 names, and ten give 1024, so use ten. Use the smallest width that covers every register even when some of its patterns go unused.</p>
+      <h2>Work the slide’s 16-bit example</h2>
+      <p>There are 16 registers, a 16-bit instruction, a 3-bit opcode, and two register fields. The leftover field has <b>16 − 3 − 4 − 4 = 5 bits</b>. The slide treats it as an unsigned byte offset. It reaches byte offsets 0 through 31. A 16-bit array element takes 2 bytes. The aligned starting offsets are 0, 2, 4, through 30. That is 16 elements starting at the array base.</p>
+      <h2>Distinguish three different exam questions</h2>
+      <ul class="foundation-list"><li><b>Will a constant fit?</b> With 256 registers and 32-bit instructions, subtract 6 + 8 + 8 to leave 10 bits. An unsigned 10-bit field reaches 1023, so an <code>andi</code> constant of 1024 fails to fit.</li><li><b>Will an array element fit directly?</b> <code>arr[300]</code> of a four-byte array is 1200 bytes from the base. It cannot fit directly in that 10-bit field, and a signed field would have an even smaller positive range. A program can still calculate the full address in a register and load at offset 0.</li><li><b>What is the second-largest byte offset?</b> With 1000 registers, <code>32 − 6 − 10 − 10 = 6</code> bits remain. An unsigned field reaches 63, so the second-largest byte offset is 62. If a question instead asks for aligned word starts, count only offsets that are multiples of the word size from an aligned base.</li></ul>
+      <p>Always check the units and whether the question says signed or unsigned. “Largest offset”, “number of addresses”, and “number of array elements” ask for different answers.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>In the 16-bit example, why is the last element at byte offset 30 when there are 32 bytes?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The last two-byte element occupies offsets 30 and 31. Starting it at 31 would put its second byte outside the range, and 31 is off the two-byte alignment.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-targets">Previous lesson</a>
+        <a class="btn pri" href="#ct2-division">Next · Divide and read HI and LO</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 7, slides 29–36.</p>
+    </div>
+  </article>

@@ -20,7 +20,8 @@
       var prev = pages[i - 1], next = pages[i + 1], pg = document.createElement('nav'); pg.className = 'pager'; pg.setAttribute('aria-label', 'Page');
       pg.innerHTML = (prev ? '<a href="#' + prev.id + '"><span>&#8592; PREVIOUS</span><b>' + prev.dataset.title + '</b></a>' : '') + (next ? '<a class="nx" href="#' + next.id + '"><span>NEXT &#8594;</span><b>' + next.dataset.title + '</b></a>' : '');
       if (p.dataset.skip !== '1') {
-        var db = document.createElement('button'); db.type = 'button'; db.className = 'btn donebtn'; db.dataset.done = p.id; p.appendChild(db);
+        var db = document.createElement('button'); db.type = 'button'; db.className = 'btn donebtn'; db.dataset.done = p.id;
+        ($('.foundation-check', p) || p).appendChild(db);
       }
       p.appendChild(pg);
     });
@@ -56,6 +57,20 @@
     $$('button[data-done]').forEach(function (b) { var on = !!d[b.dataset.done]; b.classList.toggle('on', on); b.innerHTML = on ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Understood' : 'Mark this page as understood'; });
     $('.prog').hidden = tot === 0;
     $('#progT').textContent = cnt + '/' + tot; refreshRoute(d); $('#progB').style.width = (tot ? cnt / tot * 100 : 0) + '%';
+    var course = $$('[data-course-lesson]'), complete = 0, next = null;
+    course.forEach(function (link) {
+      var learned = Boolean(d[link.dataset.courseLesson]);
+      link.classList.toggle('course-learned', learned);
+      if (learned) complete++;
+      else if (!next) next = link;
+    });
+    if (course.length) {
+      var progress = $('[data-course-progress]'), resume = $('[data-course-start]');
+      progress.hidden = complete === 0;
+      progress.textContent = complete + ' of ' + course.length + ' CT-2 lessons understood';
+      resume.href = (next || course[0]).getAttribute('href');
+      resume.textContent = complete === 0 ? 'Start Lesson 1' : next ? 'Continue course' : 'Review from Lesson 1';
+    }
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-done]'); if (b) { var d = doneSet(); d[b.dataset.done] = !d[b.dataset.done]; store('cse3313-done', JSON.stringify(d)); refreshDone(); }
@@ -89,7 +104,7 @@
     if (eb) eb.outerHTML = '<p class="kick"><span class="num">' + String(p.dataset.num).padStart(2, '0') + '</span><span>' + eb.innerHTML + '</span></p>';
     var acts = document.createElement('div'); acts.className = 'acts';
     if ($('.sim', p)) acts.innerHTML += '<button type="button" class="hbtn cream" data-jump="sim">Try it</button>';
-    if (p.dataset.skip !== '1') acts.innerHTML += '<button type="button" class="hbtn line" data-done="' + p.id + '"></button>';
+    if (p.dataset.skip !== '1' && !p.classList.contains('foundation')) acts.innerHTML += '<button type="button" class="hbtn line" data-done="' + p.id + '"></button>';
     if (acts.innerHTML) ($('.lede', left) || left.lastChild).insertAdjacentElement('afterend', acts);
     addField(h);
     var pl = p.id === 'start' ? [routeSVG(), 'Choose a section to open it.'] : null;
@@ -260,10 +275,11 @@
     var steps = $$('[data-trace-step]', trace);
     var back = $('[data-trace-back]', trace), next = $('[data-trace-next]', trace);
     var count = $('[data-trace-count]', trace), step = 0;
+    var nextLabel = next.textContent;
     function render() {
       steps.forEach(function (panel, i) { panel.hidden = i !== step; });
       back.disabled = step === 0;
-      next.textContent = step === steps.length - 1 ? 'Restart' : 'Next instruction';
+      next.textContent = step === steps.length - 1 ? 'Restart' : nextLabel;
       count.textContent = 'Step ' + step + ' of ' + (steps.length - 1);
     }
     back.addEventListener('click', function () { step--; render(); });
@@ -271,6 +287,25 @@
     render();
     $('.foundation-trace-controls', trace).hidden = false;
   });
+  var termQuery = $('#ct2-term-query');
+  if (termQuery) {
+    var termSections = $$('[data-course-term-section]');
+    var termStatus = $('[data-course-term-status]');
+    termQuery.parentElement.hidden = false;
+    termQuery.addEventListener('input', function () {
+      var query = termQuery.value.trim().toLowerCase(), matches = 0;
+      termSections.forEach(function (section) {
+        var shown = 0;
+        $$('[data-course-term]', section).forEach(function (entry) {
+          entry.hidden = !$('dt', entry).textContent.toLowerCase().includes(query);
+          if (!entry.hidden) shown++;
+        });
+        section.hidden = shown === 0;
+        matches += shown;
+      });
+      termStatus.textContent = !query ? '' : matches === 0 ? 'No matches. Try an instruction such as sll or a word such as register.' : matches + (matches === 1 ? ' matching entry' : ' matching entries');
+    });
+  }
   buildNav(); themeInit(); calmInit();
   window.addEventListener('hashchange', show);
   show();

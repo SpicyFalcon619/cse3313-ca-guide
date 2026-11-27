@@ -48,12 +48,17 @@ HEAD = f"""<!doctype html>
 
 
 def build():
+    ct2_course = "\n".join(read(name) for name in (
+        "ct2-foundations.html", "ct2-basics.html", "ct2-bits.html",
+        "ct2-memory.html", "ct2-control.html", "ct2-functions.html",
+        "ct2-encoding.html", "ct2-exercises.html", "ct2-index.html",
+    ))
     html = (
         HEAD
         + read("style.css")
         + "</style>\n</head>\n<body>\n"
         + read("pages.html")
-        .replace("<!-- CT-2 foundations -->", read("ct2-foundations.html"))
+        .replace("<!-- CT-2 foundations -->", ct2_course)
         .replace("<!-- Midterm review -->", read("midterm-review.html"))
         .replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
         + "\n<script>\n"

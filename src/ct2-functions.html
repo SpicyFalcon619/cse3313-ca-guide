@@ -1,0 +1,111 @@
+  <article class="page foundation" id="ct2-call" data-title="Function calls from scratch" data-group="CT-2 beginner path" hidden>
+    <header class="hero">
+      <h1>How does a function return?</h1>
+      <p class="lede">Give a function 5 and 3, then follow its result and its return address.</p>
+    </header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 12 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Tell the caller and the function what to share</h2>
+      <p>A <strong>function</strong> is a named piece of a program that performs a job. The <strong>caller</strong> is the part asking for that job. Our caller asks <code>addNumbers</code> to add 5 and 3. Those input values are <strong>arguments</strong>. In MIPS, the first argument goes in <code>$a0</code>, the second in <code>$a1</code>, and the result here comes back in <code>$v0</code>. The function receiving the request is the <strong>callee</strong>. For more inputs, <code>$a2</code> and <code>$a3</code> can hold a third and fourth argument. In C, <code>return a + b;</code> means give the caller the result of that addition.</p>
+      <pre><code>1000  addi $a0, $zero, 5
+1004  addi $a1, $zero, 3
+1008  jal  addNumbers
+1012  add  $s0, $v0, $zero
+1016  j    After
+1020  addNumbers: add $v0, $a0, $a1
+1024  jr   $ra
+1028  After:</code></pre>
+      <ol class="foundation-process">
+      <li><b>Set up the inputs.</b> The two <code>addi</code> instructions put 5 and 3 in the argument registers.</li>
+      <li><b>Call the function.</b> At 1008, <code>jal</code> means jump and link. Save 1012 in <code>$ra</code>, the <strong>return address</strong> register, and jump to 1020.</li>
+      <li><b>Do the work.</b> At 1020, put the sum 8 into <code>$v0</code>.</li>
+      <li><b>Return.</b> At 1024, <code>jr</code> means jump register. <code>jr $ra</code> jumps to the address stored in <code>$ra</code>. The caller resumes at 1012 and copies the result to <code>$s0</code>.</li>
+      </ol>
+      <p>The jump at 1016 keeps the caller from running through the function body again. Track two separate things when you trace the code. <code>$v0</code> holds the answer (8). <code>$ra</code> holds the address where work resumes (1012).</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>If jal ran at 2000 in the same lecture model, what address would it save in $ra? Where would the result be?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>It saves 2004, the address of the next instruction. The function puts the result in $v0.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-loops">Previous lesson</a>
+        <a class="btn pri" href="#ct2-stack">Next · Save and restore one register</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 6, slides 3–8. The lecture examples use PC + 4 and omit delay slots.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-stack" data-title="The stack from scratch" data-group="CT-2 beginner path" hidden>
+    <header class="hero">
+      <h1>Where can a function save a value?</h1>
+      <p class="lede">Watch a function borrow a register and give it back with the original value.</p>
+    </header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 13 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Give the old value somewhere to wait</h2>
+      <p>Suppose <code>$s0</code> contains 50 and a function wants to use it while it works. The caller expects 50 back. The function can store 50 in the <strong>stack</strong>, an area of memory used for temporary data during calls.</p>
+      <p><code>$sp</code> is the <strong>stack pointer</strong>. It holds the address of the current top of the stack. In our example, it starts at 1000. To reserve space for one four-byte word, subtract four. The word starts at byte 996 and occupies bytes 996–999.</p>
+      <pre><code>addi $sp, $sp, -4     # reserve four bytes
+sw   $s0, 0($sp)      # save 50 in memory
+# The function may now use $s0.
+lw   $s0, 0($sp)      # restore 50 to $s0
+addi $sp, $sp, 4      # release those four bytes</code></pre>
+      <div class="foundation-values"><span><small>Before</small><code>$sp = 1000</code></span><span class="foundation-active"><small>While saved</small><code>$sp = 996</code><b>Word at 996 = 50</b></span><span><small>After restore</small><code>$sp = 1000</code></span></div>
+      <div class="foundation-trace" data-foundation-trace data-trace-label="Next step">
+        <div class="foundation-trace-controls" hidden><button type="button" class="btn" data-trace-back>Back</button><button type="button" class="btn pri" data-trace-next>Next step</button><span data-trace-count></span></div>
+        <div class="foundation-trace-steps" aria-live="polite">
+          <div data-trace-step><b>Before the call saves anything</b><p>The function needs to use $s0, which already holds a value the caller expects back.</p><div class="foundation-values"><span><small>$sp</small><strong>1000</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Active saved word</small><strong>None</strong></span></div></div>
+          <div data-trace-step><b>Reserve and save</b><p>Subtract 4 from the pointer. Store 50 in the word starting at the new $sp.</p><div class="foundation-values"><span><small>$sp</small><strong>996</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Word at 996</small><strong>50</strong></span></div></div>
+          <div data-trace-step><b>Use the register for the function’s work</b><p>Imagine the function puts 8 in $s0. The copy of 50 in memory is still available.</p><div class="foundation-values"><span><small>$sp</small><strong>996</strong></span><span><small>$s0</small><strong>8</strong></span><span class="foundation-active"><small>Word at 996</small><strong>50</strong></span></div></div>
+          <div data-trace-step><b>Restore and release</b><p>Load the 50 back into $s0 before adding 4 to $sp. The saved slot stops belonging to this call.</p><div class="foundation-values"><span><small>$sp</small><strong>1000</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Active saved word</small><strong>None</strong></span></div></div>
+        </div>
+      </div>
+      <p>Saving on top of the stack is often called a <strong>push</strong>. Retrieving the most recently saved item and releasing its space is a <strong>pop</strong>. The MIPS example does these jobs with address arithmetic and <code>sw</code> or <code>lw</code>. Releasing a slot changes the pointer. The old bits in memory can remain there until a later store replaces them.</p>
+      <p>Saved registers (<code>$s0–$s7</code>) must have their incoming values when the called function returns. Temporary registers (<code>$t0–$t9</code>) can be changed across a call. If the caller needs a temporary value later, the caller protects it. In the <a href="#mips-functions">stack visualiser</a>, choose “Save and restore $s0” and watch the store and load use the same address.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>With $sp = 1000, where do two saved words start after allocating eight bytes?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>The new $sp is 992. The words start at 992 and 996, at offsets 0 and 4. Restore the words before setting $sp back to 1000.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-call">Previous lesson</a>
+        <a class="btn pri" href="#ct2-nested">Next · Save a return address and build a frame</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 6, slides 9–21. Lecture 7, slides 54–63, for recursion.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="ct2-nested" data-title="Nested calls and full stack frames" data-group="CT-2 beginner path" hidden>
+    <header class="hero"><h1>Nested calls and full stack frames</h1><p class="lede">Save a return address across a second call, and track where every saved word lives.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 14 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <h2>Why a second call needs a saved return address</h2>
+      <p>Imagine <code>main</code> calls <code>outer</code>, which calls <code>helper</code>. If the first call is at byte 1000, <code>$ra</code> gets 1004. When the second call at 1028 runs, it replaces that 1004 with 1032. Save 1004 before the second call and restore it after the helper returns.</p>
+      <pre><code>1000  jal outer
+1004  j Done
+      # The caller skips the function bodies after returning.
+1020  outer: addi $sp, $sp, -4
+1024  sw   $ra, 0($sp)
+1028  jal  helper
+1032  lw   $ra, 0($sp)
+1036  addi $sp, $sp, 4
+1040  jr   $ra
+1044  helper: addi $v0, $zero, 8
+1048  jr   $ra
+1052  Done:</code></pre>
+      <p>Read the addresses in execution order. 1000 sends control to 1020. The call at 1028 sends control to 1044. The helper leaves 8 in <code>$v0</code> and returns to 1032. After restoring the old return address, 1040 returns to 1004. <code>$v0</code> still holds 8. A <strong>leaf function</strong> calls no other function. The helper is a leaf. Outer is a <strong>non-leaf function</strong>.</p>
+      <h2>Reserve one group of slots for a call</h2>
+      <p>A <strong>stack frame</strong> is the block of stack memory a call reserves for its own data. Lecture 6 saves four registers in one frame. Starting at 1000, reserve 16 bytes to put <code>$sp</code> at 984. Using the deck’s order, store <code>$s0</code> at offset 12 (996), <code>$s1</code> at 8 (992), <code>$s2</code> at 4 (988), and <code>$s3</code> at 0 (984). These steps before the work are the <b>prologue</b>. Restore from the same offsets, release the 16 bytes, and return. These steps at the end are the <b>epilogue</b>.</p>
+      <p>For the lecture’s <code>f = 50 + (g+h) - (i+j)</code>, take <code>g,h,i,j</code> from <code>$a0–$a3</code>. Put 20 and 30 in <code>$s1</code> and <code>$s2</code>, add them into <code>$s3</code>, and hold <code>(g+h)-(i+j)</code> in <code>$s0</code>. Add <code>$s3</code> and <code>$s0</code> into <code>$v0</code> before restoring the old saved registers. The result is then safe in <code>$v0</code> while the saved registers go back to their original values.</p>
+      <section class="foundation-check">
+        <h2>Try it before you move on</h2>
+        <p>What address does helper return to in this example? What address does outer return to?</p>
+        <details class="foundation-more"><summary>Check my answer</summary><p>Helper’s jr uses 1032. Outer restores the original 1004 from its frame and uses that address to return to main.</p></details>
+      </section>
+      <nav class="foundation-next" aria-label="Beginner path">
+        <a href="#ct2-stack">Previous lesson</a>
+        <a class="btn pri" href="#ct2-encode">Next · Encode or decode an R-type instruction</a>
+      </nav>
+      <p class="lesson-source">Sources · Lecture 6, slides 9–21; lecture 7, slides 54–63.</p>
+    </div>
+  </article>
