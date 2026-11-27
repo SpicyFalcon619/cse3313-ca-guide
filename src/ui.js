@@ -32,7 +32,7 @@
       if (on) { var t = $('#groups'); t.scrollTo({ left: a.offsetLeft - t.clientWidth / 2 + a.clientWidth / 2 }); }
     });
     var hero = $('header.hero', p);
-    if (hero && !$('.chips', hero) && g.pages.length > 1) {
+    if (hero && !p.classList.contains('foundation') && !$('.chips', hero) && g.pages.length > 1) {
       var ch = document.createElement('nav'); ch.className = 'chips'; ch.setAttribute('aria-label', 'Pages in ' + g.name);
       ch.innerHTML = g.pages.map(function (q) { return '<a href="#' + q.id + '" data-p="' + q.id + '"' + (q === p ? ' aria-current="page"' : '') + '><span class="n">' + String(q.dataset.num).padStart(2, '0') + '</span>' + q.dataset.title + (q.dataset.skip === '1' ? '' : '<span class="ok" aria-hidden="true"></span>') + '</a>'; }).join('');
       ch.id = 'pages-in-' + p.id;
@@ -256,6 +256,21 @@
   window.addEventListener('resize', adaptNav);
   handle.addEventListener('click', function () { setHidden(false); lastY = window.scrollY; });
   topBar.addEventListener('focusin', function () { setHidden(false); });
+  $$('[data-foundation-trace]').forEach(function (trace) {
+    var steps = $$('[data-trace-step]', trace);
+    var back = $('[data-trace-back]', trace), next = $('[data-trace-next]', trace);
+    var count = $('[data-trace-count]', trace), step = 0;
+    function render() {
+      steps.forEach(function (panel, i) { panel.hidden = i !== step; });
+      back.disabled = step === 0;
+      next.textContent = step === steps.length - 1 ? 'Restart' : 'Next instruction';
+      count.textContent = 'Step ' + step + ' of ' + (steps.length - 1);
+    }
+    back.addEventListener('click', function () { step--; render(); });
+    next.addEventListener('click', function () { step = (step + 1) % steps.length; render(); });
+    render();
+    $('.foundation-trace-controls', trace).hidden = false;
+  });
   buildNav(); themeInit(); calmInit();
   window.addEventListener('hashchange', show);
   show();

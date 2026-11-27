@@ -53,6 +53,7 @@ def build():
         + read("style.css")
         + "</style>\n</head>\n<body>\n"
         + read("pages.html")
+        .replace("<!-- CT-2 foundations -->", read("ct2-foundations.html"))
         .replace("<!-- Midterm review -->", read("midterm-review.html"))
         .replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
         + "\n<script>\n"
