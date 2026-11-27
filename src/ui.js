@@ -16,6 +16,8 @@
       if (!g) { g = { name: p.dataset.group, tag: groupTags[p.dataset.group], pages: [] }; groups.push(g); }
       g.pages.push(p);
     });
+    var order = { 'Start here': 0, Performance: 1, 'CT-2 course': 2, MIPS: 3, Exam: 4 };
+    groups.sort(function (a, b) { return (order[a.name] ?? 5) - (order[b.name] ?? 5); });
     $('#groups').innerHTML = groups.map(function (g, i) {
       var entry = g.pages.find(function (p) { return p.hasAttribute('data-group-entry'); }) || g.pages[0];
       return '<a href="#' + entry.id + '" data-g="' + i + '">' + g.name + (g.tag ? '<span class="ct' + (g.tag === 'CT1' ? ' t1' : '') + '">' + g.tag + '</span>' : '') + '</a>';
