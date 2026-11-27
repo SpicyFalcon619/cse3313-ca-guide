@@ -29,16 +29,27 @@
       <p class="foundation-position">Lesson 6 of 22 / Lectures 2–3</p>
       <h2>What does sll mean?</h2>
       <p><code>sll</code> stands for <strong>shift left logical</strong>. In <code>sll $t0, $t1, 2</code>, <code>$t0</code> is where the result goes, <code>$t1</code> supplies the bits, and 2 is how many places to shift. Each move fills the new rightmost place with 0 and discards whichever bit leaves the left edge. “Logical” means the new places are filled with zeros. The small display below shows eight of the register’s 32 positions.</p>
-      <div class="foundation-values foundation-bits"><span><small>Start</small><code>00000101</code><b>5</b></span><span><small>Left one</small><code>00001010</code><b>10</b></span><span class="foundation-active"><small>Left two</small><code>00010100</code><b>20</b></span></div>
       <p>For small numbers that fit, one left shift doubles the number. Two make it four times as large. <code>srl</code> stands for <strong>shift right logical</strong>. It fills from the left with 0 and drops bits on the right. For an unsigned value, one right shift divides by two and drops the remainder. So 5 becomes 2. For signed negative numbers, logical right shift does a different job from signed division.</p>
-      <div class="foundation-trace" data-foundation-trace data-trace-label="Next shift">
-        <div class="foundation-trace-controls" hidden><button type="button" class="btn" data-trace-back>Back</button><button type="button" class="btn pri" data-trace-next>Next shift</button><span data-trace-count></span></div>
-        <div class="foundation-trace-steps" aria-live="polite">
-          <div data-trace-step><b>Before shifting</b><p>The value 5 ends with these eight bits.</p><div class="foundation-values"><span class="foundation-active"><small>Starting value</small><strong>00000101</strong></span></div></div>
-          <div data-trace-step><b>Shift left once</b><p>Each 1 moves one place to the left. A zero appears in the rightmost position. Now the 1s are in the 8 and 2 places.</p><div class="foundation-values"><span class="foundation-active"><small>After one left shift</small><strong>00001010</strong></span></div></div>
-          <div data-trace-step><b>Shift left again</b><p>Each 1 moves left again. Now the 1s are in the 16 and 4 places, giving 20.</p><div class="foundation-values"><span class="foundation-active"><small>After two left shifts</small><strong>00010100</strong></span></div></div>
-        </div>
-      </div>
+      <section class="foundation-trace beginner-lab" data-beginner-lab="shifts" aria-label="Try a shift with your own number" hidden>
+        <h3>Try a shift with your own number</h3>
+        <p>Choose left or right. Run each one-position shift and watch the low eight bits.</p>
+        <form>
+          <div class="beginner-inputs" data-lab-inputs></div>
+          <ol class="beginner-program" data-lab-program aria-label="Assembly program"></ol>
+          <div class="beginner-next" data-lab-next>
+            <div class="beginner-roles"><span><b>Read</b> <span data-lab-reads></span></span><span><b>Write to</b> <span data-lab-writes></span></span></div>
+          </div>
+          <label class="beginner-guess" data-lab-ask><span data-lab-question></span><input data-lab-prediction type="number" step="1"></label>
+          <div class="foundation-trace-controls">
+            <button type="button" class="btn" data-lab-back>Back</button>
+            <button type="submit" class="btn pri" data-lab-run>Run instruction</button>
+            <button type="button" class="btn" data-lab-reset>Restart</button>
+            <span data-lab-count></span>
+          </div>
+        </form>
+        <p class="beginner-feedback" data-lab-feedback role="status"></p>
+        <div class="foundation-values beginner-state" data-lab-cells aria-label="Current values"></div>
+      </section>
       <h2>What does bitwise mean?</h2>
       <p>Work with each pair of bits independently, with no carry from the next column. In the four low positions, use 5 (<code>0101</code>) and 3 (<code>0011</code>).</p>
       <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Instruction</th><th scope="col">When is the output bit 1?</th><th scope="col">Low four bits</th></tr></thead><tbody><tr><td><code>and</code></td><td>Both input bits are 1</td><td><code>0001</code></td></tr><tr><td><code>or</code></td><td>At least one input bit is 1</td><td><code>0111</code></td></tr><tr><td><code>nor</code></td><td>Neither input bit is 1</td><td><code>1000</code></td></tr></tbody></table></div>

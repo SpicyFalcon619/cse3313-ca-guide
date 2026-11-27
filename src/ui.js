@@ -278,22 +278,6 @@
   window.addEventListener('resize', adaptNav);
   handle.addEventListener('click', function () { setHidden(false); lastY = window.scrollY; });
   topBar.addEventListener('focusin', function () { setHidden(false); });
-  $$('[data-foundation-trace]').forEach(function (trace) {
-    var steps = $$('[data-trace-step]', trace);
-    var back = $('[data-trace-back]', trace), next = $('[data-trace-next]', trace);
-    var count = $('[data-trace-count]', trace), step = 0;
-    var nextLabel = next.textContent;
-    function render() {
-      steps.forEach(function (panel, i) { panel.hidden = i !== step; });
-      back.disabled = step === 0;
-      next.textContent = step === steps.length - 1 ? 'Restart' : nextLabel;
-      count.textContent = 'Step ' + step + ' of ' + (steps.length - 1);
-    }
-    back.addEventListener('click', function () { step--; render(); });
-    next.addEventListener('click', function () { step = (step + 1) % steps.length; render(); });
-    render();
-    $('.foundation-trace-controls', trace).hidden = false;
-  });
   var termQuery = $('#ct2-term-query');
   if (termQuery) {
     var termSections = $$('[data-course-term-section]');

@@ -1124,9 +1124,27 @@
   .foundation-trace { padding: 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--tint); }
   .foundation-trace-controls, .foundation-next { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
   .foundation-trace-controls { margin-bottom: 14px; }
-  .foundation-trace-controls [data-trace-count] { color: var(--muted); }
-  .foundation-trace-steps p { margin: 6px 0; }
-  .foundation-trace-steps > [data-trace-step] > code { font-weight: 700; }
+  .beginner-lab h3 { font-family: var(--display); font-weight: 400; margin: 0 0 6px; }
+  .beginner-lab p { margin-block: 6px 12px; }
+  .beginner-inputs { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .beginner-lab label { display: grid; gap: 3px; font-weight: 700; }
+  .beginner-lab :is(input, select) { width: min(100%, 13rem); min-height: 36px; padding: 5px 8px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); font: inherit; }
+  .beginner-program { padding-inline-start: 24px; }
+  .beginner-program li { padding: 5px 8px; overflow-wrap: anywhere; }
+  .beginner-program li[aria-current="step"] { background: var(--Sbg); color: var(--ink); outline: 1px solid var(--hl); border-radius: var(--r); }
+  .beginner-program [aria-current="step"]::marker { color: var(--ink); font-weight: 700; }
+  .beginner-roles { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .beginner-roles b { color: var(--muted); }
+  .beginner-guess { margin-block: 10px; }
+  .beginner-lab .foundation-trace-controls { margin: 10px 0 0; }
+  .beginner-lab [data-lab-count] { color: var(--muted); }
+  .beginner-feedback { font-weight: 700; }
+  .beginner-feedback:empty { margin: 0; }
+  .beginner-state > span { flex: 1 1 110px; }
+  .beginner-state strong { font-family: var(--mono); }
+  .beginner-bit-row { display: flex; gap: 3px; }
+  .beginner-bit-row span { width: 1.3em; text-align: center; border: 1px solid var(--line); border-radius: 3px; }
+  .beginner-bit-row .beginner-incoming-bit { background: var(--Sbg); border-color: var(--hl); }
   .foundation-more { margin: 10px 0; border-top: 1px solid var(--rule); }
   .foundation-more summary { padding: 10px 2px; cursor: pointer; font-weight: 700; }
   .foundation-more p { margin: 0 0 12px; }

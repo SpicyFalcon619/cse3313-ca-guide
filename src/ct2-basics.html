@@ -38,17 +38,28 @@
       <h2>Give names to three places that hold numbers</h2>
       <p>The computer in Lesson 1 needs somewhere to hold 5 and 3 during the addition. We’ll use <code>$t1</code> and <code>$t2</code> for the inputs, and <code>$t0</code> for the answer. The letter t is for temporary. Each of these registers is a small named slot inside the CPU.</p>
       <h2>Run one instruction at a time</h2>
-      <p>Read a line from left to right. The first word, such as <code>addi</code>, tells the CPU what job to do. A name starting with <code>$</code> refers to a register. For the arithmetic below, the first register is <strong>where to put the answer</strong>. Then come the two inputs, separated by commas.</p>
-      <p><code>addi</code> means add immediate. It adds a number written in the instruction to a register value. An immediate is a number provided directly, like 5. <code>$zero</code> always holds 0. <code>add</code> adds the contents of two registers.</p>
-      <div class="foundation-trace" data-foundation-trace>
-        <div class="foundation-trace-controls" hidden><button type="button" class="btn" data-trace-back>Back</button><button type="button" class="btn pri" data-trace-next>Next instruction</button><span data-trace-count></span></div>
-        <div class="foundation-trace-steps" aria-live="polite">
-          <div data-trace-step><b>Before the program runs</b><p>Start with all three temporary registers at 0 for this example.</p><div class="foundation-values"><span><code>$t1</code><strong>0</strong></span><span><code>$t2</code><strong>0</strong></span><span><code>$t0</code><strong>0</strong></span></div></div>
-          <div data-trace-step><code>addi $t1, $zero, 5</code><p>Read 0, add 5, and put 5 in the first register, <code>$t1</code>.</p><div class="foundation-values"><span class="foundation-active"><code>$t1</code><strong>5</strong></span><span><code>$t2</code><strong>0</strong></span><span><code>$t0</code><strong>0</strong></span></div></div>
-          <div data-trace-step><code>addi $t2, $zero, 3</code><p>Read 0, add 3, and put 3 in <code>$t2</code>.</p><div class="foundation-values"><span><code>$t1</code><strong>5</strong></span><span class="foundation-active"><code>$t2</code><strong>3</strong></span><span><code>$t0</code><strong>0</strong></span></div></div>
-          <div data-trace-step><code>add $t0, $t1, $t2</code><p>Read 5 from <code>$t1</code> and 3 from <code>$t2</code>. Put 8 in <code>$t0</code>. The two inputs keep their values.</p><div class="foundation-values"><span><code>$t1</code><strong>5</strong></span><span><code>$t2</code><strong>3</strong></span><span class="foundation-active"><code>$t0</code><strong>8</strong></span></div></div>
-        </div>
-      </div>
+      <p>Read <code>addi $t1, $zero, 5</code> as <b>0 + 5 → $t1</b>. <code>$zero</code> supplies the 0. The first register, <code>$t1</code>, receives the answer.</p>
+      <p><code>addi</code> is short for <strong>add immediate</strong>. The immediate is the number written in the line itself, here 5. The third line uses <code>add</code> to read both numbers from registers.</p>
+      <section class="foundation-trace beginner-lab" data-beginner-lab="registers" aria-label="Build and run the addition" hidden>
+        <h3>Build and run the addition</h3>
+        <p>Change either number to change the program. Run one line at a time to see what changes.</p>
+        <form>
+          <div class="beginner-inputs" data-lab-inputs></div>
+          <ol class="beginner-program" data-lab-program aria-label="Assembly program"></ol>
+          <div class="beginner-next" data-lab-next>
+            <div class="beginner-roles"><span><b>Read</b> <span data-lab-reads></span></span><span><b>Write to</b> <span data-lab-writes></span></span></div>
+          </div>
+          <label class="beginner-guess" data-lab-ask><span data-lab-question></span><input data-lab-prediction type="number" step="1"></label>
+          <div class="foundation-trace-controls">
+            <button type="button" class="btn" data-lab-back>Back</button>
+            <button type="submit" class="btn pri" data-lab-run>Run instruction</button>
+            <button type="button" class="btn" data-lab-reset>Restart</button>
+            <span data-lab-count></span>
+          </div>
+        </form>
+        <p class="beginner-feedback" data-lab-feedback role="status"></p>
+        <div class="foundation-values beginner-state" data-lab-cells aria-label="Current values"></div>
+      </section>
       <p>Read the name of the job first. That short name, such as <code>add</code>, is called the <strong>mnemonic</strong>. Each piece after it is an <strong>operand</strong>. In the last line, <code>$t0</code> is the destination and <code>$t1</code> and <code>$t2</code> are sources. A source supplies an input. The destination receives the answer.</p>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

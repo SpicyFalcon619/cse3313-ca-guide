@@ -62,7 +62,7 @@ def build():
         .replace("<!-- Midterm review -->", read("midterm-review.html"))
         .replace("<!-- CT-2 papers -->", read("ct2-papers.html"))
         + "\n<script>\n"
-        + "\n".join(read(name) for name in ("dropdown.js", "ui.js", "engine.js", "practice.js", "mips.js", "mips-ui.js"))
+        + "\n".join(read(name) for name in ("dropdown.js", "ui.js", "engine.js", "practice.js", "mips.js", "mips-ui.js", "ct2-labs.js"))
         + "</script>\n</body>\n</html>\n"
     )
     os.makedirs(DIST, exist_ok=True)

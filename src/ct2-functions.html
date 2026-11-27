@@ -50,16 +50,26 @@ sw   $s0, 0($sp)      # save 50 in memory
 # The function may now use $s0.
 lw   $s0, 0($sp)      # restore 50 to $s0
 addi $sp, $sp, 4      # release those four bytes</code></pre>
-      <div class="foundation-values"><span><small>Before</small><code>$sp = 1000</code></span><span class="foundation-active"><small>While saved</small><code>$sp = 996</code><b>Word at 996 = 50</b></span><span><small>After restore</small><code>$sp = 1000</code></span></div>
-      <div class="foundation-trace" data-foundation-trace data-trace-label="Next step">
-        <div class="foundation-trace-controls" hidden><button type="button" class="btn" data-trace-back>Back</button><button type="button" class="btn pri" data-trace-next>Next step</button><span data-trace-count></span></div>
-        <div class="foundation-trace-steps" aria-live="polite">
-          <div data-trace-step><b>Before the call saves anything</b><p>The function needs to use $s0, which already holds a value the caller expects back.</p><div class="foundation-values"><span><small>$sp</small><strong>1000</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Active saved word</small><strong>None</strong></span></div></div>
-          <div data-trace-step><b>Reserve and save</b><p>Subtract 4 from the pointer. Store 50 in the word starting at the new $sp.</p><div class="foundation-values"><span><small>$sp</small><strong>996</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Word at 996</small><strong>50</strong></span></div></div>
-          <div data-trace-step><b>Use the register for the function’s work</b><p>Imagine the function puts 8 in $s0. The copy of 50 in memory is still available.</p><div class="foundation-values"><span><small>$sp</small><strong>996</strong></span><span><small>$s0</small><strong>8</strong></span><span class="foundation-active"><small>Word at 996</small><strong>50</strong></span></div></div>
-          <div data-trace-step><b>Restore and release</b><p>Load the 50 back into $s0 before adding 4 to $sp. The saved slot stops belonging to this call.</p><div class="foundation-values"><span><small>$sp</small><strong>1000</strong></span><span><small>$s0</small><strong>50</strong></span><span class="foundation-active"><small>Active saved word</small><strong>None</strong></span></div></div>
-        </div>
-      </div>
+      <section class="foundation-trace beginner-lab" data-beginner-lab="stack" aria-label="Save a value, replace it, then get it back" hidden>
+        <h3>Save a value, replace it, then get it back</h3>
+        <p>Choose what $s0 starts with and what the function writes to it. Run each line to see where the original goes.</p>
+        <form>
+          <div class="beginner-inputs" data-lab-inputs></div>
+          <ol class="beginner-program" data-lab-program aria-label="Assembly program"></ol>
+          <div class="beginner-next" data-lab-next>
+            <div class="beginner-roles"><span><b>Read</b> <span data-lab-reads></span></span><span><b>Write to</b> <span data-lab-writes></span></span></div>
+          </div>
+          <label class="beginner-guess" data-lab-ask><span data-lab-question></span><input data-lab-prediction type="number" step="1"></label>
+          <div class="foundation-trace-controls">
+            <button type="button" class="btn" data-lab-back>Back</button>
+            <button type="submit" class="btn pri" data-lab-run>Run instruction</button>
+            <button type="button" class="btn" data-lab-reset>Restart</button>
+            <span data-lab-count></span>
+          </div>
+        </form>
+        <p class="beginner-feedback" data-lab-feedback role="status"></p>
+        <div class="foundation-values beginner-state" data-lab-cells aria-label="Current values"></div>
+      </section>
       <p>Saving on top of the stack is often called a <strong>push</strong>. Retrieving the most recently saved item and releasing its space is a <strong>pop</strong>. The MIPS example does these jobs with address arithmetic and <code>sw</code> or <code>lw</code>. Releasing a slot changes the pointer. The old bits in memory can remain there until a later store replaces them.</p>
       <p>Saved registers (<code>$s0–$s7</code>) must have their incoming values when the called function returns. Temporary registers (<code>$t0–$t9</code>) can be changed across a call. If the caller needs a temporary value later, the caller protects it. In the <a href="#mips-functions">stack visualiser</a>, choose “Save and restore $s0” and watch the store and load use the same address.</p>
       <section class="foundation-check">
