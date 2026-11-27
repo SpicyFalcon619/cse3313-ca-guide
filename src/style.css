@@ -1101,17 +1101,8 @@
   .foundation-body .ls-t :is(th, td) { white-space: normal; }
   .foundation .pager { display: none; }
   .foundation-position, .foundation .lesson-source { color: var(--muted); font-size: .91rem; }
-  .foundation-lookup { margin-inline-start: 8px; }
-  .foundation-actions { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
-  .foundation-road { margin: 20px 0; padding-inline-start: 28px; }
-  .foundation-road li { padding: 11px 4px; border-bottom: 1px solid var(--rule); }
-  .foundation-road a { display: block; width: fit-content; font-weight: 700; }
-  .foundation-road span { color: var(--muted); }
   .foundation-list { padding-inline-start: 1.35em; }
   .foundation-list li { margin-block: 10px; }
-  .foundation-outline summary small { display: block; color: var(--muted); font-weight: 400; }
-  .foundation-outline .foundation-road { margin-block: 0 12px; }
-  .foundation-outline .course-learned::after { content: " · Understood"; font-weight: 400; color: var(--muted); }
   .foundation-search { margin-block: 16px; }
   .foundation-search label { display: block; margin-bottom: 4px; font-weight: 700; }
   .foundation-search input { width: min(100%, 26em); padding: 8px 10px; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }

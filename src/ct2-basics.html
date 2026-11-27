@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-computer" data-title="The computer before MIPS" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-computer" data-group-entry data-title="The computer before MIPS" data-group="CT-2 course" hidden>
     <header class="hero"><h1>The computer before MIPS</h1><p class="lede">Follow what happens when you open a program that adds 5 and 3.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 1 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 1 of 22 / Lectures 2–3</p>
       <h2>What runs the program?</h2>
       <p>A <strong>program</strong> is a set of instructions for a computer. An <strong>instruction</strong> tells the computer to do one small job. <strong>Data</strong> is what the job works on. In an addition program, “add” is the job and 5 and 3 are the data.</p>
       <div class="foundation-flow" role="img" aria-label="The saved program moves from storage into main memory. The CPU fetches and runs its instructions."><div><span>Storage</span><b>Saved program</b></div><span aria-hidden="true">→</span><div><span>Main memory</span><b>Program ready to run</b></div><span aria-hidden="true">→</span><div><span>CPU</span><b>Runs instructions</b></div></div>
@@ -28,13 +28,13 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-registers" data-title="Your first MIPS instructions" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-registers" data-title="Your first MIPS instructions" data-group="CT-2 course" hidden>
     <header class="hero">
       <h1>Where does 5 + 3 happen?</h1>
       <p class="lede">Start with three named places inside the CPU and watch what each instruction changes.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 2 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 2 of 22 / Lectures 2–3</p>
       <h2>Give names to three places that hold numbers</h2>
       <p>The computer in Lesson 1 needs somewhere to hold 5 and 3 during the addition. We’ll use <code>$t1</code> and <code>$t2</code> for the inputs, and <code>$t0</code> for the answer. The letter t is for temporary. Each of these registers is a small named slot inside the CPU.</p>
       <h2>Run one instruction at a time</h2>
@@ -63,10 +63,10 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-c" data-title="Reading C and translating arithmetic" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-c" data-title="Reading C and translating arithmetic" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Reading C and translating arithmetic</h1><p class="lede">Give every variable a register. Then translate one calculation at a time.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 3 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 3 of 22 / Lectures 2–3</p>
       <h2>Read the little C program first</h2>
       <p><strong>C</strong> is a programming language people write. In <code>int total = 5 + 3;</code>, <code>int</code> means the value is a whole number, <code>total</code> is the name we give that value, and <code>=</code> means put the result on the right into the variable on the left. A variable is a name for a value a program can use or change. The semicolon ends the statement.</p>
       <p>A <b>compiler</b> can turn C into <b>assembly</b>, the readable names for the processor’s instructions. An <b>assembler</b> turns assembly into machine code, the bits the CPU understands. The <b>instruction set architecture (ISA)</b> is the agreement about the instructions, registers, and how the bits are interpreted. MIPS is the ISA in this course. The slides call MIPS a <b>RISC</b> architecture, which means its instruction design favours relatively simple, regular operations.</p>
@@ -90,13 +90,13 @@ sub $s0, $t0, $t1   # f = left sum - right sum</code></pre>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-bits" data-title="Bits and bytes" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-bits" data-title="Bits and bytes" data-group="CT-2 course" hidden>
     <header class="hero">
       <h1>How does a computer hold a number?</h1>
       <p class="lede">Read the bits for 5 before working with addresses or machine code.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 4 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 4 of 22 / Lectures 2–3</p>
       <h2>Read 0101 as a number</h2>
       <p>A <strong>bit</strong> is a digit with two possibilities, 0 or 1. In decimal, place values go 1, 10, 100 from right to left. In <strong>binary</strong>, where there are two possible digits, the place values double instead.</p>
       <div class="foundation-values foundation-bits" aria-label="Binary 0101 with place values"><span><small>8</small><strong>0</strong></span><span class="foundation-active"><small>4</small><strong>1</strong></span><span><small>2</small><strong>0</strong></span><span class="foundation-active"><small>1</small><strong>1</strong></span></div>

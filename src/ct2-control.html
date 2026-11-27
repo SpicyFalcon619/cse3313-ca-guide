@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-logic" data-title="If, else, and two conditions" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-logic" data-title="If, else, and two conditions" data-group="CT-2 course" hidden>
     <header class="hero"><h1>If, else, and two conditions</h1><p class="lede">Use a 0 or 1 from a comparison to choose where the program goes.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 10 of 22 / Lecture 5 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 10 of 22 / Lecture 5</p>
       <h2>Set a register first, then branch</h2>
       <p><code>slt</code> means <strong>set if less than</strong>. In <code>slt $t0, $s0, $s1</code>, ask whether <code>$s0</code> is less than <code>$s1</code>. Write 1 to <code>$t0</code> for yes and 0 for no. This instruction always continues to the next line. <code>slti $t0, $s0, 5</code> compares <code>$s0</code> with the immediate 5 instead.</p>
       <p>Translate <code>if (i &lt; j) f = g + h; else f = g - h;</code>. Here <code>if</code> means run the first assignment when the test is true, and <code>else</code> gives the other path. Let <code>$s0</code> and <code>$s1</code> hold i and j, <code>$s2</code> and <code>$s3</code> hold g and h, and <code>$s4</code> hold f.</p>
@@ -27,10 +27,10 @@ Done:</code></pre>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-loops" data-title="While, for, and do-while loops" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-loops" data-title="While, for, and do-while loops" data-group="CT-2 course" hidden>
     <header class="hero"><h1>While, for, and do-while loops</h1><p class="lede">Mark the check, the work, and the way back. Then trace just two passes.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 11 of 22 / Lecture 5 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 11 of 22 / Lecture 5</p>
       <h2>Test before doing the work</h2>
       <p>A <strong>loop</strong> repeats a set of instructions called its <strong>body</strong>. In C, <code>while (i &lt; 5)</code> checks the condition before each pass. The body can change i with <code>i++</code>, meaning add 1 to i. If i starts at 4, the body runs once, then i is 5 and the next check ends the loop.</p>
       <p>For Lecture 5’s example <code>while (i &lt; 5) { A[i] = A[i] + 2; i++; }</code>, suppose <code>$s0</code> holds i and <code>$s1</code> holds A’s base. Follow the check and the body separately.</p>

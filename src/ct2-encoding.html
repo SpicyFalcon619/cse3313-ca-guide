@@ -1,10 +1,10 @@
-  <article class="page foundation" id="ct2-encode" data-title="Machine code from scratch" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-encode" data-title="Machine code from scratch" data-group="CT-2 course" hidden>
     <header class="hero">
       <h1>How do instructions become bits?</h1>
       <p class="lede">Turn your first addition into one 32-bit instruction.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 15 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 15 of 22 / Lecture 7</p>
       <h2>Give each part of the instruction its own space</h2>
       <p>Think back to <code>add $t0, $t1, $t2</code>. The CPU needs to know the operation, the two inputs and where the answer goes. The assembler puts that information in separate groups of bits called <strong>fields</strong>. It writes register numbers (8 for <code>$t0</code>, 9 for <code>$t1</code>, 10 for <code>$t2</code>). The current numbers inside those registers, such as 5 and 3, stay in the registers.</p>
       <p>The format for this instruction is <strong>R type</strong>. For a regular <code>add</code>, the opcode is 0, the function code is 32 and the unused shift amount is 0. The <code>rs</code> and <code>rt</code> fields name the two inputs. <code>rd</code> names the destination.</p>
@@ -29,10 +29,10 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-immediate" data-title="I-format instructions" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-immediate" data-title="I-format instructions" data-group="CT-2 course" hidden>
     <header class="hero"><h1>I-format instructions</h1><p class="lede">Read the 16-bit field in context. It can hold a number, a byte distance, or a branch distance.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 16 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 16 of 22 / Lecture 7</p>
       <h2>Start with addi</h2>
       <p><code>addi $t0, $t1, 5</code> needs an operation, one input register, one output register, and the number 5. Its <strong>I format</strong> (immediate format) has exactly four fields. Use the opcode table and the register numbers.</p>
       <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Field</th><th scope="col">Why this value?</th><th scope="col">Bits</th></tr></thead><tbody><tr><td><code>op</code></td><td>Opcode 8 selects <code>addi</code></td><td><code>001000</code></td></tr><tr><td><code>rs</code></td><td>Input <code>$t1</code> is register 9</td><td><code>01001</code></td></tr><tr><td><code>rt</code></td><td>Destination <code>$t0</code> is register 8</td><td><code>01000</code></td></tr><tr><td><code>immediate</code></td><td>The instruction says add 5</td><td><code>0000000000000101</code></td></tr></tbody></table></div>
@@ -52,10 +52,10 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-targets" data-title="Branch distances and J format" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-targets" data-title="Branch distances and J format" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Branch distances and J format</h1><p class="lede">Work backwards from a label’s byte address, then decode the target from the field.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 17 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 17 of 22 / Lecture 7</p>
       <h2>Count from the next instruction for a branch</h2>
       <p>In the lecture’s example, a <code>bne</code> at byte 1000 has a target at 1104. <strong>Target</strong> is the place you want to reach. Start from <code>PC + 4</code>, 1004, then ask how many four-byte instructions away the target is.</p>
       <div class="foundation-values"><span><small>Branch at</small><b>1000</b></span><span><small>Start counting at</small><b>1004</b></span><span class="foundation-active"><small>Target</small><b>1104</b></span></div>
@@ -78,10 +78,10 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-widths" data-title="Modified MIPS and what fits" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-widths" data-title="Modified MIPS and what fits" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Modified MIPS and what fits</h1><p class="lede">Count the patterns, then check how many bytes or elements a field can describe.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 18 of 22 / Lecture 7 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 18 of 22 / Lecture 7</p>
       <h2>Find the number of bits needed for a register name</h2>
       <p>Each extra bit doubles the number of names. Four bits name 16 registers. For 1000 registers, nine bits give only 512 names, and ten give 1024, so use ten. Use the smallest width that covers every register even when some of its patterns go unused.</p>
       <h2>Work the slide’s 16-bit example</h2>

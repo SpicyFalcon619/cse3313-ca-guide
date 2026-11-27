@@ -6,6 +6,7 @@
 
   /* ---------------- pages ---------------- */
   var pages = $$('article.page'), current = null;
+  var course = pages.filter(function (p) { return p.classList.contains('foundation') && p.dataset.skip !== '1'; });
   var groups = [], groupTags = { Performance: 'CT1', MIPS: 'CT2' };
   function buildNav() {
     var n = 0;
@@ -15,7 +16,10 @@
       if (!g) { g = { name: p.dataset.group, tag: groupTags[p.dataset.group], pages: [] }; groups.push(g); }
       g.pages.push(p);
     });
-    $('#groups').innerHTML = groups.map(function (g, i) { return '<a href="#' + g.pages[0].id + '" data-g="' + i + '">' + g.name + (g.tag ? '<span class="ct' + (g.tag === 'CT1' ? ' t1' : '') + '">' + g.tag + '</span>' : '') + '</a>'; }).join('');
+    $('#groups').innerHTML = groups.map(function (g, i) {
+      var entry = g.pages.find(function (p) { return p.hasAttribute('data-group-entry'); }) || g.pages[0];
+      return '<a href="#' + entry.id + '" data-g="' + i + '">' + g.name + (g.tag ? '<span class="ct' + (g.tag === 'CT1' ? ' t1' : '') + '">' + g.tag + '</span>' : '') + '</a>';
+    }).join('');
     pages.forEach(function (p, i) {
       var prev = pages[i - 1], next = pages[i + 1], pg = document.createElement('nav'); pg.className = 'pager'; pg.setAttribute('aria-label', 'Page');
       pg.innerHTML = (prev ? '<a href="#' + prev.id + '"><span>&#8592; PREVIOUS</span><b>' + prev.dataset.title + '</b></a>' : '') + (next ? '<a class="nx" href="#' + next.id + '"><span>NEXT &#8594;</span><b>' + next.dataset.title + '</b></a>' : '');
@@ -33,14 +37,19 @@
       if (on) { var t = $('#groups'); t.scrollTo({ left: a.offsetLeft - t.clientWidth / 2 + a.clientWidth / 2 }); }
     });
     var hero = $('header.hero', p);
-    if (hero && !p.classList.contains('foundation') && !$('.chips', hero) && g.pages.length > 1) {
+    var isCourse = p.classList.contains('foundation');
+    if (hero && !$('.chips', hero) && g.pages.length > 1) {
       var ch = document.createElement('nav'); ch.className = 'chips'; ch.setAttribute('aria-label', 'Pages in ' + g.name);
-      ch.innerHTML = g.pages.map(function (q) { return '<a href="#' + q.id + '" data-p="' + q.id + '"' + (q === p ? ' aria-current="page"' : '') + '><span class="n">' + String(q.dataset.num).padStart(2, '0') + '</span>' + q.dataset.title + (q.dataset.skip === '1' ? '' : '<span class="ok" aria-hidden="true"></span>') + '</a>'; }).join('');
+      ch.innerHTML = g.pages.map(function (q) {
+        var number = isCourse ? course.indexOf(q) + 1 : q.dataset.num;
+        var label = number ? '<span class="n">' + String(number).padStart(2, '0') + '</span>' : '';
+        return '<a href="#' + q.id + '" data-p="' + q.id + '"' + (q === p ? ' aria-current="page"' : '') + '>' + label + q.dataset.title + (q.dataset.skip === '1' ? '' : '<span class="ok" aria-hidden="true"></span>') + '</a>';
+      }).join('');
       ch.id = 'pages-in-' + p.id;
       var toggle = document.createElement('button');
       toggle.type = 'button';
       toggle.className = 'chip-toggle';
-      toggle.textContent = g.name === 'Start here' ? 'Start here pages' : g.name + ' pages';
+      toggle.textContent = isCourse ? 'CT-2 lessons' : g.name + ' pages';
       toggle.setAttribute('aria-controls', ch.id);
       toggle.setAttribute('aria-expanded', 'false');
       toggle.addEventListener('click', function () {
@@ -48,6 +57,7 @@
       });
       hero.append(toggle, ch);
     }
+    if (isCourse && hero) $('.chip-toggle', hero)?.setAttribute('aria-expanded', 'false');
   }
   function doneSet() { try { return JSON.parse(store('cse3313-done') || '{}'); } catch (e) { return {}; } }
   function refreshDone() {
@@ -57,18 +67,13 @@
     $$('button[data-done]').forEach(function (b) { var on = !!d[b.dataset.done]; b.classList.toggle('on', on); b.innerHTML = on ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Understood' : 'Mark this page as understood'; });
     $('.prog').hidden = tot === 0;
     $('#progT').textContent = cnt + '/' + tot; refreshRoute(d); $('#progB').style.width = (tot ? cnt / tot * 100 : 0) + '%';
-    var course = $$('[data-course-lesson]'), complete = 0, next = null;
-    course.forEach(function (link) {
-      var learned = Boolean(d[link.dataset.courseLesson]);
-      link.classList.toggle('course-learned', learned);
-      if (learned) complete++;
-      else if (!next) next = link;
-    });
+    var complete = course.filter(function (p) { return d[p.id]; }).length;
+    var next = course.find(function (p) { return !d[p.id]; });
     if (course.length) {
       var progress = $('[data-course-progress]'), resume = $('[data-course-start]');
       progress.hidden = complete === 0;
       progress.textContent = complete + ' of ' + course.length + ' CT-2 lessons understood';
-      resume.href = (next || course[0]).getAttribute('href');
+      resume.href = '#' + (next || course[0]).id;
       resume.textContent = complete === 0 ? 'Start Lesson 1' : next ? 'Continue course' : 'Review from Lesson 1';
     }
   }

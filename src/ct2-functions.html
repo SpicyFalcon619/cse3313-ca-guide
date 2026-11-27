@@ -1,10 +1,10 @@
-  <article class="page foundation" id="ct2-call" data-title="Function calls from scratch" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-call" data-title="Function calls from scratch" data-group="CT-2 course" hidden>
     <header class="hero">
       <h1>How does a function return?</h1>
       <p class="lede">Give a function 5 and 3, then follow its result and its return address.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 12 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 12 of 22 / Lecture 6</p>
       <h2>Tell the caller and the function what to share</h2>
       <p>A <strong>function</strong> is a named piece of a program that performs a job. The <strong>caller</strong> is the part asking for that job. Our caller asks <code>addNumbers</code> to add 5 and 3. Those input values are <strong>arguments</strong>. In MIPS, the first argument goes in <code>$a0</code>, the second in <code>$a1</code>, and the result here comes back in <code>$v0</code>. The function receiving the request is the <strong>callee</strong>. For more inputs, <code>$a2</code> and <code>$a3</code> can hold a third and fourth argument. In C, <code>return a + b;</code> means give the caller the result of that addition.</p>
       <pre><code>1000  addi $a0, $zero, 5
@@ -35,13 +35,13 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-stack" data-title="The stack from scratch" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-stack" data-title="The stack from scratch" data-group="CT-2 course" hidden>
     <header class="hero">
       <h1>Where can a function save a value?</h1>
       <p class="lede">Watch a function borrow a register and give it back with the original value.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 13 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 13 of 22 / Lecture 6</p>
       <h2>Give the old value somewhere to wait</h2>
       <p>Suppose <code>$s0</code> contains 50 and a function wants to use it while it works. The caller expects 50 back. The function can store 50 in the <strong>stack</strong>, an area of memory used for temporary data during calls.</p>
       <p><code>$sp</code> is the <strong>stack pointer</strong>. It holds the address of the current top of the stack. In our example, it starts at 1000. To reserve space for one four-byte word, subtract four. The word starts at byte 996 and occupies bytes 996–999.</p>
@@ -75,10 +75,10 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-nested" data-title="Nested calls and full stack frames" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-nested" data-title="Nested calls and full stack frames" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Nested calls and full stack frames</h1><p class="lede">Save a return address across a second call, and track where every saved word lives.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 14 of 22 / Lecture 6 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 14 of 22 / Lecture 6</p>
       <h2>Why a second call needs a saved return address</h2>
       <p>Imagine <code>main</code> calls <code>outer</code>, which calls <code>helper</code>. If the first call is at byte 1000, <code>$ra</code> gets 1004. When the second call at 1028 runs, it replaces that 1004 with 1032. Save 1004 before the second call and restore it after the helper returns.</p>
       <pre><code>1000  jal outer

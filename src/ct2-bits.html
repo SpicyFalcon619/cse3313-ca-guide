@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-signed" data-title="Negative numbers and field widths" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-signed" data-title="Negative numbers and field widths" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Negative numbers and field widths</h1><p class="lede">Use a fixed number of bits to write −5 and recognise a number that will not fit.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 5 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 5 of 22 / Lectures 2–3</p>
       <h2>See what eight 1s can mean</h2>
       <p><code>11111111</code> means 255 when we read it as <strong>unsigned</strong>, so every position adds its positive place value. If the same eight bits are read as <strong>signed two’s complement</strong>, the leftmost place is −128 and the other places add up to 127. The result is −1. The bits stay the same. The instruction or the question tells you how to read them.</p>
       <h2>Write a negative number</h2>
@@ -23,10 +23,10 @@
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-shifts" data-title="Shifts and bitwise operations" data-group="CT-2 beginner path" hidden>
+  <article class="page foundation" id="ct2-shifts" data-title="Shifts and bitwise operations" data-group="CT-2 course" hidden>
     <header class="hero"><h1>Shifts and bitwise operations</h1><p class="lede">Watch bits slide, then compare them one column at a time.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position"><a href="#ct2-start">Course outline</a> / Lesson 6 of 22 / Lectures 2–3 <a class="foundation-lookup" href="#ct2-words">Instruction and term index</a></p>
+      <p class="foundation-position">Lesson 6 of 22 / Lectures 2–3</p>
       <h2>What does sll mean?</h2>
       <p><code>sll</code> stands for <strong>shift left logical</strong>. In <code>sll $t0, $t1, 2</code>, <code>$t0</code> is where the result goes, <code>$t1</code> supplies the bits, and 2 is how many places to shift. Each move fills the new rightmost place with 0 and discards whichever bit leaves the left edge. “Logical” means the new places are filled with zeros. The small display below shows eight of the register’s 32 positions.</p>
       <div class="foundation-values foundation-bits"><span><small>Start</small><code>00000101</code><b>5</b></span><span><small>Left one</small><code>00001010</code><b>10</b></span><span class="foundation-active"><small>Left two</small><code>00010100</code><b>20</b></span></div>
