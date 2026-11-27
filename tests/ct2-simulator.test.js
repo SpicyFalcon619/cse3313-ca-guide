@@ -34,6 +34,20 @@ test('signed bits and bitwise examples distinguish a bit pattern from its value'
   }
 });
 
+test('bitwise lesson examples show the immediate and the two writes in OR then NOT', () => {
+  const and = run(0, 4, 5, 3, 'andi').at(-1);
+  assert.equal(and.title, 'andi $t0, $t1, 3');
+  assert.equal(value(and, '$t0'), 1);
+  assert.equal(value(run(0, 4, 5, 3, 'ori').at(-1), '$t0'), 7);
+  const [, or, invert] = run(0, 4, 3, 5, 'ori-not');
+  assert.equal(or.title, 'ori $t1, $t0, 5');
+  assert.equal(value(or, '$t1'), 7);
+  assert.equal(invert.title, 'nor $t1, $t1, $zero');
+  assert.equal(value(invert, '$t0'), 3);
+  assert.equal(value(invert, '$t1'), -8);
+  assert.equal(value(invert, 'Full 32-bit word'), '0xFFFFFFF8');
+});
+
 test('array addressing uses aligned bytes and changes byte order while preserving the value', () => {
   assert.deepEqual(run(1, 1, 100, 2, 258, 'big').at(-1).cells, [['108','00'], ['109','00'], ['110','01'], ['111','02'], ['$t2',258]]);
   assert.deepEqual(run(1, 1, 100, 2, 258, 'little').at(-1).cells, [['108','02'], ['109','01'], ['110','00'], ['111','00'], ['$t2',258]]);

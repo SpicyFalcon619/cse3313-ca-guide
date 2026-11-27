@@ -47,13 +47,37 @@ const ct2SimulatorTopics = (() => {
   }
 
   function bitwise(a, b, op) {
-    const result = { and: a & b, or: a | b, nor: ~(a | b) }[op];
-    const rows = [['First input', bits(a, 8)], ['Second input', bits(b, 8)]];
-    const rules = { and: 'Only a column with two ones gives 1.', or: 'Any column with a one gives 1.', nor: 'A column gives 1 only when both inputs are zero.' };
-    return [
-      step('Line up the inputs', 'Read the two bit patterns one column at a time.', rows),
-      step(op + ' $t0, $t1, $t2', rules[op] + ' The display shows the low eight bits. The signed result uses the full 32-bit word.', [...rows, ['Result bits', bits(result, 8)], ['$t0', result]], result, 'What signed number does ' + op + ' write?'),
+    const compound = op === 'ori-not';
+    const instruction = compound ? 'ori' : op;
+    const immediate = instruction === 'andi' || instruction === 'ori';
+    const destination = compound ? '$t1' : '$t0';
+    const source = compound ? '$t0' : '$t1';
+    const second = immediate ? String(b) : '$t2';
+    const operation = immediate ? instruction.slice(0, -1) : instruction;
+    const result = { and: a & b, or: a | b, nor: ~(a | b) }[operation];
+    const rows = [[source + ' = ' + a, bits(a, 8)], [immediate ? 'Immediate = ' + b : '$t2 = ' + b, bits(b, 8)]];
+    const rules = {
+      and: 'Each 1 in the second input lets the matching first bit pass. Each 0 forces the output bit to 0.',
+      or: 'Each 1 in either input sets the matching result bit to 1.',
+      nor: 'First read the pair as OR, then flip the resulting bit.',
+    };
+    const ones = 'In the 1s column, ' + (a & 1) + ' and ' + (b & 1) + ' give ' + (result & 1) + '.';
+    const full = value => '0x' + (value >>> 0).toString(16).padStart(8, '0').toUpperCase();
+    const steps = [
+      step('Line up the inputs', 'Start at the rightmost column, the 1s place. Apply the same rule to each pair of bits without carrying anything to the next column.' + (immediate ? ' The second input is the number written in the instruction.' : ''), rows),
+      step(instruction + ' ' + destination + ', ' + source + ', ' + second,
+        rules[operation] + ' ' + ones + ' The rightmost eight result bits are ' + bits(result, 8) + '.',
+        [...rows, ['Result bits', bits(result, 8)], [destination, result], ['Full 32-bit word', full(result)]],
+        result, 'What signed number goes in ' + destination + '?'),
     ];
+    if (compound) {
+      const inverted = ~result;
+      steps.push(step('nor $t1, $t1, $zero',
+        'Read ' + result + ' from $t1. OR with the zeros in $zero leaves the bits unchanged, then NOR flips all 32 bits and writes back to $t1.',
+        [['$t0', a], ['$t1 before NOT', result], ['Result bits', bits(inverted, 8)], ['$t1', inverted], ['Full 32-bit word', full(inverted)]],
+        inverted, 'What signed value goes back into $t1?'));
+    }
+    return steps;
   }
 
   function array(base, index, word, order) {
@@ -198,7 +222,7 @@ const ct2SimulatorTopics = (() => {
       example('Follow an instruction through the CPU', 'ct2-computer', [small('First number', 5), small('Second number', 3)], computer),
       example('Binary, signed numbers and hex', 'ct2-signed', [num('Number', -5, -32768, 65535), num('Bit width', 8, 2, 16)], numbers),
       lab('Logical left and right shifts', 'shifts', 'ct2-shifts', [num('Starting number', 5, 0, 63), shiftDir]),
-      example('AND, OR and NOR', 'ct2-shifts', [num('First number', 5, 0, 255), num('Second number', 3, 0, 255), choice('Operation', 'and', [['and', 'AND'], ['or', 'OR'], ['nor', 'NOR']])], bitwise),
+      example('AND, OR and NOR', 'ct2-shifts', [num('First number', 5, 0, 255), num('Second number', 3, 0, 255), choice('Operation', 'and', [['and', 'AND'], ['or', 'OR'], ['nor', 'NOR'], ['andi', 'AND with a constant (andi)'], ['ori', 'OR with a constant (ori)'], ['ori-not', 'ORI then NOT']])], bitwise),
     ] },
     { name: 'Memory and arrays', examples: [
       lab('Load two words, add and store', 'memory', 'ct2-memory', [small('Value at A[0]', 5), small('Value at A[1]', 3)]),

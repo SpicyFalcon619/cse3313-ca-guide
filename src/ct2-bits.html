@@ -50,15 +50,50 @@
         <p class="beginner-feedback" data-lab-feedback role="status"></p>
         <div class="foundation-values beginner-state" data-lab-cells aria-label="Current values"></div>
       </section>
-      <h2>What does bitwise mean?</h2>
-      <p>Work with each pair of bits independently, with no carry from the next column. In the four low positions, use 5 (<code>0101</code>) and 3 (<code>0011</code>).</p>
-      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Instruction</th><th scope="col">When is the output bit 1?</th><th scope="col">Low four bits</th></tr></thead><tbody><tr><td><code>and</code></td><td>Both input bits are 1</td><td><code>0001</code></td></tr><tr><td><code>or</code></td><td>At least one input bit is 1</td><td><code>0111</code></td></tr><tr><td><code>nor</code></td><td>Neither input bit is 1</td><td><code>1000</code></td></tr></tbody></table></div>
-      <p><code>andi</code> and <code>ori</code> do AND and OR with an immediate. <code>andi $t0, $t1, 3</code> keeps only the two low bits because 3 ends in <code>11</code> and every other bit of the mask is zero. A <strong>mask</strong> is a bit pattern used to select positions.</p>
-      <p>C writes bitwise AND as <code>&amp;</code>, OR as <code>|</code>, and NOT as <code>~</code>. NOT flips every bit. MIPS can flip a value by using <code>nor</code> with <code>$zero</code>. Read <code>~(a | 5)</code> in two parts. First <code>ori $t1, $t0, 5</code>. Then <code>nor $t1, $t1, $zero</code>. The same pattern handles <code>~(a &amp; n)</code> by starting with <code>and</code> if <code>n</code> is in a register.</p>
+      <h2>Apply one rule to each pair of bits</h2>
+      <p>Suppose <code>$t1</code> holds 5 and <code>$t2</code> holds 3. Line up their binary digits. <strong>Bitwise</strong> means you look at one column at a time and write one result bit in that same column. In the 4s column, the inputs are 1 and 0. AND writes 0 because it needs two 1s. OR writes 1 because it needs at least one 1.</p>
+      <div class="scroll"><table class="ls-t">
+        <caption>Rightmost four bits of the registers</caption>
+        <thead><tr><th scope="col">Value</th><th scope="col">8s</th><th scope="col">4s</th><th scope="col">2s</th><th scope="col">1s</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>$t1</code> (5)</th><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+          <tr><th scope="row"><code>$t2</code> (3)</th><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          <tr><th scope="row">AND</th><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+          <tr><th scope="row">OR</th><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+          <tr><th scope="row">NOR</th><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+        </tbody>
+      </table></div>
+      <p><code>and $t0, $t1, $t2</code> writes 1 into <code>$t0</code>. <code>or $t0, $t1, $t2</code> writes 7 because the 4s, 2s, and 1s columns are on. Both source registers keep their values.</p>
+      <p><strong>NOT</strong> flips each bit. <strong>NOR</strong> means do OR, then flip its result. The OR result here is 7, with 29 zeros followed by three 1s. Flipping all 32 bits leaves 29 ones followed by three zeros. That pattern represents <strong>−8</strong> as a signed 32-bit integer. <code>1000</code> in the table shows just the last four bits of that pattern.</p>
+      <h2>Use a number written in the instruction</h2>
+      <p>Let <code>$t1</code> still hold 5. In <code>andi $t0, $t1, 3</code>, the CPU reads 5 from <code>$t1</code>, takes 3 straight from the instruction, and writes the AND result to <code>$t0</code>. The 3 is the <strong>immediate</strong>. The letter <code>i</code> in <code>andi</code> and <code>ori</code> tells you that the last input is a number written in the instruction.</p>
+      <pre aria-label="Five AND three equals one, and five OR three equals seven"><code>       $t1 = 5     0101
+   immediate 3     0011
+                   ────
+  andi result      0001  = 1
+   ori result      0111  = 7</code></pre>
+      <p>The 3 in <code>andi</code> acts as a <strong>mask</strong>, a pattern that picks positions to keep. At each column where the mask has a 1, AND copies the input bit. Where the mask has a 0, AND writes 0. So <code>0011</code> keeps the rightmost two bits of <code>0101</code>, which are <code>01</code>. With <code>ori $t0, $t1, 3</code>, a 1 in the constant instead <em>sets</em> that result bit to 1. The 2s bit turns on, and the result is 7.</p>
+      <h2>Translate <code>~(a | 5)</code> in two instructions</h2>
+      <p>In C, <code>|</code> means bitwise OR, <code>&amp;</code> means bitwise AND, and <code>~</code> means bitwise NOT. Parentheses tell you to do what’s inside first. Suppose <code>a = 3</code>, stored in <code>$t0</code>. Put the answer in <code>$t1</code>.</p>
+      <ol class="foundation-list">
+        <li><code>ori $t1, $t0, 5</code> does the part inside the parentheses. <code>0011 OR 0101</code> gives <code>0111</code>, so <code>$t1</code> now holds 7.</li>
+        <li><code>nor $t1, $t1, $zero</code> reads that 7 and writes back to the same register. OR with zero leaves every bit as it was, so the NOR flips all 32 bits. <code>$t1</code> now holds −8. <code>$t0</code> still holds 3.</li>
+      </ol>
+      <details class="foundation-more"><summary>Worked variation · What if the expression is <code>~(a &amp; n)</code>?</summary>
+        <p>Suppose <code>a = 5</code> in <code>$t0</code> and <code>n = 3</code> in <code>$t1</code>. Both inputs are already in registers, so use <code>and $t2, $t0, $t1</code>. That puts 1 in <code>$t2</code>. Then <code>nor $t2, $t2, $zero</code> flips the 32-bit pattern for 1, giving <code>0xFFFFFFFE</code>, or −2 signed.</p>
+      </details>
+      <p>Change the numbers yourself in the <a href="#ct2-simulator">Simulator Lab</a> under <strong>Registers and bits → AND, OR and NOR</strong>. Choose <strong>ORI then NOT</strong> to see the two instructions above run separately.</p>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
-        <p>If $t1 contains 5, what does sll $t0, $t1, 1 put in $t0? What does andi $t0, $t1, 3 put there?</p>
-        <details class="foundation-more"><summary>Check my answer</summary><p>The shift gives 10. The AND gives 1, because 0101 AND 0011 has just the ones place left.</p></details>
+        <p><code>$t1</code> holds 6 (<code>0110</code>). Try each line separately. What value does it put in <code>$t0</code>?</p>
+        <pre><code>sll  $t0, $t1, 1
+andi $t0, $t1, 3
+ori  $t0, $t1, 3</code></pre>
+        <details class="foundation-more"><summary>Check my answer</summary><ol class="foundation-list">
+          <li><code>sll</code> moves the bits left one place, so <code>0110</code> becomes <code>1100</code> (12).</li>
+          <li><code>andi</code> keeps the rightmost two bits because 3 is <code>0011</code>. The result is <code>0010</code> (2).</li>
+          <li><code>ori</code> sets the rightmost two bits to 1 while keeping the other input bits. The result is <code>0111</code> (7).</li>
+        </ol></details>
       </section>
       <nav class="foundation-next" aria-label="Beginner path">
         <a href="#ct2-signed">Previous lesson</a>
