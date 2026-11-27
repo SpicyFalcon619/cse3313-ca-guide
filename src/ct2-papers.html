@@ -1,0 +1,1403 @@
+<article class="page" id="s-ct2-papers" data-title="MIPS past papers" data-group="Exam" hidden>
+  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2023–2026</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+  <div class="ca-notes">
+    <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+<section data-paper="261" class="ct2-paper">
+    <h2>Spring 2026 <span class="mono">261</span></h2>
+    <details class="wk"><summary>Q2(a) · Translate main computing a=25, b=a%16, c=~(a|5), d=~b, and choosing a call to <code>myfunction(y,x)</code> returning x−y. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $t0–$t4 for a through e. Match the argument order in the helper. Save main’s incoming $ra if main is itself called.</div></div>
+          <div class="step"><span class="s">TRACE</span><div>The intermediate values are b=9, c=−30 and d=−10. The test c≥d is false, so call with y=25 and x=9, giving e=−16.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>main:
+  addi $sp, $sp, -4
+  sw $ra, 0($sp)
+  addi $t0, $zero, 25
+  addi $t5, $zero, 16
+  div $t0, $t5
+  mfhi $t1
+  ori $t2, $t0, 5
+  nor $t2, $t2, $zero
+  nor $t3, $t1, $zero
+  slt $t5, $t2, $t3
+  bne $t5, $zero, Else
+  add $a0, $t2, $zero
+  add $a1, $t3, $zero
+  j Call
+Else:
+  add $a0, $t0, $zero
+  add $a1, $t1, $zero
+Call:
+  jal myfunction
+  add $t4, $v0, $zero
+  add $v0, $zero, $zero
+  lw $ra, 0($sp)
+  addi $sp, $sp, 4
+  jr $ra
+myfunction:
+  sub $v0, $a1, $a0
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Encode the six printed instructions in decimal with LOOP=100 and END=124. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">BRANCH</span><div>From 108, start at 112, so the branch field is (124−112)/4 = 3.</div></div>
+          <div class="step"><span class="s">JUMP</span><div>Use 100/4 = 25 for the jump. The lw holds offset 32 directly.</div></div>
+        </div>
+        <h3>Given listing and fields</h3><pre> 100  LOOP:
+ 104    slt $t0, $s1, $s2
+ 108    beq $t0, $zero, END
+ 112    lw $t1, 32($s0)
+ 116    sll $t2, $t1, 10
+ 120    j LOOP
+ 124  END:
+ 128    add $v0, $a0, $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>104</code></td><td><code>slt $t0, $s1, $s2</code></td><td><code>R</code></td><td><code>0, 17, 18, 8, 0, 42</code></td></tr>
+        <tr><td><code>108</code></td><td><code>beq $t0, $zero, END</code></td><td><code>I</code></td><td><code>4, 8, 0, 3</code></td></tr>
+        <tr><td><code>112</code></td><td><code>lw $t1, 32($s0)</code></td><td><code>I</code></td><td><code>35, 16, 9, 32</code></td></tr>
+        <tr><td><code>116</code></td><td><code>sll $t2, $t1, 10</code></td><td><code>R</code></td><td><code>0, 0, 9, 10, 10, 0</code></td></tr>
+        <tr><td><code>120</code></td><td><code>j LOOP</code></td><td><code>J</code></td><td><code>2, 25</code></td></tr>
+        <tr><td><code>128</code></td><td><code>add $v0, $a0, $ra</code></td><td><code>R</code></td><td><code>0, 4, 31, 2, 0, 32</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Find the second-largest offset and whether andi 1023 fits on the 1000-register processor. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>1000 register names need 10 bits each. The immediate field has 32−6−10−10 = 6 bits.</div></div>
+          <div class="step"><span class="s">OFFSET</span><div>Under the slide’s unsigned-byte assumption the second-largest field value is 62. If the question instead asks for the second-largest aligned word offset, use 56 (largest 60). A usual signed 6-bit offset has maximum 31 and second-largest raw positive offset 30.</div></div>
+          <div class="step"><span class="s">IMMEDIATE</span><div>The six-bit unsigned maximum is 63, so 1023 cannot be encoded directly in andi.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="253" class="ct2-paper">
+    <h2>Fall 2025 <span class="mono">253</span></h2>
+    <details class="wk"><summary>Q2(a) · Translate the loop for a, b and arr in $a0–$a2. It increments a while b ≥ a and adds to sum each time. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>The paper leaves sum uninitialised and prints an unmatched parenthesis. Following Lecture 7 slides 44–45, initialise sum to 0 and read the expression as <code>(~(arr[b] * 16)) % 32</code>. Assume arr[b] is valid and signed arithmetic stays in range.</div></div>
+          <div class="step"><span class="s">REMAINDER</span><div>Use div and mfhi for the signed remainder. Since b stays fixed, the load always uses its index.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  addi $t0, $zero, 0
+Loop:
+  slt $t1, $a1, $a0
+  bne $t1, $zero, Done
+  sll $t2, $a1, 2
+  add $t2, $a2, $t2
+  lw $t3, 0($t2)
+  sll $t3, $t3, 4
+  nor $t3, $t3, $zero
+  addi $t4, $zero, 32
+  div $t3, $t4
+  mfhi $t3
+  add $t0, $t0, $t3
+  addi $a0, $a0, 1
+  j Loop
+Done:
+  add $v0, $t0, $zero
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Encode the six displayed instructions in decimal, with my_function=100 and IF=120. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">BRANCH</span><div>The branch at 104 stores (120−108)/4 = 3. The jump stores 100/4 = 25. In the load, 20 is a byte offset.</div></div>
+        </div>
+        <h3>Given listing and fields</h3><pre> 100  my_function:
+ 104    bne $s0, $t8, IF
+ 108    sub $t3, $s1, $s5
+ 112    ori $t2, $t7, 42
+ 116    lw $t1, 20($t2)
+ 120  IF:
+ 124    slt $t1, $s2, $s5
+ 128    j my_function</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>104</code></td><td><code>bne $s0, $t8, IF</code></td><td><code>I</code></td><td><code>5, 16, 24, 3</code></td></tr>
+        <tr><td><code>108</code></td><td><code>sub $t3, $s1, $s5</code></td><td><code>R</code></td><td><code>0, 17, 21, 11, 0, 34</code></td></tr>
+        <tr><td><code>112</code></td><td><code>ori $t2, $t7, 42</code></td><td><code>I</code></td><td><code>13, 15, 10, 42</code></td></tr>
+        <tr><td><code>116</code></td><td><code>lw $t1, 20($t2)</code></td><td><code>I</code></td><td><code>35, 10, 9, 20</code></td></tr>
+        <tr><td><code>124</code></td><td><code>slt $t1, $s2, $s5</code></td><td><code>R</code></td><td><code>0, 18, 21, 9, 0, 42</code></td></tr>
+        <tr><td><code>128</code></td><td><code>j my_function</code></td><td><code>J</code></td><td><code>2, 25</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Find the encoding limits for arr[301] and <code>arr[0] &amp; 1024</code> on the processor with 256 registers. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>A 32-bit instruction with six opcode bits and two eight-bit register fields leaves ten bits. The unsigned maximum is 1023.</div></div>
+          <div class="step"><span class="s">LIMITS</span><div>arr[300] is at byte offset 1200 for four-byte elements. A single load from arr’s base cannot reach it, even with unsigned offsets. The constant 1024 also cannot fit an andi immediate. Compute the address in a register and use register AND with the constant loaded separately. The given access to arr[0] alone uses an offset of zero.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="252" class="ct2-paper">
+    <h2>Summer 2025 <span class="mono">252</span></h2>
+    <details class="wk"><summary>Q2(a) · Translate the loop that writes <code>~(a &amp; n)</code> into <code>arr[i*2]</code> for i from 0 through n, with a=10 in $s0. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FRAME</span><div>Save $s0 because the function writes it. $a0 holds i, $a1 holds n, and $a2 holds the base. Offset i×8 accounts for twice the index and four bytes per element. Assume all indexed elements exist.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  addi $sp, $sp, -4
+  sw $s0, 0($sp)
+  addi $s0, $zero, 10
+  addi $a0, $zero, 0
+Loop:
+  slt $t0, $a1, $a0
+  bne $t0, $zero, Done
+  sll $t1, $a0, 3
+  add $t1, $a2, $t1
+  and $t2, $s0, $a1
+  nor $t2, $t2, $zero
+  sw $t2, 0($t1)
+  addi $a0, $a0, 1
+  j Loop
+Done:
+  add $v0, $s0, $zero
+  lw $s0, 0($sp)
+  addi $sp, $sp, 4
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Fill the decimal fields for the six printed instructions with LOOP=100 and REST=124. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">BRANCH</span><div>Use the printed label addresses. From the branch at 108, (124−112)/4 = 3.</div></div>
+          <div class="step"><span class="s">JUMP</span><div>For LOOP the jump field is 100/4 = 25. The store offset stays 20 bytes.</div></div>
+        </div>
+        <h3>Given listing and fields</h3><pre> 100  LOOP:
+ 104    slt $t3, $t5, $s1
+ 108    bne $t3, $zero, REST
+ 112    sw $t5, 20($s4)
+ 116    j LOOP
+ 120    andi $t2, $s3, 30
+ 124  REST:
+ 128    sub $t2, $a0, $s3</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>104</code></td><td><code>slt $t3, $t5, $s1</code></td><td><code>R</code></td><td><code>0, 13, 17, 11, 0, 42</code></td></tr>
+        <tr><td><code>108</code></td><td><code>bne $t3, $zero, REST</code></td><td><code>I</code></td><td><code>5, 11, 0, 3</code></td></tr>
+        <tr><td><code>112</code></td><td><code>sw $t5, 20($s4)</code></td><td><code>I</code></td><td><code>43, 20, 13, 20</code></td></tr>
+        <tr><td><code>116</code></td><td><code>j LOOP</code></td><td><code>J</code></td><td><code>2, 25</code></td></tr>
+        <tr><td><code>120</code></td><td><code>andi $t2, $s3, 30</code></td><td><code>I</code></td><td><code>12, 19, 10, 30</code></td></tr>
+        <tr><td><code>128</code></td><td><code>sub $t2, $a0, $s3</code></td><td><code>R</code></td><td><code>0, 4, 19, 10, 0, 34</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Find the maximum directly reachable array size for 16 registers, 16-bit instructions and registers, and a three-bit opcode. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>Two four-bit register fields leave five offset bits. With an unsigned byte offset and two-byte elements, offsets 0,2,…,30 reach 16 elements occupying 32 bytes. This matches Lecture 7 slide 30.</div></div>
+          <div class="step"><span class="s">SIGNED CASE</span><div>If the custom format sign-extends the offset like normal lw, the nonnegative offsets 0,2,…,14 reach eight elements from the fixed base.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="251" class="ct2-paper">
+    <h2>Spring 2025 <span class="mono">251</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate the void function where b = 15 and local a = ((b % 8) | i) &amp; (~k). Encode the first eight instructions. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0/$a1 for i/k and temporaries for b, the divisor, remainder, intermediate, and local a. Keep the calculation even though an optimizing compiler could omit the unused local. The paper gives no start address, so use 1000.</div></div>
+          <div class="step"><span class="s">REMAINDER</span><div>div puts 15 % 8 = 7 in HI. mfhi copies that value. The standard div and mfhi function codes are 26 and 16; the paper’s abbreviated opcode table omits them.</div></div>
+        </div>
+        <h3>Assembly and eight fields</h3><pre>1000    addi $t0, $zero, 15
+1004    addi $t1, $zero, 8
+1008    div $t0, $t1
+1012    mfhi $t2
+1016    or $t2, $t2, $a0
+1020    nor $t3, $a1, $zero
+1024    and $t4, $t2, $t3
+1028    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>addi $t0, $zero, 15</code></td><td><code>I</code></td><td><code>8, 0, 8, 15</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>addi $t1, $zero, 8</code></td><td><code>I</code></td><td><code>8, 0, 9, 8</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>div $t0, $t1</code></td><td><code>R</code></td><td><code>0, 8, 9, 0, 0, 26</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>mfhi $t2</code></td><td><code>R</code></td><td><code>0, 0, 0, 10, 0, 16</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>or $t2, $t2, $a0</code></td><td><code>R</code></td><td><code>0, 10, 4, 10, 0, 37</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>nor $t3, $a1, $zero</code></td><td><code>R</code></td><td><code>0, 5, 0, 11, 0, 39</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>and $t4, $t2, $t3</code></td><td><code>R</code></td><td><code>0, 10, 11, 12, 0, 36</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>jr $ra</code></td><td><code>R</code></td><td><code>0, 31, 0, 0, 0, 8</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c, d) · Can sll shift by 40 in one instruction? With 256 registers, what is the largest Y in the modified beq? <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">SHIFT</span><div>A 5-bit shamt goes only up to 31, so 40 is out of range.</div></div>
+          <div class="step"><span class="s">BRANCH</span><div>Register fields need eight bits apiece, leaving 32−6−8−8 = 10. Usual MIPS signed branch semantics allow +511 instructions, or +2044 bytes from PC+4. If Y is the raw unsigned bit pattern, its maximum is 1023. If Y names a byte target, give PC+4 + 2044 for the signed interpretation.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="243" class="ct2-paper">
+    <h2>Fall 2024 <span class="mono">243</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate arr_sum(arr,n). Set sum=0, a=10, b=−7 and c=12. On each element, update b according to the given condition, then add arr[i+b] to sum. Encode the first eight instructions. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0/$a1 for arr and n, $t0 for i, $t1 for a, $t2 for b, $t3 for c, and $v0 for the sum. When arr[i] ≤ 0, put 1 in b only if a &lt; 15 and b != c. Otherwise calculate (~15+c)&amp;1. Assume the computed indices are valid.</div></div>
+          <div class="step"><span class="s">PC</span><div>Use start address 1000 for the example because the question does not specify one. The branch fields depend on this listing’s labels and layout.</div></div>
+        </div>
+        <h3>Assembly and first eight fields</h3><pre>1000  arr_sum:
+1000    addi $v0, $zero, 0
+1004    addi $t1, $zero, 10
+1008    addi $t2, $zero, -7
+1012    addi $t3, $zero, 12
+1016    addi $t0, $zero, 0
+1020  Loop:
+1020    slt $t4, $t0, $a1
+1024    beq $t4, $zero, Done
+1028    sll $t5, $t0, 2
+1032    add $t5, $a0, $t5
+1036    lw $t6, 0($t5)
+1040    slt $t4, $zero, $t6
+1044    bne $t4, $zero, Positive
+1048    slti $t4, $t1, 15
+1052    beq $t4, $zero, BZero
+1056    beq $t2, $t3, BZero
+1060    addi $t2, $zero, 1
+1064    j Accumulate
+1068  BZero:
+1068    addi $t2, $zero, 0
+1072    j Accumulate
+1076  Positive:
+1076    addi $t6, $zero, -16
+1080    add $t6, $t6, $t3
+1084    andi $t2, $t6, 1
+1088  Accumulate:
+1088    add $t5, $t0, $t2
+1092    sll $t5, $t5, 2
+1096    add $t5, $a0, $t5
+1100    lw $t6, 0($t5)
+1104    add $v0, $v0, $t6
+1108    addi $t0, $t0, 1
+1112    j Loop
+1116  Done:
+1116    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>addi $v0, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 2, 0</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>addi $t1, $zero, 10</code></td><td><code>I</code></td><td><code>8, 0, 9, 10</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>addi $t2, $zero, -7</code></td><td><code>I</code></td><td><code>8, 0, 10, -7</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>addi $t3, $zero, 12</code></td><td><code>I</code></td><td><code>8, 0, 11, 12</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>addi $t0, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 8, 0</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>slt $t4, $t0, $a1</code></td><td><code>R</code></td><td><code>0, 8, 5, 12, 0, 42</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>beq $t4, $zero, Done</code></td><td><code>I</code></td><td><code>4, 12, 0, 22</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>sll $t5, $t0, 2</code></td><td><code>R</code></td><td><code>0, 0, 8, 13, 2, 0</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · With 64 registers, a 32-bit instruction and 6 opcode bits, find the maximum directly reachable array index in lw. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>32−6−6−6 = 14 offset bits. Under normal signed MIPS-style byte offsets, the largest positive offset is 8191, and the largest aligned offset is 8188. For four-byte elements the largest nonnegative index is 2047.</div></div>
+          <div class="step"><span class="s">OTHER READING</span><div>If the question instead assumes an unsigned offset, the largest aligned offset is 16380 and last index is 4095. With a register holding the computed element address, a single offset field is no longer the array-size limit.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="241" class="ct2-paper">
+    <h2>Spring 2024 <span class="mono">241</span></h2>
+    <details class="wk"><summary>Q1(a, b) · Repair the stack and loop instructions. For $a0=3, give $v0 and $s0 after the procedure. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FIX</span><div>Use addi for stack deltas, $zero for the zero register, and numeric byte offsets. Use slt for a register-to-register test and j for a direct jump. Save and restore each register at the same offset and free exactly eight bytes.</div></div>
+          <div class="step"><span class="s">TRACE</span><div>The loop adds 1, 2 and 3 into $v0 = 6, then stops with its working $s0 = 4. The epilogue restores the caller’s original $s0, which the paper does not specify. The return address is restored too. The timing parts are in the CT-1 paper page.</div></div>
+        </div>
+        <h3>Corrected code</h3><pre>block:
+  addi $sp, $sp, -8
+  sw $ra, 0($sp)
+  sw $s0, 4($sp)
+  addi $v0, $zero, 0
+  addi $s0, $zero, 1
+Loop:
+  slt $t0, $a0, $s0
+  bne $t0, $zero, End
+  add $v0, $v0, $s0
+  addi $s0, $s0, 1
+  j Loop
+End:
+  lw $ra, 0($sp)
+  lw $s0, 4($sp)
+  addi $sp, $sp, 8
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(a, b) · Translate the do-while with x = 1, i = 32 and the given array bases. It compares a[2i] and b[2(i+1)], then either breaks, updates i and continues, or subtracts 3. Show the first eight encoded instructions starting in the loop body. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>The printed arrays have ten uninitialised elements, but the initial accesses are indices 64 and 66, which are out of bounds. The listing translates control flow assuming $s0/$s1 already point to valid storage for the accessed indices. It cannot produce a defined execution result from the C as printed.</div></div>
+          <div class="step"><span class="s">FLOW</span><div>Continue jumps to the do-while condition, skipping the ordinary i++. Testing i % 4 for nonzero is equivalent to testing the low two bits, even for a negative i. Because the paper provides no PC, use 1000 for the listing and encode rows 1008–1036.</div></div>
+        </div>
+        <h3>Assembly and loop entry fields</h3><pre>1000    addi $s2, $zero, 1
+1004    addi $s3, $zero, 32
+1008  Body:
+1008    sll $t0, $s3, 3
+1012    add $t0, $s0, $t0
+1016    lw $t1, 0($t0)
+1020    addi $t2, $s3, 1
+1024    sll $t2, $t2, 3
+1028    add $t2, $s1, $t2
+1032    lw $t3, 0($t2)
+1036    bne $t1, $t3, CheckAnd
+1040    sub $t4, $t1, $t3
+1044    add $s2, $s2, $t4
+1048    j Done
+1052  CheckAnd:
+1052    and $t4, $t1, $t3
+1056    beq $t4, $zero, Else
+1060    add $s3, $s3, $s2
+1064    j Test
+1068  Else:
+1068    addi $s3, $s3, -3
+1072    addi $s3, $s3, 1
+1076  Test:
+1076    andi $t4, $s3, 3
+1080    bne $t4, $zero, Body
+1084  Done:
+1084    add $v0, $zero, $zero
+1088    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1008</code></td><td><code>sll $t0, $s3, 3</code></td><td><code>R</code></td><td><code>0, 0, 19, 8, 3, 0</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>add $t0, $s0, $t0</code></td><td><code>R</code></td><td><code>0, 16, 8, 8, 0, 32</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>lw $t1, 0($t0)</code></td><td><code>I</code></td><td><code>35, 8, 9, 0</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>addi $t2, $s3, 1</code></td><td><code>I</code></td><td><code>8, 19, 10, 1</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>sll $t2, $t2, 3</code></td><td><code>R</code></td><td><code>0, 0, 10, 10, 3, 0</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>add $t2, $s1, $t2</code></td><td><code>R</code></td><td><code>0, 17, 10, 10, 0, 32</code></td></tr>
+        <tr><td><code>1032</code></td><td><code>lw $t3, 0($t2)</code></td><td><code>I</code></td><td><code>35, 10, 11, 0</code></td></tr>
+        <tr><td><code>1036</code></td><td><code>bne $t1, $t3, CheckAnd</code></td><td><code>I</code></td><td><code>5, 9, 11, 3</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Find the signed addi limit on a 32-bit design with 64 registers and a 6-bit opcode. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>Each register ID needs six bits. The immediate is 32−6−6−6 = 14 bits. The signed range is −8192 through +8191, so the maximum is 8191.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="233" class="ct2-paper">
+    <h2>Fall 2023 <span class="mono">233</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate check_func at 2000, get_sum at 3000, and main at 5000. Show the first twelve machine fields of get_sum. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>The paper passes <code>a[i+1]</code>, an int, to a function expecting an array pointer. This solution passes the base <code>a</code> so check_func may safely use its own index i. If a pointer into the array was intended, pass <code>&amp;a[i+1]</code> and ensure subsequent indexing stays valid. The printed function also lacks an even-case return. We use 0 for that path. Main declares uninitialised arrays, so its numerical result is undefined until valid input arrays are supplied.</div></div>
+          <div class="step"><span class="s">FRAME</span><div>get_sum saves the array bases, length, loop index, running sum, and incoming $ra before the helper call. Recalculate the byte index after jal because temporary registers need not survive a call.</div></div>
+          <div class="step"><span class="s">ARITHMETIC</span><div>Signed division by two truncates toward zero, so use div and mflo. Main’s ×9 uses one shift and one addition.</div></div>
+        </div>
+        <h3>Assembly and first twelve get_sum fields</h3><pre>3000  get_sum:
+3000    addi $sp, $sp, -24
+3004    sw $ra, 20($sp)
+3008    sw $s0, 0($sp)
+3012    sw $s1, 4($sp)
+3016    sw $s2, 8($sp)
+3020    sw $s3, 12($sp)
+3024    sw $s4, 16($sp)
+3028    add $s0, $a0, $zero
+3032    add $s1, $a1, $zero
+3036    add $s2, $a2, $zero
+3040    addi $s3, $zero, 0
+3044    addi $s4, $zero, 0
+3048  Loop:
+3048    slt $t0, $s4, $s2
+3052    beq $t0, $zero, SumDone
+3056    add $a0, $s0, $zero
+3060    add $a1, $s4, $zero
+3064    jal check
+3068    beq $v0, $zero, Advance
+3072    sll $t0, $s4, 2
+3076    add $t1, $s0, $t0
+3080    add $t2, $s1, $t0
+3084    lw $t3, 0($t1)
+3088    lw $t4, 0($t2)
+3092    sub $t3, $t3, $t4
+3096    addi $t5, $zero, 2
+3100    div $t3, $t5
+3104    mflo $t3
+3108    add $s3, $s3, $t3
+3112    sw $s3, 0($t2)
+3116  Advance:
+3116    addi $s4, $s4, 1
+3120    j Loop
+3124  SumDone:
+3124    add $v0, $s3, $zero
+3128    lw $s4, 16($sp)
+3132    lw $s3, 12($sp)
+3136    lw $s2, 8($sp)
+3140    lw $s1, 4($sp)
+3144    lw $s0, 0($sp)
+3148    lw $ra, 20($sp)
+3152    addi $sp, $sp, 24
+3156    jr $ra
+2000  check:
+2000    andi $t0, $a1, 1
+2004    beq $t0, $zero, Even
+2008    sll $t1, $a1, 2
+2012    add $t1, $a0, $t1
+2016    lw $v0, 0($t1)
+2020    sub $v0, $v0, $a1
+2024    sw $v0, 0($t1)
+2028    jr $ra
+2032  Even:
+2032    add $v0, $zero, $zero
+2036    jr $ra
+5000  main:
+5000    addi $sp, $sp, -88  # reserve two arrays and save area
+5004    sw $ra, 84($sp)
+5008    add $a0, $sp, $zero  # a base
+5012    addi $a1, $sp, 40  # b base
+5016    addi $a2, $zero, 10
+# Valid array inputs would be needed here before get_sum reads them.
+5020    jal get_sum
+5024    sll $t0, $v0, 3
+5028    add $t0, $t0, $v0  # res × 9
+5032    add $v0, $zero, $zero
+5036    lw $ra, 84($sp)
+5040    addi $sp, $sp, 88
+5044    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>3000</code></td><td><code>addi $sp, $sp, -24</code></td><td><code>I</code></td><td><code>8, 29, 29, -24</code></td></tr>
+        <tr><td><code>3004</code></td><td><code>sw $ra, 20($sp)</code></td><td><code>I</code></td><td><code>43, 29, 31, 20</code></td></tr>
+        <tr><td><code>3008</code></td><td><code>sw $s0, 0($sp)</code></td><td><code>I</code></td><td><code>43, 29, 16, 0</code></td></tr>
+        <tr><td><code>3012</code></td><td><code>sw $s1, 4($sp)</code></td><td><code>I</code></td><td><code>43, 29, 17, 4</code></td></tr>
+        <tr><td><code>3016</code></td><td><code>sw $s2, 8($sp)</code></td><td><code>I</code></td><td><code>43, 29, 18, 8</code></td></tr>
+        <tr><td><code>3020</code></td><td><code>sw $s3, 12($sp)</code></td><td><code>I</code></td><td><code>43, 29, 19, 12</code></td></tr>
+        <tr><td><code>3024</code></td><td><code>sw $s4, 16($sp)</code></td><td><code>I</code></td><td><code>43, 29, 20, 16</code></td></tr>
+        <tr><td><code>3028</code></td><td><code>add $s0, $a0, $zero</code></td><td><code>R</code></td><td><code>0, 4, 0, 16, 0, 32</code></td></tr>
+        <tr><td><code>3032</code></td><td><code>add $s1, $a1, $zero</code></td><td><code>R</code></td><td><code>0, 5, 0, 17, 0, 32</code></td></tr>
+        <tr><td><code>3036</code></td><td><code>add $s2, $a2, $zero</code></td><td><code>R</code></td><td><code>0, 6, 0, 18, 0, 32</code></td></tr>
+        <tr><td><code>3040</code></td><td><code>addi $s3, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 19, 0</code></td></tr>
+        <tr><td><code>3044</code></td><td><code>addi $s4, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 20, 0</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Can <code>sll $t0, $s1, 40</code> be encoded as written? <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">WIDTH</span><div>No. A five-bit shamt encodes 0 to 31. The requested 40 does not fit. On a 32-bit word, a mathematical zero-fill left shift by 40 leaves no original bits; C shifts by this amount on a 32-bit operand have undefined behaviour.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="232" class="ct2-paper">
+    <h2>Summer 2023 <span class="mono">232</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate find_series_sum(n,x) at 2000 and main at 1000. Return x when n is zero; otherwise add 5x once for each i from 1 through n. Show the first eight encoded instructions. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>The listed function comes first in the question, so the eight encoded rows below start at 2000. Main supplies n=10 and x=2 and receives 100. Use a shift and add for 5x.</div></div>
+          <div class="step"><span class="s">CALL</span><div>Main saves its return address, passes its arguments, and copies the result into $t6 as r.</div></div>
+        </div>
+        <h3>Assembly and first eight function fields</h3><pre>2000  series:
+2000    addi $v0, $zero, 0
+2004    beq $a0, $zero, UseX
+2008    addi $t0, $zero, 1
+2012    sll $t1, $a1, 2
+2016    add $t1, $t1, $a1
+2020  Loop:
+2020    slt $t2, $a0, $t0
+2024    bne $t2, $zero, Done
+2028    add $v0, $v0, $t1
+2032    addi $t0, $t0, 1
+2036    j Loop
+2040  UseX:
+2040    add $v0, $a1, $zero
+2044  Done:
+2044    jr $ra
+1000  main:
+1000    addi $sp, $sp, -4
+1004    sw $ra, 0($sp)
+1008    addi $a0, $zero, 10
+1012    addi $a1, $zero, 2
+1016    addi $t6, $zero, 0
+1020    jal series
+1024    add $t6, $v0, $zero
+1028    lw $ra, 0($sp)
+1032    addi $sp, $sp, 4
+1036    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>2000</code></td><td><code>addi $v0, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 2, 0</code></td></tr>
+        <tr><td><code>2004</code></td><td><code>beq $a0, $zero, UseX</code></td><td><code>I</code></td><td><code>4, 4, 0, 8</code></td></tr>
+        <tr><td><code>2008</code></td><td><code>addi $t0, $zero, 1</code></td><td><code>I</code></td><td><code>8, 0, 8, 1</code></td></tr>
+        <tr><td><code>2012</code></td><td><code>sll $t1, $a1, 2</code></td><td><code>R</code></td><td><code>0, 0, 5, 9, 2, 0</code></td></tr>
+        <tr><td><code>2016</code></td><td><code>add $t1, $t1, $a1</code></td><td><code>R</code></td><td><code>0, 9, 5, 9, 0, 32</code></td></tr>
+        <tr><td><code>2020</code></td><td><code>slt $t2, $a0, $t0</code></td><td><code>R</code></td><td><code>0, 4, 8, 10, 0, 42</code></td></tr>
+        <tr><td><code>2024</code></td><td><code>bne $t2, $zero, Done</code></td><td><code>I</code></td><td><code>5, 10, 0, 4</code></td></tr>
+        <tr><td><code>2028</code></td><td><code>add $v0, $v0, $t1</code></td><td><code>R</code></td><td><code>0, 2, 9, 2, 0, 32</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · How many four-byte array elements can one hypothetical S-type offset reach? The C/A field has 40 bits. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">ASSUMPTION</span><div>With an unsigned byte offset, a fixed aligned base, and a sufficiently wide address space, the highest aligned offset is 2<sup>40</sup>−4. That gives 2<sup>38</sup> elements and last index 2<sup>38</sup>−1.</div></div>
+          <div class="step"><span class="s">SIGNED CASE</span><div>If the offset is signed, its nonnegative half addresses 2<sup>37</sup> elements from that base. The question does not give the address-space width or offset signedness.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+  </div>
+</article>
+
+<article class="page" id="s-ct2-middle" data-title="MIPS papers 2021–23" data-group="Exam" hidden>
+  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2021–2023</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+  <div class="ca-notes">
+    <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+<section data-paper="231" class="ct2-paper">
+    <h2>Spring 2023 <span class="mono">231</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Start s at 1. For i from n1 through n2−1, if arr[i] &lt; 5 add 5s to arr[i] and add i to s. Otherwise increment s. Return s. Encode the first ten instructions from 1000. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0/$a1 for the bounds and $s0 for the external array base. Keep the changing i and s in $t0/$t1. The update of arr[i] uses the old s.</div></div>
+          <div class="step"><span class="s">ADDRESS</span><div>Shift i left by two to find the word’s byte displacement. For 5s, add s to s shifted left by two.</div></div>
+        </div>
+        <h3>Assembly and first ten fields</h3><pre>1000  function:
+1000    add $t0, $a0, $zero
+1004    addi $t1, $zero, 1
+1008    addi $t5, $zero, 5
+1012  Loop:
+1012    slt $t2, $t0, $a1
+1016    beq $t2, $zero, Done
+1020    sll $t3, $t0, 2
+1024    add $t3, $s0, $t3
+1028    lw $t4, 0($t3)
+1032    slt $t2, $t4, $t5
+1036    beq $t2, $zero, Else
+1040    sll $t6, $t1, 2
+1044    add $t6, $t6, $t1
+1048    add $t4, $t4, $t6
+1052    sw $t4, 0($t3)
+1056    add $t1, $t1, $t0
+1060    j Next
+1064  Else:
+1064    addi $t1, $t1, 1
+1068  Next:
+1068    addi $t0, $t0, 1
+1072    j Loop
+1076  Done:
+1076    add $v0, $t1, $zero
+1080    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>add $t0, $a0, $zero</code></td><td><code>R</code></td><td><code>0, 4, 0, 8, 0, 32</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>addi $t1, $zero, 1</code></td><td><code>I</code></td><td><code>8, 0, 9, 1</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>addi $t5, $zero, 5</code></td><td><code>I</code></td><td><code>8, 0, 13, 5</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>slt $t2, $t0, $a1</code></td><td><code>R</code></td><td><code>0, 8, 5, 10, 0, 42</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>beq $t2, $zero, Done</code></td><td><code>I</code></td><td><code>4, 10, 0, 14</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>sll $t3, $t0, 2</code></td><td><code>R</code></td><td><code>0, 0, 8, 11, 2, 0</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>add $t3, $s0, $t3</code></td><td><code>R</code></td><td><code>0, 16, 11, 11, 0, 32</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>lw $t4, 0($t3)</code></td><td><code>I</code></td><td><code>35, 11, 12, 0</code></td></tr>
+        <tr><td><code>1032</code></td><td><code>slt $t2, $t4, $t5</code></td><td><code>R</code></td><td><code>0, 12, 13, 10, 0, 42</code></td></tr>
+        <tr><td><code>1036</code></td><td><code>beq $t2, $zero, Else</code></td><td><code>I</code></td><td><code>4, 10, 0, 6</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Find the maximum jump address of a hypothetical K-type with fields of 12, 10, 10 and 32 bits. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FIELD</span><div>The 32-bit C/A field has maximum unsigned value 2<sup>32</sup> − 1 = 4,294,967,295.</div></div>
+          <div class="step"><span class="s">AMBIGUITY</span><div>If the field is a byte address, that is the raw maximum and the highest aligned four-byte target is 0xFFFFFFFC. If it stores a four-byte instruction index in a wider address space, the assembled low address is 4 × (2<sup>32</sup> − 1) = 17,179,869,180 bytes. The paper does not specify the unit, instruction alignment, or address-space width.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="223" class="ct2-paper">
+    <h2>Fall 2022 <span class="mono">223</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate superFunc. Start with x = k, sum = 0, mul = 1. While x &lt; size−1, take j = array[x+1], decrease it to array[x] while multiplying mul by five, then add mul+j into sum, store sum in array[x−1], and advance x by two. Encode 1620–1648 from start 1600. <span class="src">pp. 2–3</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0–$a2 for array, size, k and the assigned $s0–$s3 for x, sum, mul, j. Assume all indices are valid, the descending j loop reaches the target, and arithmetic stays in range. Multiplying by five uses a shift and an add.</div></div>
+          <div class="step"><span class="s">RETURN</span><div>If sum &lt; mul, return sum. Otherwise return sum + mul. Both paths restore the four saved registers.</div></div>
+        </div>
+        <h3>Assembly and selected fields</h3><pre>1600  superFunc:
+1600    addi $sp, $sp, -16
+1604    sw $s0, 0($sp)
+1608    sw $s1, 4($sp)
+1612    sw $s2, 8($sp)
+1616    sw $s3, 12($sp)
+1620    add $s0, $a2, $zero
+1624    addi $s1, $zero, 0
+1628    addi $s2, $zero, 1
+1632    addi $t0, $a1, -1
+1636  Outer:
+1636    slt $t1, $s0, $t0
+1640    beq $t1, $zero, Choose
+1644    sll $t2, $s0, 2
+1648    add $t2, $a0, $t2
+1652    lw $s3, 4($t2)
+1656    lw $t3, 0($t2)
+1660  Inner:
+1660    beq $s3, $t3, Accumulate
+1664    sll $t4, $s2, 2
+1668    add $s2, $s2, $t4
+1672    addi $s3, $s3, -1
+1676    j Inner
+1680  Accumulate:
+1680    add $t4, $s2, $s3
+1684    add $s1, $s1, $t4
+1688    sw $s1, -4($t2)
+1692    addi $s0, $s0, 2
+1696    j Outer
+1700  Choose:
+1700    slt $t1, $s1, $s2
+1704    add $v0, $s1, $zero
+1708    bne $t1, $zero, Done
+1712    add $v0, $s1, $s2
+1716  Done:
+1716    lw $s3, 12($sp)
+1720    lw $s2, 8($sp)
+1724    lw $s1, 4($sp)
+1728    lw $s0, 0($sp)
+1732    addi $sp, $sp, 16
+1736    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1620</code></td><td><code>add $s0, $a2, $zero</code></td><td><code>R</code></td><td><code>0, 6, 0, 16, 0, 32</code></td></tr>
+        <tr><td><code>1624</code></td><td><code>addi $s1, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 17, 0</code></td></tr>
+        <tr><td><code>1628</code></td><td><code>addi $s2, $zero, 1</code></td><td><code>I</code></td><td><code>8, 0, 18, 1</code></td></tr>
+        <tr><td><code>1632</code></td><td><code>addi $t0, $a1, -1</code></td><td><code>I</code></td><td><code>8, 5, 8, -1</code></td></tr>
+        <tr><td><code>1636</code></td><td><code>slt $t1, $s0, $t0</code></td><td><code>R</code></td><td><code>0, 16, 8, 9, 0, 42</code></td></tr>
+        <tr><td><code>1640</code></td><td><code>beq $t1, $zero, Choose</code></td><td><code>I</code></td><td><code>4, 9, 0, 14</code></td></tr>
+        <tr><td><code>1644</code></td><td><code>sll $t2, $s0, 2</code></td><td><code>R</code></td><td><code>0, 0, 16, 10, 2, 0</code></td></tr>
+        <tr><td><code>1648</code></td><td><code>add $t2, $a0, $t2</code></td><td><code>R</code></td><td><code>0, 4, 10, 10, 0, 32</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Load A[9], add six and store in A[4] for doubleword elements at base $s3. <span class="src">pp. 2–3</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>Use the written indices 9 and 4. In byte-addressed MIPS64 the offsets are 9×8 = 72 and 4×8 = 32. In a hypothetical doubleword-addressed ISA those offsets are 9 and 4 address units, using that ISA’s doubleword load/store operations.</div></div>
+        </div>
+        <h3>Byte-addressed assembly</h3><pre>  ld $t0, 72($s3)
+  daddiu $t0, $t0, 6
+  sd $t0, 32($s3)</pre>
+      </div>
+    </details>
+  </section>
+<section data-paper="222" class="ct2-paper">
+    <h2>Summer 2022 <span class="mono">222</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Double every positive element in a[] and return the sum of the updated positive elements. Sum and i are in $s1 and $s2. Give the first eight fields from 1000. <span class="src">pp. 2–4</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0/$a1 for base and length. Check i &lt; n before a load. Compare 0 &lt; element, double the positive value, store it, and add it to the sum. Increment i on both paths.</div></div>
+        </div>
+        <h3>Assembly and first eight fields</h3><pre>1000  pos_sum:
+1000    addi $sp, $sp, -8
+1004    sw $s1, 0($sp)
+1008    sw $s2, 4($sp)
+1012    addi $s1, $zero, 0
+1016    addi $s2, $zero, 0
+1020  Loop:
+1020    slt $t0, $s2, $a1
+1024    beq $t0, $zero, Done
+1028    sll $t1, $s2, 2
+1032    add $t1, $a0, $t1
+1036    lw $t2, 0($t1)
+1040    slt $t0, $zero, $t2
+1044    beq $t0, $zero, Next
+1048    sll $t2, $t2, 1
+1052    sw $t2, 0($t1)
+1056    add $s1, $s1, $t2
+1060  Next:
+1060    addi $s2, $s2, 1
+1064    j Loop
+1068  Done:
+1068    add $v0, $s1, $zero
+1072    lw $s2, 4($sp)
+1076    lw $s1, 0($sp)
+1080    addi $sp, $sp, 8
+1084    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>addi $sp, $sp, -8</code></td><td><code>I</code></td><td><code>8, 29, 29, -8</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>sw $s1, 0($sp)</code></td><td><code>I</code></td><td><code>43, 29, 17, 0</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>sw $s2, 4($sp)</code></td><td><code>I</code></td><td><code>43, 29, 18, 4</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>addi $s1, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 17, 0</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>addi $s2, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 18, 0</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>slt $t0, $s2, $a1</code></td><td><code>R</code></td><td><code>0, 18, 5, 8, 0, 42</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>beq $t0, $zero, Done</code></td><td><code>I</code></td><td><code>4, 8, 0, 10</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>sll $t1, $s2, 2</code></td><td><code>R</code></td><td><code>0, 0, 18, 9, 2, 0</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Give the address of A[9] when A starts at $s3 and elements are doublewords. <span class="src">pp. 2–4</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>Use explicit index 9. In zero-based C that is the tenth element. If the ISA literally numbers doubleword addresses, add 9 address units with <code>addi $t0, $s3, 9</code>. In a byte-addressed ISA with eight-byte elements, use <code>addi $t0, $s3, 72</code> for the address. For a full doubleword load in MIPS64, use <code>ld $t0, 72($s3)</code>.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="221" class="ct2-paper">
+    <h2>Spring 2022 <span class="mono">221</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Sum arr[i] for lower bound low ≤ i &lt; high, with $s0 holding the base and $s1/$s2 holding i/sum. Encode the first 15 instructions from 1000. <span class="src">p. 2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $a0 for low and $a1 for high. The upper bound is exclusive. Preserve $s1 and $s2 because the function changes them.</div></div>
+        </div>
+        <h3>Assembly and first 15 fields</h3><pre>1000  func:
+1000    addi $sp, $sp, -8
+1004    sw $s1, 0($sp)
+1008    sw $s2, 4($sp)
+1012    add $s1, $a0, $zero
+1016    addi $s2, $zero, 0
+1020  Loop:
+1020    slt $t0, $s1, $a1
+1024    beq $t0, $zero, Done
+1028    sll $t1, $s1, 2
+1032    add $t1, $s0, $t1
+1036    lw $t2, 0($t1)
+1040    add $s2, $s2, $t2
+1044    addi $s1, $s1, 1
+1048    j Loop
+1052  Done:
+1052    add $v0, $s2, $zero
+1056    lw $s2, 4($sp)
+1060    lw $s1, 0($sp)
+1064    addi $sp, $sp, 8
+1068    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>addi $sp, $sp, -8</code></td><td><code>I</code></td><td><code>8, 29, 29, -8</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>sw $s1, 0($sp)</code></td><td><code>I</code></td><td><code>43, 29, 17, 0</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>sw $s2, 4($sp)</code></td><td><code>I</code></td><td><code>43, 29, 18, 4</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>add $s1, $a0, $zero</code></td><td><code>R</code></td><td><code>0, 4, 0, 17, 0, 32</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>addi $s2, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 18, 0</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>slt $t0, $s1, $a1</code></td><td><code>R</code></td><td><code>0, 17, 5, 8, 0, 42</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>beq $t0, $zero, Done</code></td><td><code>I</code></td><td><code>4, 8, 0, 6</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>sll $t1, $s1, 2</code></td><td><code>R</code></td><td><code>0, 0, 17, 9, 2, 0</code></td></tr>
+        <tr><td><code>1032</code></td><td><code>add $t1, $s0, $t1</code></td><td><code>R</code></td><td><code>0, 16, 9, 9, 0, 32</code></td></tr>
+        <tr><td><code>1036</code></td><td><code>lw $t2, 0($t1)</code></td><td><code>I</code></td><td><code>35, 9, 10, 0</code></td></tr>
+        <tr><td><code>1040</code></td><td><code>add $s2, $s2, $t2</code></td><td><code>R</code></td><td><code>0, 18, 10, 18, 0, 32</code></td></tr>
+        <tr><td><code>1044</code></td><td><code>addi $s1, $s1, 1</code></td><td><code>I</code></td><td><code>8, 17, 17, 1</code></td></tr>
+        <tr><td><code>1048</code></td><td><code>j Loop</code></td><td><code>J</code></td><td><code>2, 255</code></td></tr>
+        <tr><td><code>1052</code></td><td><code>add $v0, $s2, $zero</code></td><td><code>R</code></td><td><code>0, 18, 0, 2, 0, 32</code></td></tr>
+        <tr><td><code>1056</code></td><td><code>lw $s2, 4($sp)</code></td><td><code>I</code></td><td><code>35, 29, 18, 4</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Does having only 32 registers limit an array to 32 elements? Explain the largest reachable index. <span class="src">p. 2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">STORAGE</span><div>Arrays live in memory. Registers hold a base address, an index or offset, and a value being used. Calculate base + 4i and use lw or sw.</div></div>
+          <div class="step"><span class="s">LIMITS</span><div>One normal signed 16-bit offset from a fixed base can reach aligned offsets 0 through 32764, for a largest nonnegative index of 8191. Computing the full address in a register removes that immediate limit. A full theoretical 32-bit byte address space holds 2<sup>30</sup> four-byte words, so an array starting at zero would have last index 2<sup>30</sup>−1. Real address maps make the usable size smaller.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="213" class="ct2-paper">
+    <h2>Fall 2021 <span class="mono">213</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Sum arr[lower] through arr[higher], including both ends. Use current and sum in $s0/$s1, the arr base in $s2, and the given start address 2400. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>$a0 is higher and $a1 is lower. Keep $s2 unchanged. Stop when higher is less than current, otherwise load at base plus four times current.</div></div>
+          <div class="step"><span class="s">ASSEMBLER</span><div>The machine code below is for the displayed listing. The address fields follow the branch and J-type rules from Lecture 7.</div></div>
+        </div>
+        <h3>Assembly and machine code</h3><pre>2400  func:
+2400    addi $sp, $sp, -8
+2404    sw $s0, 0($sp)
+2408    sw $s1, 4($sp)
+2412    add $s0, $a1, $zero
+2416    addi $s1, $zero, 0
+2420  Loop:
+2420    slt $t0, $a0, $s0
+2424    bne $t0, $zero, Done
+2428    sll $t1, $s0, 2
+2432    add $t1, $s2, $t1
+2436    lw $t2, 0($t1)
+2440    add $s1, $s1, $t2
+2444    addi $s0, $s0, 1
+2448    j Loop
+2452  Done:
+2452    add $v0, $s1, $zero
+2456    lw $s1, 4($sp)
+2460    lw $s0, 0($sp)
+2464    addi $sp, $sp, 8
+2468    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Binary</th><th scope="col">Hex</th></tr></thead><tbody>
+        <tr><td><code>2400</code></td><td><code>addi $sp, $sp, -8</code></td><td><code>I</code></td><td><code>8, 29, 29, -8</code></td><td><code>001000 11101 11101 1111111111111000</code></td><td><code>0x23BDFFF8</code></td></tr>
+        <tr><td><code>2404</code></td><td><code>sw $s0, 0($sp)</code></td><td><code>I</code></td><td><code>43, 29, 16, 0</code></td><td><code>101011 11101 10000 0000000000000000</code></td><td><code>0xAFB00000</code></td></tr>
+        <tr><td><code>2408</code></td><td><code>sw $s1, 4($sp)</code></td><td><code>I</code></td><td><code>43, 29, 17, 4</code></td><td><code>101011 11101 10001 0000000000000100</code></td><td><code>0xAFB10004</code></td></tr>
+        <tr><td><code>2412</code></td><td><code>add $s0, $a1, $zero</code></td><td><code>R</code></td><td><code>0, 5, 0, 16, 0, 32</code></td><td><code>000000 00101 00000 10000 00000 100000</code></td><td><code>0x00A08020</code></td></tr>
+        <tr><td><code>2416</code></td><td><code>addi $s1, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 17, 0</code></td><td><code>001000 00000 10001 0000000000000000</code></td><td><code>0x20110000</code></td></tr>
+        <tr><td><code>2420</code></td><td><code>slt $t0, $a0, $s0</code></td><td><code>R</code></td><td><code>0, 4, 16, 8, 0, 42</code></td><td><code>000000 00100 10000 01000 00000 101010</code></td><td><code>0x0090402A</code></td></tr>
+        <tr><td><code>2424</code></td><td><code>bne $t0, $zero, Done</code></td><td><code>I</code></td><td><code>5, 8, 0, 6</code></td><td><code>000101 01000 00000 0000000000000110</code></td><td><code>0x15000006</code></td></tr>
+        <tr><td><code>2428</code></td><td><code>sll $t1, $s0, 2</code></td><td><code>R</code></td><td><code>0, 0, 16, 9, 2, 0</code></td><td><code>000000 00000 10000 01001 00010 000000</code></td><td><code>0x00104880</code></td></tr>
+        <tr><td><code>2432</code></td><td><code>add $t1, $s2, $t1</code></td><td><code>R</code></td><td><code>0, 18, 9, 9, 0, 32</code></td><td><code>000000 10010 01001 01001 00000 100000</code></td><td><code>0x02494820</code></td></tr>
+        <tr><td><code>2436</code></td><td><code>lw $t2, 0($t1)</code></td><td><code>I</code></td><td><code>35, 9, 10, 0</code></td><td><code>100011 01001 01010 0000000000000000</code></td><td><code>0x8D2A0000</code></td></tr>
+        <tr><td><code>2440</code></td><td><code>add $s1, $s1, $t2</code></td><td><code>R</code></td><td><code>0, 17, 10, 17, 0, 32</code></td><td><code>000000 10001 01010 10001 00000 100000</code></td><td><code>0x022A8820</code></td></tr>
+        <tr><td><code>2444</code></td><td><code>addi $s0, $s0, 1</code></td><td><code>I</code></td><td><code>8, 16, 16, 1</code></td><td><code>001000 10000 10000 0000000000000001</code></td><td><code>0x22100001</code></td></tr>
+        <tr><td><code>2448</code></td><td><code>j Loop</code></td><td><code>J</code></td><td><code>2, 605</code></td><td><code>000010 00000000000000001001011101</code></td><td><code>0x0800025D</code></td></tr>
+        <tr><td><code>2452</code></td><td><code>add $v0, $s1, $zero</code></td><td><code>R</code></td><td><code>0, 17, 0, 2, 0, 32</code></td><td><code>000000 10001 00000 00010 00000 100000</code></td><td><code>0x02201020</code></td></tr>
+        <tr><td><code>2456</code></td><td><code>lw $s1, 4($sp)</code></td><td><code>I</code></td><td><code>35, 29, 17, 4</code></td><td><code>100011 11101 10001 0000000000000100</code></td><td><code>0x8FB10004</code></td></tr>
+        <tr><td><code>2460</code></td><td><code>lw $s0, 0($sp)</code></td><td><code>I</code></td><td><code>35, 29, 16, 0</code></td><td><code>100011 11101 10000 0000000000000000</code></td><td><code>0x8FB00000</code></td></tr>
+        <tr><td><code>2464</code></td><td><code>addi $sp, $sp, 8</code></td><td><code>I</code></td><td><code>8, 29, 29, 8</code></td><td><code>001000 11101 11101 0000000000001000</code></td><td><code>0x23BD0008</code></td></tr>
+        <tr><td><code>2468</code></td><td><code>jr $ra</code></td><td><code>R</code></td><td><code>0, 31, 0, 0, 0, 8</code></td><td><code>000000 11111 00000 00000 00000 001000</code></td><td><code>0x03E00008</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c, d) · Describe how main calls this function. Find the highest value for a hypothetical branch with a 10-bit address field. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">CALL</span><div>Set $a0 = higher and $a1 = lower, then use <code>jal func</code>. The callee returns with jr $ra. If main must itself return, save its old $ra before jal.</div></div>
+          <div class="step"><span class="s">AMBIGUITY</span><div>A MIPS-style signed 10-bit offset has maximum +511 instruction words, or +2044 bytes from PC+4 for four-byte instructions. If the paper simply means the largest unsigned pattern in the field, that is 1023. The target address cannot be given without the current PC and the addressing rule.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+<section data-paper="212" class="ct2-paper">
+    <h2>Summer 2021 <span class="mono">212</span></h2>
+    <details class="wk"><summary>Q2(a, b) · Translate the leaf function with x initially 2 and i running from 0 through 4. Add i to x, subtract 10 if x &lt; 5, then increment x. Show all decimal fields from address 1000. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>The paper puts n in $a0, x in $s0 and i in $s1. The code never reads n. Save both modified $s registers, and use a temporary register holding 5 for both tests.</div></div>
+          <div class="step"><span class="s">TRACE</span><div>At the end of the five passes x is −7, −15, −22, −28, and −33. Copy the final value to $v0 before restoring $s0.</div></div>
+        </div>
+        <h3>Assembly and fields</h3><pre>1000    addi $sp, $sp, -8
+1004    sw $s0, 0($sp)
+1008    sw $s1, 4($sp)
+1012    addi $s0, $zero, 2
+1016    addi $s1, $zero, 0
+1020    addi $t1, $zero, 5
+1024  Loop:
+1024    beq $s1, $t1, Done
+1028    add $s0, $s0, $s1
+1032    slt $t0, $s0, $t1
+1036    beq $t0, $zero, Inc
+1040    addi $s0, $s0, -10
+1044  Inc:
+1044    addi $s0, $s0, 1
+1048    addi $s1, $s1, 1
+1052    j Loop
+1056  Done:
+1056    add $v0, $s0, $zero
+1060    lw $s1, 4($sp)
+1064    lw $s0, 0($sp)
+1068    addi $sp, $sp, 8
+1072    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th></tr></thead><tbody>
+        <tr><td><code>1000</code></td><td><code>addi $sp, $sp, -8</code></td><td><code>I</code></td><td><code>8, 29, 29, -8</code></td></tr>
+        <tr><td><code>1004</code></td><td><code>sw $s0, 0($sp)</code></td><td><code>I</code></td><td><code>43, 29, 16, 0</code></td></tr>
+        <tr><td><code>1008</code></td><td><code>sw $s1, 4($sp)</code></td><td><code>I</code></td><td><code>43, 29, 17, 4</code></td></tr>
+        <tr><td><code>1012</code></td><td><code>addi $s0, $zero, 2</code></td><td><code>I</code></td><td><code>8, 0, 16, 2</code></td></tr>
+        <tr><td><code>1016</code></td><td><code>addi $s1, $zero, 0</code></td><td><code>I</code></td><td><code>8, 0, 17, 0</code></td></tr>
+        <tr><td><code>1020</code></td><td><code>addi $t1, $zero, 5</code></td><td><code>I</code></td><td><code>8, 0, 9, 5</code></td></tr>
+        <tr><td><code>1024</code></td><td><code>beq $s1, $t1, Done</code></td><td><code>I</code></td><td><code>4, 17, 9, 7</code></td></tr>
+        <tr><td><code>1028</code></td><td><code>add $s0, $s0, $s1</code></td><td><code>R</code></td><td><code>0, 16, 17, 16, 0, 32</code></td></tr>
+        <tr><td><code>1032</code></td><td><code>slt $t0, $s0, $t1</code></td><td><code>R</code></td><td><code>0, 16, 9, 8, 0, 42</code></td></tr>
+        <tr><td><code>1036</code></td><td><code>beq $t0, $zero, Inc</code></td><td><code>I</code></td><td><code>4, 8, 0, 1</code></td></tr>
+        <tr><td><code>1040</code></td><td><code>addi $s0, $s0, -10</code></td><td><code>I</code></td><td><code>8, 16, 16, -10</code></td></tr>
+        <tr><td><code>1044</code></td><td><code>addi $s0, $s0, 1</code></td><td><code>I</code></td><td><code>8, 16, 16, 1</code></td></tr>
+        <tr><td><code>1048</code></td><td><code>addi $s1, $s1, 1</code></td><td><code>I</code></td><td><code>8, 17, 17, 1</code></td></tr>
+        <tr><td><code>1052</code></td><td><code>j Loop</code></td><td><code>J</code></td><td><code>2, 256</code></td></tr>
+        <tr><td><code>1056</code></td><td><code>add $v0, $s0, $zero</code></td><td><code>R</code></td><td><code>0, 16, 0, 2, 0, 32</code></td></tr>
+        <tr><td><code>1060</code></td><td><code>lw $s1, 4($sp)</code></td><td><code>I</code></td><td><code>35, 29, 17, 4</code></td></tr>
+        <tr><td><code>1064</code></td><td><code>lw $s0, 0($sp)</code></td><td><code>I</code></td><td><code>35, 29, 16, 0</code></td></tr>
+        <tr><td><code>1068</code></td><td><code>addi $sp, $sp, 8</code></td><td><code>I</code></td><td><code>8, 29, 29, 8</code></td></tr>
+        <tr><td><code>1072</code></td><td><code>jr $ra</code></td><td><code>R</code></td><td><code>0, 31, 0, 0, 0, 8</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · What is the largest value possible in a J-type jump? <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FIELD</span><div>The unsigned 26-bit field reaches 2<sup>26</sup> − 1 = 67,108,863.</div></div>
+          <div class="step"><span class="s">ADDRESS</span><div>After appending two zero bits, the largest byte offset within the PC+4 region is 0x0FFFFFFC. For low-region examples this is the maximum target. The full address also includes the high four bits from PC+4, so there is no single global distance from the current instruction.</div></div>
+        </div>
+
+      </div>
+    </details>
+  </section>
+  </div>
+</article>
+
+<article class="page" id="s-ct2-early" data-title="MIPS papers 2017–19" data-group="Exam" hidden>
+  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2017–2019</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+  <div class="ca-notes">
+    <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+<section data-paper="192" class="ct2-paper">
+    <h2>Summer 2019 <span class="mono">192</span></h2>
+    <details class="wk"><summary>Q2(a) · Find the two largest values in an array of ten. Start with the first two, order them, then compare each remaining element. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0 for the base and $s1/$s2 for the largest values. On a new largest, first move the previous largest into second place. Otherwise, replace the second only if the current value is larger. This follows the paper’s treatment of ties.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  lw $s1, 0($s0)
+  lw $s2, 4($s0)
+  slt $t0, $s1, $s2
+  beq $t0, $zero, Init
+  add $t1, $s1, $zero
+  add $s1, $s2, $zero
+  add $s2, $t1, $zero
+Init:
+  addi $t2, $zero, 2
+Loop:
+  slti $t0, $t2, 10
+  beq $t0, $zero, Done
+  sll $t3, $t2, 2
+  add $t3, $s0, $t3
+  lw $t4, 0($t3)
+  slt $t0, $t4, $s1
+  bne $t0, $zero, TrySecond
+  add $s2, $s1, $zero
+  add $s1, $t4, $zero
+  j Next
+TrySecond:
+  slt $t0, $s2, $t4
+  beq $t0, $zero, Next
+  add $s2, $t4, $zero
+Next:
+  addi $t2, $t2, 1
+  j Loop
+Done:</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Encode <code>c = b + a--; A[a] = ++c;</code>. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">ORDER</span><div>Use $s0, $s1, $s2, $s3 for a, b, c and the array base. Post-decrement uses the old a in the sum. Pre-increment updates c before the store. Use the new a for the offset.</div></div>
+        </div>
+        <h3>Assembly and binary</h3><pre>   0    add $s2, $s1, $s0
+   4    addi $s0, $s0, -1
+   8    addi $s2, $s2, 1
+  12    sll $t0, $s0, 2
+  16    add $t0, $s3, $t0
+  20    sw $s2, 0($t0)</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Binary</th></tr></thead><tbody>
+        <tr><td><code>0</code></td><td><code>add $s2, $s1, $s0</code></td><td><code>R</code></td><td><code>0, 17, 16, 18, 0, 32</code></td><td><code>000000 10001 10000 10010 00000 100000</code></td></tr>
+        <tr><td><code>4</code></td><td><code>addi $s0, $s0, -1</code></td><td><code>I</code></td><td><code>8, 16, 16, -1</code></td><td><code>001000 10000 10000 1111111111111111</code></td></tr>
+        <tr><td><code>8</code></td><td><code>addi $s2, $s2, 1</code></td><td><code>I</code></td><td><code>8, 18, 18, 1</code></td><td><code>001000 10010 10010 0000000000000001</code></td></tr>
+        <tr><td><code>12</code></td><td><code>sll $t0, $s0, 2</code></td><td><code>R</code></td><td><code>0, 0, 16, 8, 2, 0</code></td><td><code>000000 00000 10000 01000 00010 000000</code></td></tr>
+        <tr><td><code>16</code></td><td><code>add $t0, $s3, $t0</code></td><td><code>R</code></td><td><code>0, 19, 8, 8, 0, 32</code></td><td><code>000000 10011 01000 01000 00000 100000</code></td></tr>
+        <tr><td><code>20</code></td><td><code>sw $s2, 0($t0)</code></td><td><code>I</code></td><td><code>43, 8, 18, 0</code></td><td><code>101011 01000 10010 0000000000000000</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c, d) · Translate recursive sum(num), which returns num itself when num ≤ 0. Explain what makes $zero useful. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">BASE</span><div>For zero or a negative input, copy $a0 into $v0. For positive input save it before calling with n−1.</div></div>
+          <div class="step"><span class="s">ZERO</span><div>$zero always reads as 0. It helps copy registers, compare with zero and form constants. Instructions such as addi can create other small constants without dedicating a register to each one.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>sum:
+  slt $t0, $zero, $a0
+  beq $t0, $zero, Base
+  addi $sp, $sp, -8
+  sw $a0, 0($sp)
+  sw $ra, 4($sp)
+  addi $a0, $a0, -1
+  jal sum
+  lw $t0, 0($sp)
+  add $v0, $v0, $t0
+  lw $ra, 4($sp)
+  addi $sp, $sp, 8
+  jr $ra
+Base:
+  add $v0, $a0, $zero
+  jr $ra</pre>
+      </div>
+    </details>
+  </section>
+<section data-paper="191" class="ct2-paper">
+    <h2>Spring 2019 <span class="mono">191</span></h2>
+    <details class="wk"><summary>Q2(a) · Search ten words for 3, setting found and index on a match. Start with found = 0 and index = −1. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0 for the array base, $t0 for i, $t1 for found and $t2 for index. Continue scanning after a match, so the final index is the last match.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  addi $t0, $zero, 0
+  addi $t1, $zero, 0
+  addi $t2, $zero, -1
+  addi $t3, $zero, 3
+Loop:
+  slti $t4, $t0, 10
+  beq $t4, $zero, Done
+  sll $t5, $t0, 2
+  add $t5, $s0, $t5
+  lw $t6, 0($t5)
+  bne $t6, $t3, Next
+  addi $t1, $zero, 1
+  add $t2, $t0, $zero
+Next:
+  addi $t0, $t0, 1
+  j Loop
+Done:</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Translate recursive add(n), which returns 0 for n ≤ 0 and n + add(n−1) otherwise. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FRAME</span><div>Save the original n and $ra in two stack words before the call. Test n > 0 by checking whether 0 < n.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>sum:
+  slt $t0, $zero, $a0
+  beq $t0, $zero, Base
+  addi $sp, $sp, -8
+  sw $a0, 0($sp)
+  sw $ra, 4($sp)
+  addi $a0, $a0, -1
+  jal sum
+  lw $t0, 0($sp)
+  add $v0, $v0, $t0
+  lw $ra, 4($sp)
+  addi $sp, $sp, 8
+  jr $ra
+Base:
+  add $v0, $zero, $zero
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(c) · Choose c = a + b if both are nonnegative, a − b if only a is nonnegative, b − a if only b is nonnegative, and 0 otherwise. Finally clear a and b. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">CONDITION</span><div>Use $s0, $s1, $s2 for a, b, c. Test each input against zero and send every case to the clearing step.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  slt $t0, $s0, $zero
+  slt $t1, $s1, $zero
+  bne $t0, $zero, NegA
+  bne $t1, $zero, OnlyA
+  add $s2, $s0, $s1
+  j Clear
+OnlyA:
+  sub $s2, $s0, $s1
+  j Clear
+NegA:
+  bne $t1, $zero, BothNegative
+  sub $s2, $s1, $s0
+  j Clear
+BothNegative:
+  add $s2, $zero, $zero
+Clear:
+  add $s0, $zero, $zero
+  add $s1, $zero, $zero</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(d) · Encode <code>c = b &lt;&lt; 3; a -= 3; A[3] = B[3] + a;</code>. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0, $s1, $s2 for a, b, c and $s3, $s4 for the two bases. The third index has byte offset 12.</div></div>
+        </div>
+        <h3>Assembly and binary</h3><pre>   0    sll $s2, $s1, 3
+   4    addi $s0, $s0, -3
+   8    lw $t0, 12($s4)
+  12    add $t0, $t0, $s0
+  16    sw $t0, 12($s3)</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Binary</th></tr></thead><tbody>
+        <tr><td><code>0</code></td><td><code>sll $s2, $s1, 3</code></td><td><code>R</code></td><td><code>0, 0, 17, 18, 3, 0</code></td><td><code>000000 00000 10001 10010 00011 000000</code></td></tr>
+        <tr><td><code>4</code></td><td><code>addi $s0, $s0, -3</code></td><td><code>I</code></td><td><code>8, 16, 16, -3</code></td><td><code>001000 10000 10000 1111111111111101</code></td></tr>
+        <tr><td><code>8</code></td><td><code>lw $t0, 12($s4)</code></td><td><code>I</code></td><td><code>35, 20, 8, 12</code></td><td><code>100011 10100 01000 0000000000001100</code></td></tr>
+        <tr><td><code>12</code></td><td><code>add $t0, $t0, $s0</code></td><td><code>R</code></td><td><code>0, 8, 16, 8, 0, 32</code></td><td><code>000000 01000 10000 01000 00000 100000</code></td></tr>
+        <tr><td><code>16</code></td><td><code>sw $t0, 12($s3)</code></td><td><code>I</code></td><td><code>43, 19, 8, 12</code></td><td><code>101011 10011 01000 0000000000001100</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+  </section>
+<section data-paper="182" class="ct2-paper">
+    <h2>Summer 2018 <span class="mono">182</span></h2>
+    <details class="wk"><summary>Q1(a–c) · Translate the printed gcd function, trace $v0, $sp and $ra for inputs 35 and 14, and encode its final return. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">AMBIGUITY</span><div>The paper prints <code>return (a-b,b)</code> and <code>return (a,b-a)</code> without a function name. Literally these are C comma expressions. The first yields b and the second yields b−a. With 35 and 14 the literal function returns 14 with unchanged $sp = 2000 and $ra = 1032. The name gcd suggests the intended expressions are recursive calls, which is the separate solution below.</div></div>
+          <div class="step"><span class="s">TRACE</span><div>Under the recursive reading the pairs are (35,14), (21,14), (7,14), (7,7). At those function entries $sp is 2000, 1996, 1992, 1988 and $ra is 1032, 140, 140, 128 for this listing. $v0 starts at 0, becomes 7 in the base case and stays 7 while the saved addresses are restored. At final return $sp = 2000, $ra = 1032 and $v0 = 7.</div></div>
+          <div class="step"><span class="s">RETURN</span><div>For either solution, jr $ra uses (0,31,0,0,0,8) and encodes to 0x03E00008.</div></div>
+        </div>
+        <h3>Literal C reading</h3><pre>  beq $a0, $a1, GiveB
+  slt $t0, $a1, $a0
+  bne $t0, $zero, GiveB
+  sub $v0, $a1, $a0
+  j Return
+GiveB:
+  add $v0, $a1, $zero
+Return:
+  jr $ra</pre>
+        <h3>Intended recursive reading</h3><pre> 100  gcd:
+ 100    beq $a0, $a1, Equal
+ 104    addi $sp, $sp, -4
+ 108    sw $ra, 0($sp)
+ 112    slt $t0, $a1, $a0
+ 116    bne $t0, $zero, ReduceA
+ 120    sub $a1, $a1, $a0
+ 124    jal gcd
+ 128    j Restore
+ 132  ReduceA:
+ 132    sub $a0, $a0, $a1
+ 136    jal gcd
+ 140  Restore:
+ 140    lw $ra, 0($sp)
+ 144    addi $sp, $sp, 4
+ 148    j Return
+ 152  Equal:
+ 152    add $v0, $a1, $zero
+ 156  Return:
+ 156    jr $ra</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Hex</th></tr></thead><tbody>
+        <tr><td><code>156</code></td><td><code>jr $ra</code></td><td><code>R</code></td><td><code>0, 31, 0, 0, 0, 8</code></td><td><code>0x03E00008</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+  </section>
+<section data-paper="181" class="ct2-paper">
+    <h2>Spring 2018 <span class="mono">181</span></h2>
+    <details class="wk"><summary>Q3(a, b) · Encode <code>F = A + B - C; Arr[20] = Arr[5] - F;</code>. Give two issues with using the same field layout for R and I instructions. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0–$s4 for A, B, C, F and the Arr base. Arr[5] starts at byte offset 20. Arr[20] starts at offset 80.</div></div>
+          <div class="step"><span class="s">TABLE ERROR</span><div>The printed SW opcode 85 exceeds six bits. Use 43.</div></div>
+          <div class="step"><span class="s">LAYOUT</span><div>R needs two source registers and a third register for the result. I needs two register fields and a wide immediate. Forcing a shared layout would give up either some register/operation fields or immediate range, or would require lengthening the instruction.</div></div>
+        </div>
+        <h3>Assembly and binary</h3><pre>   0    add $t0, $s0, $s1
+   4    sub $s3, $t0, $s2
+   8    lw $t1, 20($s4)
+  12    sub $t1, $t1, $s3
+  16    sw $t1, 80($s4)</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Binary</th></tr></thead><tbody>
+        <tr><td><code>0</code></td><td><code>add $t0, $s0, $s1</code></td><td><code>R</code></td><td><code>0, 16, 17, 8, 0, 32</code></td><td><code>000000 10000 10001 01000 00000 100000</code></td></tr>
+        <tr><td><code>4</code></td><td><code>sub $s3, $t0, $s2</code></td><td><code>R</code></td><td><code>0, 8, 18, 19, 0, 34</code></td><td><code>000000 01000 10010 10011 00000 100010</code></td></tr>
+        <tr><td><code>8</code></td><td><code>lw $t1, 20($s4)</code></td><td><code>I</code></td><td><code>35, 20, 9, 20</code></td><td><code>100011 10100 01001 0000000000010100</code></td></tr>
+        <tr><td><code>12</code></td><td><code>sub $t1, $t1, $s3</code></td><td><code>R</code></td><td><code>0, 9, 19, 9, 0, 34</code></td><td><code>000000 01001 10011 01001 00000 100010</code></td></tr>
+        <tr><td><code>16</code></td><td><code>sw $t1, 80($s4)</code></td><td><code>I</code></td><td><code>43, 20, 9, 80</code></td><td><code>101011 10100 01001 0000000001010000</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q4 · Translate main calling add(4,5), where add returns 0 at n = 0 and otherwise adds m to add(n − 1,m). <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FRAME</span><div>Use $a0 for n and $a1 for m. Each non-base call saves m and $ra. Main copies the result 20, sets its own return value to 0 and restores its incoming $ra.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>main:
+  addi $sp, $sp, -4
+  sw $ra, 0($sp)
+  addi $a0, $zero, 4
+  addi $a1, $zero, 5
+  jal add_rec
+  add $t0, $v0, $zero
+  addi $v0, $zero, 0
+  lw $ra, 0($sp)
+  addi $sp, $sp, 4
+  jr $ra
+add_rec:
+  beq $a0, $zero, Base
+  addi $sp, $sp, -8
+  sw $a1, 0($sp)
+  sw $ra, 4($sp)
+  addi $a0, $a0, -1
+  jal add_rec
+  lw $t0, 0($sp)
+  add $v0, $v0, $t0
+  lw $ra, 4($sp)
+  addi $sp, $sp, 8
+  jr $ra
+Base:
+  add $v0, $zero, $zero
+  jr $ra</pre>
+      </div>
+    </details>
+  </section>
+<section data-paper="173" class="ct2-paper">
+    <h2>Fall 2017 <span class="mono">173</span></h2>
+    <details class="wk"><summary>Q2(a) · Encode <code>a[0] = b &lt;&lt; 2; d = a[0] + c[2];</code> using $s0 through $s3 for a, b, c, d. <span class="src">p. 1</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">OFFSETS</span><div>a[0] is at offset 0 and c[2] at offset 8. The shifted result is still in $t0 after the store, so it can be used directly.</div></div>
+          <div class="step"><span class="s">TABLE ERROR</span><div>The paper lists SW opcode 85, which cannot fit in six bits. Use the standard SW opcode 43 from Lecture 7.</div></div>
+        </div>
+        <h3>Assembly and binary</h3><pre>   0    sll $t0, $s1, 2
+   4    sw $t0, 0($s0)
+   8    lw $t1, 8($s2)
+  12    add $s3, $t0, $t1</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Binary</th></tr></thead><tbody>
+        <tr><td><code>0</code></td><td><code>sll $t0, $s1, 2</code></td><td><code>R</code></td><td><code>0, 0, 17, 8, 2, 0</code></td><td><code>000000 00000 10001 01000 00010 000000</code></td></tr>
+        <tr><td><code>4</code></td><td><code>sw $t0, 0($s0)</code></td><td><code>I</code></td><td><code>43, 16, 8, 0</code></td><td><code>101011 10000 01000 0000000000000000</code></td></tr>
+        <tr><td><code>8</code></td><td><code>lw $t1, 8($s2)</code></td><td><code>I</code></td><td><code>35, 18, 9, 8</code></td><td><code>100011 10010 01001 0000000000001000</code></td></tr>
+        <tr><td><code>12</code></td><td><code>add $s3, $t0, $t1</code></td><td><code>R</code></td><td><code>0, 8, 9, 19, 0, 32</code></td><td><code>000000 01000 01001 10011 00000 100000</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Translate the recursive Fibonacci function where both base cases return 1. <span class="src">p. 1</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">FRAME</span><div>Assume a nonnegative n. The paper uses fib and fibonacci for the same function. Save $ra and n, and keep the result of the first call in a third stack word while the second call runs.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>fib:
+  slti $t0, $a0, 2  # base cases are n = 0 and n = 1
+  bne $t0, $zero, Base  # both return 1
+  addi $sp, $sp, -12  # reserve three words
+  sw $ra, 8($sp)  # caller return address
+  sw $a0, 4($sp)  # original n
+  addi $a0, $a0, -1  # first argument n - 1
+  jal fib
+  sw $v0, 0($sp)  # retain first result
+  lw $a0, 4($sp)
+  addi $a0, $a0, -2  # second argument n - 2
+  jal fib
+  lw $t0, 0($sp)
+  add $v0, $t0, $v0  # add the two results
+  lw $ra, 8($sp)
+  addi $sp, $sp, 12
+  jr $ra
+Base:
+  addi $v0, $zero, 1
+  jr $ra</pre>
+      </div>
+    </details>
+  </section>
+<section data-paper="172" class="ct2-paper">
+    <h2>Summer 2017 <span class="mono">172</span></h2>
+    <details class="wk"><summary>Q1(a, c) · What does an ISA specify, and how do the stack and general-purpose registers differ? <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">ISA</span><div>It specifies the operations, visible registers, instruction formats, and addressing rules programs can use.</div></div>
+          <div class="step"><span class="s">STACK</span><div>Registers hold individual values inside the CPU. The stack holds many temporary or saved values in addressed memory. $sp is the register that points to the top; lw and sw transfer words between the two.</div></div>
+        </div>
+
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(a) · Translate the three cases for a: a &amp; 5 if a == b, a shifted left by 5 if a != c, otherwise a − 5. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0, $s1, $s2 for a, b, c. Once a case executes, jump past the other cases.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>  beq $s0, $s1, Equal
+  bne $s0, $s2, Shift
+  addi $s0, $s0, -5
+  j Done
+Equal:
+  andi $s0, $s0, 5
+  j Done
+Shift:
+  sll $s0, $s0, 5
+Done:</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q2(b) · Give the fields and hex for <code>srl $8, $9, 15</code> and <code>lw $16, 400($12)</code>. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">TABLE ERROR</span><div>The printed opcode and function values conflict with standard MIPS and cannot be read literally as six-bit hexadecimal values. Use Lecture 7 slide 20: srl has op 0 and funct 2, and lw has op 35. The lw has no funct field.</div></div>
+        </div>
+        <h3>Field breakdown</h3><pre>   0    srl $8, $9, 15
+   4    lw $16, 400($12)</pre><div class="scroll"><table class="encoding-table"><thead><tr><th scope="col">PC</th><th scope="col">Instruction</th><th scope="col">Type</th><th scope="col">Decimal fields</th><th scope="col">Hex</th></tr></thead><tbody>
+        <tr><td><code>0</code></td><td><code>srl $8, $9, 15</code></td><td><code>R</code></td><td><code>0, 0, 9, 8, 15, 2</code></td><td><code>0x000943C2</code></td></tr>
+        <tr><td><code>4</code></td><td><code>lw $16, 400($12)</code></td><td><code>I</code></td><td><code>35, 12, 16, 400</code></td><td><code>0x8D900190</code></td></tr>
+      </tbody></table></div>
+      </div>
+    </details>
+    <details class="wk"><summary>Q3(a) · While i &lt; j, set j = i, update A[j] by adding i while j &gt; 0, decrement j inside, then increment i outside. Use the given array base $s6. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">MAP</span><div>Use $s0 for i and $s1 for j. Test the outer and inner conditions separately. The four-byte array offset is j × 4.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>Outer:
+  slt $t0, $s0, $s1
+  beq $t0, $zero, End
+  add $s1, $s0, $zero
+Inner:
+  slt $t0, $zero, $s1
+  beq $t0, $zero, Advance
+  sll $t1, $s1, 2
+  add $t1, $s6, $t1
+  lw $t2, 0($t1)
+  add $t2, $t2, $s0
+  sw $t2, 0($t1)
+  addi $s1, $s1, -1
+  j Inner
+Advance:
+  addi $s0, $s0, 1
+  j Outer
+End:</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q3(b) · Place <code>0x4F3BA71</code> in byte-addressable memory in both byte orders. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">PAD</span><div>Use a 32-bit word and pad the left with zero to make 0x04F3BA71.</div></div>
+          <div class="step"><span class="s">BYTES</span><div>From lowest to highest address, big-endian gives <code>04 F3 BA 71</code>. Little-endian gives <code>71 BA F3 04</code>.</div></div>
+        </div>
+
+      </div>
+    </details>
+    <details class="wk"><summary>Q4(a–c) · Explain the call registers and the steps of a call. Write a procedure that sums 2 + 4 + … + 2n with n in $s0. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">REGISTERS</span><div>$a0–$a3 pass arguments, $v0–$v1 hold results, and $ra holds the return address.</div></div>
+          <div class="step"><span class="s">SIX STEPS</span><div>Put arguments where the callee can access them, transfer control, reserve any needed space, do the work, place the result for the caller, and return. Restore saved registers and release the frame before returning.</div></div>
+          <div class="step"><span class="s">LOOP</span><div>Start at k = 1. Add 2k for each k through n. Treat n below 1 as an empty sum, and preserve $s0 by reading it only.</div></div>
+        </div>
+        <h3>Leaf procedure</h3><pre>sum_even:
+  addi $v0, $zero, 0
+  addi $t0, $zero, 1
+Loop:
+  slt $t1, $s0, $t0
+  bne $t1, $zero, Done
+  sll $t2, $t0, 1
+  add $v0, $v0, $t2
+  addi $t0, $t0, 1
+  j Loop
+Done:
+  jr $ra</pre>
+      </div>
+    </details>
+    <details class="wk"><summary>Q5(d) · Translate <code>ping(a)</code> returning <code>pong(a + 1)</code>, and <code>pong(b)</code> returning b. <span class="src">pp. 1–2</span></summary>
+      <div class="body">
+        <div class="write">
+          <span class="wh">Worked answer</span>
+          <div class="step"><span class="s">SAVE</span><div>ping makes a nested call. Save the incoming $ra before jal. pong is a leaf and simply copies its argument to $v0.</div></div>
+        </div>
+        <h3>Assembly</h3><pre>ping:
+  addi $sp, $sp, -4
+  sw $ra, 0($sp)
+  addi $a0, $a0, 1
+  jal pong
+  lw $ra, 0($sp)
+  addi $sp, $sp, 4
+  jr $ra
+pong:
+  add $v0, $a0, $zero
+  jr $ra</pre>
+      </div>
+    </details>
+  </section>
+  </div>
+</article>
