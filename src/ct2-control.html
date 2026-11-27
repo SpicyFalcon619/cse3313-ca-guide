@@ -13,7 +13,24 @@ Else: sub $s4, $s2, $s3
 Done:</code></pre>
       <p>If i is 3 and j is 5, the compare produces 1. The branch to <code>Else</code> fails, so the addition runs. The jump to <code>Done</code> skips the subtraction. If i is 5 and j is 3, the compare produces 0 and the branch takes the subtraction path.</p>
       <h2>Turn other comparisons into tests you already know</h2>
-      <p><code>i &lt;= j</code> stays true as long as <code>j &lt; i</code> is false. Swap the inputs to <code>slt</code>, then branch to the else path if it produced 1. For <code>i &lt; j &amp;&amp; i != k</code>, both tests must pass. Use <code>slt</code> and a branch to reject <code>i &lt; j</code> when false. Then <code>beq</code> can reject <code>i != k</code> when i and k match. C uses <code>==</code> to ask if two values match, <code>!=</code> to ask if they differ, and <code>&amp;&amp;</code> for a two-condition test. That last operator is different from bitwise <code>&amp;</code>, which works one bit at a time.</p>
+      <p>For <code>i &lt;= j</code>, ask the opposite question, “is j less than i?” With i in <code>$s0</code> and j in <code>$s1</code>, write <code>slt $t0, $s1, $s0</code>, then <code>bne $t0, $zero, Else</code>. When both numbers are 5, <code>slt</code> writes 0. The branch is skipped and the <code>if</code> path runs, as required when the two numbers are equal.</p>
+      <p>C uses <code>==</code> to test equality, <code>!=</code> to test whether values differ, and <code>&amp;&amp;</code> to require two conditions to be true. In a two-condition test, stop as soon as one condition fails.</p>
+      <section aria-label="Worked example">
+        <h2>See why a second condition can change the result</h2>
+        <p>Suppose <code>i = 3</code>, <code>j = 5</code>, <code>k = 3</code>, <code>g = 9</code>, and <code>h = 4</code>. Test <code>i &lt; j &amp;&amp; i != k</code>. Use the register assignments above and put k in <code>$s5</code>.</p>
+      <pre><code>      slt $t0, $s0, $s1   # i &lt; j?
+      beq $t0, $zero, Else
+      beq $s0, $s5, Else  # i == k means i != k is false
+      add $s4, $s2, $s3
+      j   Done
+Else: sub $s4, $s2, $s3
+Done:</code></pre>
+        <ol class="foundation-list">
+          <li><code>slt</code> writes 1 because 3 &lt; 5. The first test passes, so the CPU checks the second test.</li>
+          <li>A <code>beq</code> between i and k jumps to the <code>Else</code> path when they match. Here both are 3, so <code>i != k</code> is false and the subtraction writes f = 9 − 4 = 5.</li>
+          <li>If k were 4, the second test would pass too. The addition path would give f = 9 + 4 = 13.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Does slt $t0, $s0, $s1 jump? If both source registers hold 5, what goes in $t0?</p>
@@ -47,6 +64,15 @@ Done:</code></pre>
       <p>If i starts at 4, we change only <code>A[4]</code>, then leave. If i starts at 5, we reach <code>Done</code> before the load. A loop that tests the same unchanging values and gets true on every check can keep running. Trace which values the body actually changes.</p>
       <h2>Where do the other loop styles put the check?</h2>
       <ul class="foundation-list"><li><b>for</b> lists a starting assignment, a check, and an update together. <code>for (i = 0; i &lt; 5; i++)</code> initializes once, then repeats check → work → update. In assembly, put the initialization before <code>Check</code>.</li><li><b>do-while</b> runs the body before the first check. Put its label on the body and branch back only when the condition holds. It executes at least once.</li></ul>
+      <section aria-label="Worked example">
+        <h2>Watch one pass change an array</h2>
+        <p>Use the while loop above with <code>i = 4</code>, an array base of 100, and <code>A[4] = 7</code>.</p>
+        <ol class="foundation-list">
+          <li>The test <code>4 &lt; 5</code> writes 1 to <code>$t0</code>. The branch to <code>Done</code> is skipped.</li>
+          <li>The shift gives 16 and adding the base gives 116. Load 7 from 116, add 2, then store 9 at the same address.</li>
+          <li>The increment changes i to 5. The jump goes back to the test, which now writes 0. The branch reaches <code>Done</code> before another load.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If i starts at 5, what gets loaded in the while example? Would a do-while with the same starting value still run its first body?</p>

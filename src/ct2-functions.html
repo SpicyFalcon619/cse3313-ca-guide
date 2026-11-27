@@ -15,12 +15,15 @@
 1020  addNumbers: add $v0, $a0, $a1
 1024  jr   $ra
 1028  After:</code></pre>
-      <ol class="foundation-process">
-      <li><b>Set up the inputs.</b> The two <code>addi</code> instructions put 5 and 3 in the argument registers.</li>
-      <li><b>Call the function.</b> At 1008, <code>jal</code> means jump and link. Save 1012 in <code>$ra</code>, the <strong>return address</strong> register, and jump to 1020.</li>
-      <li><b>Do the work.</b> At 1020, put the sum 8 into <code>$v0</code>.</li>
-      <li><b>Return.</b> At 1024, <code>jr</code> means jump register. <code>jr $ra</code> jumps to the address stored in <code>$ra</code>. The caller resumes at 1012 and copies the result to <code>$s0</code>.</li>
-      </ol>
+      <section aria-label="Worked example">
+        <h2>Watch the instruction address and the answer separately</h2>
+        <p>The example starts at byte 1000. Follow the program counter in the order the CPU actually runs the lines.</p>
+        <ol class="foundation-list">
+          <li>Addresses 1000 and 1004 set <code>$a0 = 5</code> and <code>$a1 = 3</code>. At 1008, <code>jal</code> saves 1012 to <code>$ra</code> and jumps to 1020.</li>
+          <li>At 1020, <code>add</code> writes 8 to <code>$v0</code>. At 1024, <code>jr</code> reads <code>$ra</code> and sends the CPU back to 1012.</li>
+          <li>At 1012, the caller copies 8 to <code>$s0</code>. At 1016 it jumps to <code>After</code>. The return address was 1012, and the returned value was 8.</li>
+        </ol>
+      </section>
       <p>The jump at 1016 keeps the caller from running through the function body again. Track two separate things when you trace the code. <code>$v0</code> holds the answer (8). <code>$ra</code> holds the address where work resumes (1012).</p>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
@@ -50,6 +53,15 @@ sw   $s0, 0($sp)      # save 50 in memory
 # The function may now use $s0.
 lw   $s0, 0($sp)      # restore 50 to $s0
 addi $sp, $sp, 4      # release those four bytes</code></pre>
+      <section aria-label="Worked example">
+        <h2>Follow the original value through the save and restore</h2>
+        <p>Start at <code>$sp = 1000</code> and <code>$s0 = 50</code>. Imagine the function needs to use <code>$s0</code> for a result of 8.</p>
+        <ol class="foundation-list">
+          <li>After <code>addi $sp, $sp, -4</code>, the pointer is 996. The next <code>sw</code> puts 50 into that reserved word.</li>
+          <li>The function writes 8 into <code>$s0</code>. Memory at 996 still holds 50, because changing the register doesn’t change the saved word.</li>
+          <li><code>lw $s0, 0($sp)</code> restores 50. Once it is back in the register, add 4 to <code>$sp</code> to free the word and return the pointer to 1000.</li>
+        </ol>
+      </section>
       <section class="foundation-trace beginner-lab" data-beginner-lab="stack" aria-label="Save a value, replace it, then get it back" hidden>
         <h3>Save a value, replace it, then get it back</h3>
         <p>Choose what $s0 starts with and what the function writes to it. Run each line to see where the original goes.</p>
@@ -107,6 +119,15 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
       <h2>Reserve one group of slots for a call</h2>
       <p>A <strong>stack frame</strong> is the block of stack memory a call reserves for its own data. Lecture 6 saves four registers in one frame. Starting at 1000, reserve 16 bytes to put <code>$sp</code> at 984. Using the deck’s order, store <code>$s0</code> at offset 12 (996), <code>$s1</code> at 8 (992), <code>$s2</code> at 4 (988), and <code>$s3</code> at 0 (984). These steps before the work are the <b>prologue</b>. Restore from the same offsets, release the 16 bytes, and return. These steps at the end are the <b>epilogue</b>.</p>
       <p>For the lecture’s <code>f = 50 + (g+h) - (i+j)</code>, take <code>g,h,i,j</code> from <code>$a0–$a3</code>. Put 20 and 30 in <code>$s1</code> and <code>$s2</code>, add them into <code>$s3</code>, and hold <code>(g+h)-(i+j)</code> in <code>$s0</code>. Add <code>$s3</code> and <code>$s0</code> into <code>$v0</code> before restoring the old saved registers. The result is then safe in <code>$v0</code> while the saved registers go back to their original values.</p>
+      <section aria-label="Worked example">
+        <h2>Track both return addresses through one stack slot</h2>
+        <p>Assume the example at the top starts with <code>$sp = 1000</code>.</p>
+        <ol class="foundation-list">
+          <li>The call at 1000 sets <code>$ra = 1004</code>. At 1020 and 1024, <code>outer</code> reserves the word at 996 and saves 1004 there.</li>
+          <li>The call at 1028 replaces <code>$ra</code> with 1032. The word at 996 still holds 1004. The helper uses 1032 to return to <code>outer</code>.</li>
+          <li>At 1032, <code>outer</code> loads the saved 1004 back into <code>$ra</code>. It then frees the word, and its own <code>jr</code> jumps to 1004.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>What address does helper return to in this example? What address does outer return to?</p>

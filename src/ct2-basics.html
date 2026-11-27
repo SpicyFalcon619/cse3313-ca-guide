@@ -15,6 +15,15 @@
       <li><b>Main memory</b> holds larger amounts of active program and data. It typically uses dynamic RAM (<b>DRAM</b>). It stores electrical charge and must refresh it as it leaks. It usually costs less per bit than SRAM. Cache and main memory are volatile, meaning they lose data without power.</li>
       <li><b>Secondary storage</b>, such as a solid-state drive (SSD), hard disk, or USB drive, keeps files without power. That makes it non-volatile. Read-only memory (ROM) is another way to keep data without power, often for built-in startup instructions called firmware.</li>
       </ul>
+      <section aria-label="Worked example">
+        <h2>Follow 5 and 3 all the way to the screen</h2>
+        <p>Imagine opening a little program that adds the two numbers you type.</p>
+        <ol class="foundation-list">
+          <li>The operating system copies the program’s instructions from the SSD into main memory. The keyboard supplies the numbers 5 and 3.</li>
+          <li>The CPU fetches the instruction that says to add. Control decodes it and tells the datapath to add the two values.</li>
+          <li>The datapath produces 8. A later instruction sends the result to the screen. If the power goes off, the saved program on the SSD is still there.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Which part adds the numbers? Which place keeps the saved program after power is off?</p>
@@ -40,6 +49,15 @@
       <h2>Run one instruction at a time</h2>
       <p>Read <code>addi $t1, $zero, 5</code> as <b>0 + 5 → $t1</b>. <code>$zero</code> supplies the 0. The first register, <code>$t1</code>, receives the answer.</p>
       <p><code>addi</code> is short for <strong>add immediate</strong>. The immediate is the number written in the line itself, here 5. The third line uses <code>add</code> to read both numbers from registers.</p>
+      <section aria-label="Worked example">
+        <h2>Write down what changes after each line</h2>
+        <p>Start with all three temporary registers at zero. Read the destination first, then work out what goes into it.</p>
+        <ol class="foundation-list">
+          <li><code>addi $t1, $zero, 5</code> reads 0 and the constant 5. It leaves <code>$t1 = 5</code>, while <code>$t2</code> and <code>$t0</code> still hold 0.</li>
+          <li><code>addi $t2, $zero, 3</code> writes 3 to <code>$t2</code>. The first input stays in <code>$t1</code>.</li>
+          <li><code>add $t0, $t1, $t2</code> reads 5 and 3 from the two source registers. The final values of <code>$t1</code>, <code>$t2</code>, and <code>$t0</code> are 5, 3, and 8.</li>
+        </ol>
+      </section>
       <section class="foundation-trace beginner-lab" data-beginner-lab="registers" aria-label="Build and run the addition" hidden>
         <h3>Build and run the addition</h3>
         <p>Change either number to change the program. Run one line at a time to see what changes.</p>
@@ -88,6 +106,15 @@ add $t1, $s3, $s4   # right sum = i + j
 sub $s0, $t0, $t1   # f = left sum - right sum</code></pre>
       <p><code>sub</code> means subtract. Do the second operand minus the third operand. An <strong>operand</strong> is any piece supplied to an instruction, including where to put the answer. <code>#</code> starts a comment in these assembly examples. A comment explains the line for people. The assembler reads the instruction before it.</p>
       <p><code>addi</code> means <b>add immediate</b>. The <strong>immediate</strong> is a number written right in the instruction. <code>addi $s0, $s0, 1</code> reads the old value, adds 1, and writes back. Use <code>addi $s0, $s0, -5</code> to subtract the constant 5. To copy a value, add zero. <code>move $t0, $s0</code> is assembly shorthand (a <b>pseudoinstruction</b>) for a copy. On paper, <code>add $t0, $s0, $zero</code> is an explicit real instruction for the same copy.</p>
+      <section aria-label="Worked example">
+        <h2>Run the three arithmetic lines with real values</h2>
+        <p>Let g = 9, h = 4, i = 6, and j = 2. The C expression computes the difference between two sums.</p>
+        <ol class="foundation-list">
+          <li>The first <code>add</code> reads g from <code>$s1</code> and h from <code>$s2</code>. Now <code>$t0 = 9 + 4 = 13</code>.</li>
+          <li>The second <code>add</code> reads i from <code>$s3</code> and j from <code>$s4</code>. Now <code>$t1 = 6 + 2 = 8</code>.</li>
+          <li><code>sub $s0, $t0, $t1</code> subtracts the second sum from the first. <code>$s0</code> holds f = 13 − 8 = 5.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If $s0 is 8, what does addi $s0, $s0, -5 do? What is the immediate?</p>
@@ -118,6 +145,15 @@ sub $s0, $t0, $t1   # f = left sum - right sum</code></pre>
       <h2>Write a number as bits</h2>
       <p>To write 6 using the places 8, 4, 2 and 1, ask whether each place fits. Eight is bigger than 6, so start with 0. Four fits, so write 1 and leave 2. Two fits, so write another 1 and leave 0. One is too large for what remains, so end with 0. That gives <code>0110</code>.</p>
       <p>A register also has a <strong>number</strong>. For example, <code>$t0</code> is another name for register 8. That slot can hold any word value. The register’s number tells the CPU which slot you mean, and the bits inside it tell you what value it currently holds.</p>
+      <section aria-label="Worked example">
+        <h2>Build the binary number for 13</h2>
+        <p>With four bits, the places from left to right are 8, 4, 2, and 1.</p>
+        <ol class="foundation-list">
+          <li>Take 8 out of 13. Write 1 in the 8s place. There are 5 left.</li>
+          <li>Take 4 out of 5. Write 1 in the 4s place. There is 1 left, so the 2s place gets 0.</li>
+          <li>Use that last 1 in the 1s place. The pattern is <code>1101</code>. Write it as <code>00001101</code> in one byte. The extra leading zeros leave the value at 13.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>How many bytes are in one MIPS word? What number is binary 0011?</p>

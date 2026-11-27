@@ -42,6 +42,15 @@ sw  $t0, 8($s0)       # A[2] gets 8</code></pre>
       <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Byte order</th><th scope="col">104</th><th scope="col">105</th><th scope="col">106</th><th scope="col">107</th></tr></thead><tbody><tr><td>Big-endian</td><td>0</td><td>0</td><td>0</td><td>3</td></tr><tr><td>Little-endian</td><td>3</td><td>0</td><td>0</td><td>0</td></tr></tbody></table></div>
       <p>A load using the same byte order assembles those bytes back into 3. <code>lw</code> means load word, and <code>sw</code> means store word.</p>
       <p>Try a real load and see the four bytes it touches in the <a href="#mips-memory">word memory visualiser</a>.</p>
+      <section aria-label="Worked example">
+        <h2>Read a word and store it somewhere else</h2>
+        <p>Start with <code>$s0 = 100</code>, <code>A[1] = 3</code>, <code>A[2] = 0</code>, and <code>$t2 = 0</code>.</p>
+        <ol class="foundation-list">
+          <li><code>lw $t2, 4($s0)</code> uses address 100 + 4 = 104. It copies the word at bytes 104–107 into <code>$t2</code>.</li>
+          <li>At this point <code>$t2 = 3</code> and <code>A[2]</code> still holds 0.</li>
+          <li><code>sw $t2, 8($s0)</code> uses address 100 + 8 = 108. It writes 3 into bytes 108–111. Both <code>A[1]</code> and <code>$t2</code> still hold 3.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If A starts at byte 100, what offset loads A[2]? What address does the CPU use?</p>
@@ -75,6 +84,15 @@ sw  $t1, 40($s0)</code></pre>
       <h2>Why does an address have a limit?</h2>
       <p>An <strong>address space</strong> is the set of possible addresses. A 32-bit address gives 2<sup>32</sup> different byte addresses, from 0 through 2<sup>32</sup> − 1. That is 4 GiB of address space. A GiB is 2<sup>30</sup> bytes. The amount of actual RAM installed is a separate question.</p>
       <p><strong>Spilling</strong> means temporarily keeping a value in memory when the available registers are needed for something else. Think of it as doing a store now and a load when you need the saved value back. The stack lesson gives those temporary values a place to go.</p>
+      <section aria-label="Worked example">
+        <h2>Keep the index, address, and loaded value separate</h2>
+        <p>Take the slide’s assignment <code>A[10] = h + B[i]</code>. Let A start at 100 and B at 200, with <code>i = 3</code>, <code>h = 230</code>, and <code>B[3] = 7</code>.</p>
+        <ol class="foundation-list">
+          <li><code>sll</code> turns i into the byte offset 3 × 4 = 12. The following <code>add</code> turns that offset into the address 200 + 12 = 212.</li>
+          <li>The <code>lw</code> from address 212 puts 7 in <code>$t1</code>. Then <code>add</code> updates <code>$t1</code> to 230 + 7 = 237.</li>
+          <li>The store uses A’s base plus 10 × 4, so it puts 237 in the word at 140.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If i = 3 and B starts at 200, what are the index, byte offset, and address of B[i]?</p>
@@ -105,6 +123,15 @@ sw  $t1, 40($s0)</code></pre>
       <p><code>beq</code> means branch if equal. 8 equals 8, so the next line is <code>Done</code> at 1008. If the values differ, the next line is 1004. <code>bne</code> branches when the values differ. <code>j Done</code> always jumps to the label.</p>
       <p>A <strong>conditional</strong> branch checks a condition before changing direction. A jump with <code>j</code> is <strong>unconditional</strong>, meaning it jumps every time. Defining <code>Done:</code> gives the instruction at 1008 a label. The colon marks the definition. Use <code>Done</code> without a colon in a branch or jump.</p>
       <p>Use the addresses to trace a path. We write them on the left here to show where instructions live in memory. They are separate from the assembly you would type. An instruction and a data word can both take four bytes but serve different purposes. The region of memory for instructions is the <strong>text segment</strong>. A program can keep its arrays and variables in its <strong>data segment</strong>.</p>
+      <section aria-label="Worked example">
+        <h2>Trace both paths through the same branch</h2>
+        <p>In the listing above, <code>$t2</code> starts at 0 and the instruction at 1004 would change it to 1.</p>
+        <ol class="foundation-list">
+          <li>If both inputs are 8, <code>beq</code> goes from 1000 straight to 1008. The line at 1004 never runs, so <code>$t2</code> stays 0.</li>
+          <li>If the first input is 8 and the second is 9, <code>beq</code> falls through from 1000 to 1004. That line writes 1 to <code>$t2</code>. Then 1008 runs.</li>
+          <li>In both cases the line at 1008 copies <code>$t0</code> into <code>$s1</code>. The branch only decides whether the middle line runs.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>In the first example, if $t1 held 9, which address would run after 1000? Why?</p>

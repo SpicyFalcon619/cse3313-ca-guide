@@ -10,6 +10,15 @@
       <p>To make a signed value wider while preserving it, copy its leftmost bit into the new positions. This is <strong>sign extension</strong>. So −5 becomes <code>11111111 11111011</code> in 16 bits. To extend an unsigned value, add zeros on the left. That is <strong>zero extension</strong>.</p>
       <h2>Count what can fit</h2>
       <p>Each bit doubles the possible patterns. Eight bits give 2<sup>8</sup> = 256 patterns. Unsigned uses 0 through 255. Signed uses −128 through 127. For <var>n</var> bits, unsigned is 0 through 2<sup>n</sup> − 1, signed is −2<sup>n−1</sup> through 2<sup>n−1</sup> − 1. <code>addi</code> uses a signed 16-bit immediate, from −32,768 to 32,767, and sign-extends it to the 32-bit register width. Overflow means an arithmetic result falls outside its available range.</p>
+      <section aria-label="Worked example">
+        <h2>Subtract five with a signed immediate</h2>
+        <p>Suppose <code>$t1</code> holds 3. Run <code>addi $t0, $t1, -5</code>.</p>
+        <ol class="foundation-list">
+          <li>The assembler writes −5 in the 16-bit immediate field as <code>11111111 11111011</code>.</li>
+          <li>The CPU repeats the leftmost 1 to make a 32-bit signed value. This is sign extension. The value stays −5.</li>
+          <li>The CPU adds 3 + (−5), so <code>$t0</code> holds −2. As a 32-bit word that is <code>0xFFFFFFFE</code>.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Read 1111 as a four-bit unsigned number and then as a four-bit signed number.</p>
@@ -83,6 +92,15 @@
         <p>Suppose <code>a = 5</code> in <code>$t0</code> and <code>n = 3</code> in <code>$t1</code>. Both inputs are already in registers, so use <code>and $t2, $t0, $t1</code>. That puts 1 in <code>$t2</code>. Then <code>nor $t2, $t2, $zero</code> flips the 32-bit pattern for 1, giving <code>0xFFFFFFFE</code>, or −2 signed.</p>
       </details>
       <p>Change the numbers yourself in the <a href="#ct2-simulator">Simulator Lab</a> under <strong>Registers and bits → AND, OR and NOR</strong>. Choose <strong>ORI then NOT</strong> to see the two instructions above run separately.</p>
+      <section aria-label="Worked example">
+        <h2>Trace a right shift when a 1 drops off</h2>
+        <p>Let <code>$t1</code> hold 5. Try <code>srl $t0, $t1, 1</code>.</p>
+        <ol class="foundation-list">
+          <li>Start with <code>00000101</code> in the low eight bits. The 1s are in the 4s and 1s places.</li>
+          <li>Shift right one place. The 4s bit moves into the 2s place. The bit in the 1s place falls off. A zero enters on the left.</li>
+          <li>The low eight bits become <code>00000010</code>, so <code>$t0</code> holds 2. This matches whole-number division of 5 by 2.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p><code>$t1</code> holds 6 (<code>0110</code>). Try each line separately. What value does it put in <code>$t0</code>?</p>

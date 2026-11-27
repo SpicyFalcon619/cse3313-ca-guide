@@ -13,6 +13,15 @@ mfhi $t3</code></pre>
       <h2>Follow signed remainder when the input can be negative</h2>
       <p>For −17 divided by 32, the signed quotient truncates toward zero, so the quotient is 0 and the remainder is −17. This is why a mask that keeps the low five bits gives a different result here. For nonnegative values, keeping the low five bits gives the remainder after division by 32. For signed cases such as Lecture 7’s <code>(~(arr[b] * 16)) % 32</code>, use <code>div</code> and <code>mfhi</code>.</p>
       <p>If <code>arr[b]</code> holds 1, multiplying by 16 gives 16 and bitwise NOT gives −17 in signed two’s complement. The remainder is −17. Unpack the expression in order. Load the array value, shift left by four, flip the bits with <code>nor</code>, then divide and read HI.</p>
+      <section aria-label="Worked example">
+        <h2>Check a negative remainder with multiplication</h2>
+        <p>Let <code>$t0 = −17</code> and <code>$t1 = 32</code>. Run <code>div $t0, $t1</code>.</p>
+        <ol class="foundation-list">
+          <li>The quotient is 0 because −17 ÷ 32 lies between −1 and 0, and signed integer division drops the fractional part toward zero. <code>LO</code> becomes 0.</li>
+          <li>Use remainder = dividend − quotient × divisor. That gives −17 − 0 × 32 = −17, so <code>HI</code> holds −17.</li>
+          <li><code>mfhi $t3</code> copies −17 into <code>$t3</code>. A mask of 31 would give 15, which is a different answer.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>For 25 % 16, which instruction retrieves the answer after div, and what is it?</p>
@@ -61,6 +70,15 @@ j Check</code></pre><p>Each index is <code>i * 2</code>. Each integer takes four
       <h2>Try the other two Lecture 7 problem patterns</h2>
       <p>For the loop that adds signed remainders, start with sum at 0, test whether <code>b &lt; a</code> to exit, and do the same array-address calculation for <code>arr[b]</code>. The course solution assumes the printed C intended <code>sum += (~(arr[b] * 16)) % 32</code>. This assumption makes the initial sum and parentheses explicit.</p>
       <p>For the problem that chooses which pair to pass to <code>myfunction(y, x)</code>, compute <code>25 % 16 = 9</code>, <code>~(25 | 5) = -30</code>, and <code>~9 = -10</code> first. The test <code>c &gt;= d</code> fails, so pass a = 25 as the first argument and b = 9 as the second. The helper returns <code>x − y = 9 − 25 = −16</code>. Follow the full listings under Fall 2025 and Spring 2026 in the <a href="#s-ct2-papers">worked midterms</a>.</p>
+      <section aria-label="Worked example">
+        <h2>Trace the second pass of the full function</h2>
+        <p>Set <code>n = 2</code>, start <code>arr</code> at byte 100, and suppose the loop has just incremented i to 1.</p>
+        <ol class="foundation-list">
+          <li>The test asks whether n &lt; i. Because 2 &lt; 1 is false, <code>slt</code> writes 0 and the loop keeps going.</li>
+          <li><code>arr[i * 2]</code> means <code>arr[2]</code> on this pass. Its offset is 2 × 4 = 8, so the store address is 108.</li>
+          <li>The low bits of <code>10 &amp; 2</code> are <code>1010 AND 0010 = 0010</code>. Flipping that word gives −3, so <code>sw</code> writes −3 at 108. <code>addi</code> then sets i to 2.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Why does the loop use sll by 3 for arr[i * 2], while arr[i] used sll by 2?</p>
@@ -99,6 +117,15 @@ Return: lw $ra, 4($sp)
       <p><code>mul $v0, $a0, $v0</code> multiplies the two source values and writes their product to <code>$v0</code>. This listing uses a shared cleanup at <code>Return</code>. The slide arranges the same cleanup separately for the base case and the recursive case.</p>
       <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Call</th><th scope="col">Frame starts at</th><th scope="col">Return value</th></tr></thead><tbody><tr><td>fact(3)</td><td>992</td><td>3 × 2 = 6</td></tr><tr><td>fact(2)</td><td>984</td><td>2 × 1 = 2</td></tr><tr><td>fact(1)</td><td>976</td><td>1 × 1 = 1</td></tr><tr><td>fact(0)</td><td>968</td><td>1</td></tr></tbody></table></div>
       <p>The table starts from <code>$sp = 1000</code>. There are four active calls at the bottom, so 32 bytes are reserved. The calls finish in reverse order, <code>fact(0)</code> first and <code>fact(3)</code> last. This is called <strong>unwinding</strong>. Try “Recursive fact(3)” in the <a href="#mips-functions">stack visualiser</a> and watch for the point where the calls start returning.</p>
+      <section aria-label="Worked example">
+        <h2>Watch the top frame give back its saved number</h2>
+        <p>At the deepest point of <code>fact(3)</code>, <code>$sp = 968</code> and <code>fact(0)</code> is active.</p>
+        <ol class="foundation-list">
+          <li>The base case puts 1 in <code>$v0</code>. Releasing that frame adds 8 to <code>$sp</code>, so it returns to 976 and <code>fact(1)</code> resumes.</li>
+          <li>At 976 the saved n is 1. Load it and multiply by the returned 1. Now <code>$v0 = 1</code>. After releasing this frame, <code>$sp = 984</code> and <code>fact(2)</code> resumes.</li>
+          <li>The saved n at 984 is 2, so multiply 2 × 1. Finally <code>fact(3)</code> reloads its saved 3 at 992 and multiplies 3 × 2. The final result is 6, and <code>$sp</code> is back at 1000.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Why does fact(3) reload 3 after fact(2) returns?</p>
@@ -127,6 +154,15 @@ lw $a1, 4($s0)</code></pre><p>The first word starts at the base. The second star
 sw  $v0, 8($s0)     # in the caller, after return</code></pre><p>The sum 8 returns in <code>$v0</code>. <code>A[2]</code> is eight bytes past the base.</p></details>
       <details class="foundation-more"><summary>4. What would change if the function called a helper?</summary><p>If it needs to return through its original <code>$ra</code>, save that value before the new <code>jal</code> and restore it before returning. One saved word needs four bytes.</p></details>
       <details class="foundation-more"><summary>5. What are the four decimal fields for sw $v0, 8($s0)?</summary><p><code>43 / 16 / 2 / 8</code>. The opcode is 43 for <code>sw</code>. The base goes in <code>rs</code> (<code>$s0</code> is number 16), the register containing the value goes in <code>rt</code> (<code>$v0</code> is number 2), and 8 is the byte offset.</p></details>
+      <section aria-label="Worked example">
+        <h2>Check the whole trip from memory and back</h2>
+        <p>Reveal the individual answers first, then use this short trace to check how they fit together.</p>
+        <ol class="foundation-list">
+          <li>The two loads read bytes 100–103 and 104–107. They leave the arguments 5 and 3 in <code>$a0</code> and <code>$a1</code>.</li>
+          <li>The call at 1008 records 1012 in <code>$ra</code>. The function leaves 8 in <code>$v0</code> and returns to the caller at 1012.</li>
+          <li>The caller stores 8 at 100 + 8 = 108, so the array ends up as <code>[5, 3, 8]</code>. The machine code for the store encodes a byte offset of 8, which happens to match the value being stored in this example.</li>
+        </ol>
+      </section>
       <h2>Pick a real exam question after this</h2>
       <ol class="foundation-process">
         <li>Try <b>Spring 2026 Q2(b)</b> for decimal fields. Write the format above each instruction before filling a register or a distance.</li>

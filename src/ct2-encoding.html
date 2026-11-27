@@ -16,6 +16,15 @@
       <h2>Notice which fields some instructions leave unused</h2>
       <p><code>sll $t0, $t1, 2</code> reads <code>$t1</code> through <code>rt</code>, writes <code>$t0</code> in <code>rd</code>, and puts 2 in <code>shamt</code> (shift amount). It leaves <code>rs</code> at zero. <code>jr $ra</code> uses only <code>rs</code> to name register 31. Its function code is 8 and the other operand fields are zero.</p>
       <p>Check these using the <a href="#mips-machine">instruction encoder</a>. It can also decode hex. On an exam, fill the decimal fields first, then write bits or hex if the question asks for them.</p>
+      <section aria-label="Worked example">
+        <h2>Encode a shift without confusing a register with a number</h2>
+        <p>Use <code>sll $t0, $t1, 2</code>. Imagine <code>$t1</code> currently holds 5 and the shift will produce 20.</p>
+        <ol class="foundation-list">
+          <li>Use opcode 0 and function code 0 for <code>sll</code>. This instruction has one register source, <code>$t1</code>, so write its number 9 in <code>rt</code> and write 0 in the unused <code>rs</code>.</li>
+          <li>Put destination register number 8 in <code>rd</code>. Put the number of places to shift, 2, in <code>shamt</code>. The decimal fields are <code>0 / 0 / 9 / 8 / 2 / 0</code>.</li>
+          <li>Write each field in its own width. The bits are <code>000000 00000 01001 01000 00010 000000</code>. The register’s current value 5 and the result 20 are both decided at run time.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>In add $t0, $t1, $t2, what decimal value belongs in rd?</p>
@@ -39,6 +48,15 @@
       <p>The widths are 6 / 5 / 5 / 16. If the question asks for decimal fields, write <code>8 / 9 / 8 / 5</code>. If it asks for binary, write each field at its required width. For −5, the last 16 bits are <code>1111111111111011</code>, from the signed-number lesson.</p>
       <h2>Find the roles before filling rs and rt</h2>
       <ul class="foundation-list"><li><b>Arithmetic and bitwise.</b> <code>addi</code>, <code>andi</code>, <code>ori</code>, and <code>slti</code> read <code>rs</code> and write <code>rt</code>. <code>addi</code> and <code>slti</code> read a signed immediate. <code>andi</code> and <code>ori</code> zero-extend theirs.</li><li><b>Memory.</b> In <code>lw $s1, 200($s2)</code>, the base goes in <code>rs</code>, the destination in <code>rt</code>, and 200 goes in the last field as a signed byte offset. For <code>sw</code>, <code>rt</code> supplies the value to write. Decimal fields for the load are <code>35 / 18 / 17 / 200</code>.</li><li><b>Conditional branches.</b> <code>beq</code> and <code>bne</code> put the compared registers in <code>rs</code> and <code>rt</code>. Both are inputs. The 16-bit field uses a signed instruction distance, which you will calculate in the next lesson.</li></ul>
+      <section aria-label="Worked example">
+        <h2>Encode a store with a negative byte offset</h2>
+        <p>Use <code>sw $s1, -4($s2)</code> with <code>$s2 = 104</code> and <code>$s1 = 7</code>.</p>
+        <ol class="foundation-list">
+          <li>Opcode 43 says store word. <code>rs = 18</code> names <code>$s2</code>, the base register. <code>rt = 17</code> names <code>$s1</code>, which supplies the value to store.</li>
+          <li>The immediate is −4 bytes. Write −4 as <code>1111111111111100</code> in signed 16-bit binary. The decimal field row is <code>43 / 18 / 17 / −4</code>.</li>
+          <li>At run time the CPU adds 104 + (−4) to get address 100 and writes 7 there. The machine instruction contains the offset −4, while the value 7 and the base 104 live in registers.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>For sw $s1, 200($s2), which register supplies the address? Which supplies the stored value? Do you divide 200 by four?</p>
@@ -65,6 +83,15 @@
       <p>For a low address such as <code>j 2000</code>, the upper four bits are all zero, so the field is simply 2000 ÷ 4 = 500. The opcode for <code>j</code> is 2 and the opcode for <code>jal</code> is 3. Neither field uses the branch subtraction formula.</p>
       <h2>Try one question from the slide set</h2>
       <p>At 108, encode <code>beq $t0, $zero, END</code> where <code>END</code> is 124. Write opcode 4, register 8, register 0, then (124 − 112) ÷ 4 = 3. A label names an address and uses no extra bytes. You can check yourself in the <a href="#mips-machine">instruction encoder</a> by replacing the label with the target address and setting the PC to 108.</p>
+      <section aria-label="Worked example">
+        <h2>Reach byte 100 from byte 108 in two different ways</h2>
+        <p>Compare a conditional <code>bne</code> at address 108 with <code>j 100</code> at the same address.</p>
+        <ol class="foundation-list">
+          <li>For <code>bne</code>, first compute the next address, 108 + 4 = 112. Going from 112 back to 100 is −12 bytes, or −3 instruction words. Encode −3 in the immediate field.</li>
+          <li>To check the branch field, start at 112 again and add −3 × 4. The result is 100.</li>
+          <li>For the jump, the top four address bits are zero in this example. Divide the target address 100 by four and write 25 in the jump field. Reconstructing the target gives 25 × 4 = 100.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If a j instruction in the low address region targets byte address 100, what goes in its 26-bit field?</p>
@@ -89,6 +116,15 @@
       <h2>Distinguish three different exam questions</h2>
       <ul class="foundation-list"><li><b>Will a constant fit?</b> With 256 registers and 32-bit instructions, subtract 6 + 8 + 8 to leave 10 bits. An unsigned 10-bit field reaches 1023, so an <code>andi</code> constant of 1024 fails to fit.</li><li><b>Will an array element fit directly?</b> <code>arr[300]</code> of a four-byte array is 1200 bytes from the base. It cannot fit directly in that 10-bit field, and a signed field would have an even smaller positive range. A program can still calculate the full address in a register and load at offset 0.</li><li><b>What is the second-largest byte offset?</b> With 1000 registers, <code>32 − 6 − 10 − 10 = 6</code> bits remain. An unsigned field reaches 63, so the second-largest byte offset is 62. If a question instead asks for aligned word starts, count only offsets that are multiples of the word size from an aligned base.</li></ul>
       <p>Always check the units and whether the question says signed or unsigned. “Largest offset”, “number of addresses”, and “number of array elements” ask for different answers.</p>
+      <section aria-label="Worked example">
+        <h2>Tell the difference between the last index and the number of elements</h2>
+        <p>Use the slide’s five-bit unsigned byte offset and two-byte array elements.</p>
+        <ol class="foundation-list">
+          <li>The five bits hold 32 choices, from 0 through 31. That is a range of byte offsets.</li>
+          <li>Aligned element starts are even. The last one is 30, because a two-byte element there uses both 30 and 31.</li>
+          <li>Index 15 starts at offset 15 × 2 = 30. Counting indices 0 through 15 gives 16 elements.</li>
+        </ol>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>In the 16-bit example, why is the last element at byte offset 30 when there are 32 bytes?</p>
