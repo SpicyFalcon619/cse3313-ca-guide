@@ -20,7 +20,7 @@ Done:</code></pre>
         <p>Suppose <code>i = 3</code>, <code>j = 5</code>, <code>k = 3</code>, <code>g = 9</code>, and <code>h = 4</code>. Test <code>i &lt; j &amp;&amp; i != k</code>. Use the register assignments above and put k in <code>$s5</code>.</p>
       <pre><code>      slt $t0, $s0, $s1   # i &lt; j?
       beq $t0, $zero, Else
-      beq $s0, $s5, Else  # i == k means i != k is false
+      beq $s0, $s5, Else  # i == k?
       add $s4, $s2, $s3
       j   Done
 Else: sub $s4, $s2, $s3
