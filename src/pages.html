@@ -810,6 +810,16 @@
     </table></div>
     <div class="gap"><p><span class="k">NOT ON THE SLIDES</span>The conversion table is my summary. The slides only give 250 ps = 0.25 ns, and 2 &times; 10<sup>&minus;6</sup> s = 2 &micro;s. The rest is standard.</p></div>
     </div></details>
+    <section class="lesson" aria-label="Convert between GHz and nanoseconds without guessing the units">
+    <div class="ls-bar"><h2>Convert between GHz and nanoseconds without guessing the units</h2></div>
+    <div class="ls-main">
+      <p>At 2.5 GHz the clock makes 2.5 billion cycles per second. A second contains a billion nanoseconds, so the rate is also 2.5 cycles per nanosecond. One cycle takes <b>1 ÷ 2.5 = 0.4 ns</b>.</p>
+      <p>There are two ways to time 10 cycles. Multiply by the period to get <code>10 cycles × 0.4 ns/cycle = 4 ns</code>. Or divide by the rate to get <code>10 cycles ÷ 2.5 cycles/ns = 4 ns</code>. In both versions, cycles cancel and the unit left is nanoseconds.</p>
+      <details class="exam"><summary>How much time do 12 cycles take at 3 GHz?</summary><div class="in">
+        <p>3 GHz is 3 cycles per nanosecond. Divide 12 cycles by 3 cycles/ns to get 4 ns. This is the same time as the previous run even though it uses more cycles.</p>
+      </div></details>
+    </div>
+  </section>
   </article>
 
   <article class="page" id="s-clock-calc" data-title="CPU time from clock cycles" data-group="Performance" hidden>
@@ -1134,6 +1144,17 @@
     <div class="step"><span class="s">STEP 3</span><div>Performance<sub>A</sub>/Performance<sub>B</sub> = CPU time<sub>B</sub>/CPU time<sub>A</sub> = (I &times; 600)/(I &times; 500) = <span class="ans">1.2</span>. I cancels, so A is 1.2 times as fast as B.</div></div>
     <p class="mn"><span class="k">TRICK</span>When the instruction count is the same for both, you never need its value. It cancels in the ratio.</p>
     </div></details>
+    <section class="lesson" aria-label="Choose a CPU by time per instruction">
+    <div class="ls-bar"><h2>Choose a CPU by time per instruction</h2></div>
+    <div class="ls-main">
+      <p>Two CPUs run the same instruction count. CPU A runs at 3 GHz with an average CPI of 1.5. CPU B runs at 2.5 GHz with an average CPI of 1.0. A has a faster clock, but each instruction takes more cycles on average.</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">CPU</th><th scope="col">CPI ÷ clock rate</th><th scope="col">Time per instruction</th></tr></thead><tbody><tr><td>A</td><td>1.5 ÷ 3</td><td>0.50 ns</td></tr><tr><td>B</td><td>1.0 ÷ 2.5</td><td>0.40 ns</td></tr></tbody></table></div>
+      <p>For equal instruction counts, B wins. Divide A’s time by B’s time to get 1.25×. If the instruction counts differ, multiply each time per instruction by its own count first.</p>
+      <details class="exam"><summary>If both have the same instruction count, can the slower clock win?</summary><div class="in">
+        <p>Yes. The clock rate tells you how fast cycles pass. CPI tells you how many cycles the instructions need. B’s lower CPI more than makes up for its slower clock in this example.</p>
+      </div></details>
+    </div>
+  </section>
   </article>
 
   <article class="page" id="s-affects" data-title="What affects CPU performance" data-group="Performance" hidden>
@@ -1905,6 +1926,16 @@ sw  $t0, 48($s3)</pre></div></details></div></details>
   addi $s0, $s0, 1
   j    Loop
 Exit:</pre></div></details></div></details>
+    <section class="lesson" aria-label="Predict whether the lecture loop terminates">
+    <div class="ls-bar"><h2>Predict whether the lecture loop terminates</h2></div>
+    <div class="ls-main">
+      <p>Start with <code>i = 0</code>, <code>k = 5</code>, and <code>save[5] = 5</code>. The first <code>lw</code> leaves 5 in <code>$t0</code>. The <code>bne</code> falls through because 5 equals k. Then <code>addi</code> makes i equal to 1 and <code>j Loop</code> returns to the load.</p>
+      <p>Nothing changed in the comparison: the same word is loaded and k is still 5. The next iteration increments i again. In this simplified trace, the loop has no way to exit through its comparison as written. For the beginner versions of the same ideas, start with <a href="#ct2-branches">branches</a> and <a href="#ct2-loops">loop traces</a>.</p>
+      <details class="exam"><summary>What happens instead if k starts at 8?</summary><div class="in">
+        <p>The branch checks 5 against 8 and goes to <code>EXIT</code> immediately. The update is skipped, so i stays 0.</p>
+      </div></details>
+    </div>
+  </section>
   </article>
 
   <article class="page" id="mips-functions" data-title="Functions and the stack" data-group="MIPS" hidden>
@@ -1976,6 +2007,16 @@ jr   $ra</pre></div></details></div></details>
 <p>The lecture’s <code>myfunction(y, x)</code> returns <code>x − y</code>. Put the arguments in <code>$a0</code> and <code>$a1</code>, then call with <code>jal</code>. The callee can use <code>sub $v0, $a1, $a0</code> followed by <code>jr $ra</code>. Copy the answer out of <code>$v0</code> when the caller resumes. When the caller itself must return to someone else, preserve its incoming return address.</p></div></div></div><aside class="ls-side" aria-label="Lesson reminders"><div class="ls-card"><b>In one line</b><p>Map variables, then solve addresses, conditions, operations and calls in that order.</p></div><div class="ls-card"><b>Exam habit</b><p>Check whether the question asks for assembly or encoded fields. Write assumptions about uninitialised C values and unclear expression grouping.</p></div></aside></div><section class="ls-check" aria-label="Check yourself"><span class="k">Check yourself</span><details><summary>How many address bytes does index i × 2 advance from the array base?</summary><p>Eight times i, because each of the 2 × i elements occupies four bytes.</p></details><details><summary>Where is the remainder after div?</summary><p>HI. Use mfhi to move it to a general-purpose register.</p></details></section><p class="lesson-source">Source • Lecture 7, slides 37–52.</p></section><details class="exam"><summary>Exam practice</summary><div class="in"><p>Write the MIPS for <code>int myfunction(int y, int x) { return x - y; }</code>.</p><details class="exam"><summary>Worked answer</summary><div class="in"><p><code>y</code> arrives in <code>$a0</code> and <code>x</code> in <code>$a1</code>. There is no nested call and no modified saved register.</p><pre>myfunction:
   sub $v0, $a1, $a0
   jr  $ra</pre></div></details></div></details>
+    <section class="lesson" aria-label="Trace a complete call with a branch">
+    <div class="ls-bar"><h2>Trace a complete call with a branch</h2></div>
+    <div class="ls-main">
+      <p>Translate <code>if (y &lt; x) return myfunction(y, x);</code> inside a function that must eventually return to its own caller. Assign y to <code>$a0</code> and x to <code>$a1</code>. <code>slt $t0, $a0, $a1</code> writes 1 when y is smaller. <code>beq $t0, $zero, OtherPath</code> skips the call when that test is false.</p>
+      <p>With y = 5 and x = 10, the branch falls through. Save the current <code>$ra</code> in the stack frame before <code>jal myfunction</code>. The helper subtracts 5 from 10 and returns 5 in <code>$v0</code>. Restore <code>$ra</code> and release the frame, leaving <code>$v0</code> ready for the outer return. The <a href="#ct2-nested">nested-call lesson</a> traces the stack instructions and both return addresses.</p>
+      <details class="exam"><summary>If y = 10 and x = 5, where does the branch go?</summary><div class="in">
+        <p><code>slt</code> writes 0 because 10 is greater than 5. The <code>beq</code> reaches <code>OtherPath</code>. No helper runs on this path.</p>
+      </div></details>
+    </div>
+  </section>
   </article>
 
   <article class="page" id="mips-machine" data-title="Machine language" data-group="MIPS" hidden>
@@ -2051,6 +2092,16 @@ jr   $ra</pre></div></details></div></details>
 <p>For the lecture’s 16-bit processor with 16 registers and a three-bit opcode, each register needs four bits, leaving <code>16 − 3 − 4 − 4 = 5</code> bits. With an unsigned byte offset and two-byte elements, offsets 0, 2, …, 30 reach 16 elements directly from that base.</p><p>For 256 registers, a 32-bit instruction and a six-bit opcode, the immediate becomes 10 bits. An unsigned field then tops out at 1023, so a byte offset of 1200 and a literal 1024 both need a different instruction sequence. For 1000 registers, round up to 10 bits per register. The six-bit immediate tops out at 63 unsigned, so the second-largest byte offset is 62. These limits describe one field with one base, and the signed case has a different range.</p></div></div></div><aside class="ls-side" aria-label="Lesson reminders"><div class="ls-card"><b>In one line</b><p>Memory offsets use bytes. Branch offsets use instruction words from PC + 4. Jumps encode part of an aligned target address.</p></div><div class="ls-card"><b>Exam habit</b><p>Write the label addresses beside the code before you fill out the decimal fields.</p></div></aside></div><section class="ls-check" aria-label="Check yourself"><span class="k">Check yourself</span><details><summary>What offset reaches 124 from a branch at 108?</summary><p>Start at 112. The displacement is 12 bytes, so the encoded offset is 3.</p></details><details><summary>What is the range of a signed 16-bit branch offset?</summary><p>−32,768 to 32,767 instruction words. Multiply by four for the displacement in bytes.</p></details></section><p class="lesson-source">Source • Lecture 7, slides 17–36. J-type reconstruction uses the standard MIPS32 PC region rule.</p></section><div class="card"><h2>Try your fields in the encoder</h2><p>Use the <a href="#mips-machine">machine language tool</a> to enter the branch with its numeric target.</p></div><details class="exam"><summary>Exam practice</summary><div class="in"><p>Use the addresses from Lecture 7 slides 21–24. Encode the decimal fields for <code>beq $t0, $zero, END</code> at 108, <code>lw $t1, 32($s0)</code> at 112, and <code>j LOOP</code> at 120. END is 124 and LOOP is 100.</p><details class="exam"><summary>Worked answer</summary><div class="in"><div class="scroll"><table><thead><tr><th scope="col">Instruction</th><th scope="col">Decimal fields</th><th scope="col">Reason</th></tr></thead><tbody><tr><td>beq</td><td>(4, 8, 0, 3)</td><td>(124 − 112) / 4 = 3</td></tr>
 <tr><td>lw</td><td>(35, 16, 9, 32)</td><td>32 is already a byte offset</td></tr>
 <tr><td>j</td><td>(2, 25)</td><td>100 / 4 = 25</td></tr></tbody></table></div></div></details></div></details>
+    <section class="lesson" aria-label="Explain why the same target produces different fields">
+    <div class="ls-bar"><h2>Explain why the same target produces different fields</h2></div>
+    <div class="ls-main">
+      <p>Take the target address 100 and suppose the current instruction starts at 108. A branch begins measuring at 112 because its base is <code>PC + 4</code>. The displacement is 100 − 112 = −12 bytes, so the field is −12 ÷ 4 = −3.</p>
+      <p>A jump uses bits from the target itself. In the low address region, divide 100 by four and use field 25. To check the jump, put back the two low zero bits, which is the same as multiplying 25 by four. Both calculations reach byte 100.</p>
+      <details class="exam"><summary>What value would you enter into the instruction encoder’s target operand?</summary><div class="in">
+        <p>Enter target address 100, then set the PC to 108. The encoder calculates the field from the target and PC. For an exam asking for the field, report −3 for the branch and 25 for the jump.</p>
+      </div></details>
+    </div>
+  </section>
   </article>
 
   <!-- CT-2 foundations -->

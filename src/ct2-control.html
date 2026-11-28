@@ -42,6 +42,18 @@ Done:</code></pre>
         <p>With x = 8 and y = 8, the branch falls through and sum becomes 16. With x = 7 and y = 8, it goes to <code>Else</code> and x becomes 4.</p>
         <p class="lesson-source">Source · Tasmin Sanjida, MIPS Memory and Branches, Content 05.</p>
       </section>
+      <section aria-label="Trace a condition joined by OR">
+        <h2>Trace a condition joined by OR</h2>
+        <p>In C, <code>i &lt; j || i == k</code> is true as soon as either test is true. For i = 3, j = 5 and k = 4, the first comparison is true. Jump to the true path immediately. When i = 5, j = 3 and k = 5, the first comparison is false, so the equality still gets a chance.</p>
+        <pre><code>slt $t0, $s0, $s1   # i &lt; j?
+bne $t0, $zero, Yes # true if the result is 1
+beq $s0, $s5, Yes   # i == k?
+j   No</code></pre>
+        <p>Use the same register assignments as the earlier example. Here the branch checks look for a success. For an expression joined by <code>&amp;&amp;</code>, the earlier translation looked for a failure so it could exit as soon as either test failed.</p>
+        <details class="foundation-more"><summary>Which label is reached when i = 5, j = 3 and k = 4?</summary>
+          <p><code>slt</code> writes 0 because 5 is greater than 3. The <code>bne</code> falls through, then <code>beq</code> falls through because 5 differs from 4. The last <code>j</code> goes to <code>No</code>.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Does slt $t0, $s0, $s1 jump? If both source registers hold 5, what goes in $t0?</p>
@@ -96,6 +108,15 @@ Loop: slti $t1, $t0, 10
 End:</code></pre>
         <p>Start with i = 1 and sum = 0. Run <code>do { sum += i; i++; } while (i &lt;= 10);</code>. The first pass adds 1 before checking. The last pass adds 10 to 45, then increments i to 11. The check is false and the final sum is 55. Starting at i = 11 with sum = 0 still runs the body once and gives sum = 11.</p>
         <p class="lesson-source">Source · Tasmin Sanjida, MIPS Loops, Content 06.</p>
+      </section>
+      <section aria-label="Use a trace table to check the first and last pass">
+        <h2>Use a trace table to check the first and last pass</h2>
+        <p>Return to <code>for (i = 0; i &lt; 10; i++) { k++; }</code> with k starting at 5. Keep i and k in separate columns. Trace the state at the top before each check; the last row has a check but no update.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">i before test</th><th scope="col">k before test</th><th scope="col">Result of i &lt; 10</th><th scope="col">Next state</th></tr></thead><tbody><tr><td>0</td><td>5</td><td>True</td><td>i = 1, k = 6</td></tr><tr><td>1</td><td>6</td><td>True</td><td>i = 2, k = 7</td></tr><tr><td>9</td><td>14</td><td>True</td><td>i = 10, k = 15</td></tr><tr><td>10</td><td>15</td><td>False</td><td>Exit with k = 15</td></tr></tbody></table></div>
+        <p>At the exit, i is 10 even though the body last ran at i = 9. This timing is why you should label when each column is recorded.</p>
+        <details class="foundation-more"><summary>What changes if the test is i &lt;= 10?</summary>
+          <p>The body also runs when i is 10. That gives one extra update. The next test fails at i = 11, leaving k = 16.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

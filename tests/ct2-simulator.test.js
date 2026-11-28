@@ -98,3 +98,12 @@ test('practice traces show signed remainder and every written array index', () =
   assert.equal(value(run(5, 2, 6, 7).at(-1), 'Product'), 42);
   assert.equal(value(run(5, 2, 15, 15).at(-1), 'Product'), 225);
 });
+
+test('the division and multiplication lessons expose the intermediate bits', () => {
+  const division = run(5, 3, 14, 3);
+  assert.deepEqual(division.slice(1, -1).map(step => value(step, 'Partial remainder')), [1, 3, 1, 2]);
+  assert.deepEqual(division.slice(1, -1).map(step => step.answer), [0, 1, 0, 0]);
+  const product = run(5, 2, 14, 10).at(-1);
+  assert.equal(value(product, 'High four bits') + value(product, 'Low four bits'), '10001100');
+  assert.equal(value(product, 'Product'), 140);
+});

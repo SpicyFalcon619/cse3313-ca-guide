@@ -33,6 +33,17 @@
         <p>In the slide’s implementation, the callee copies the four inputs into <code>$s0</code> through <code>$s3</code>. It saves those registers before using them and restores them before returning. The <a href="#ct2-stack">stack lesson</a> shows how to save a register.</p>
         <p class="lesson-source">Source · Tasmin Sanjida, MIPS Functions and Stack, Content 07.</p>
       </section>
+      <section aria-label="Trace an argument order that matters">
+        <h2>Trace an argument order that matters</h2>
+        <p>In C, imagine <code>int difference(int y, int x) { return x - y; }</code> and the call <code>difference(5, 10)</code>. The first value, 5, arrives in <code>$a0</code> because y is the first parameter. The second, 10, arrives in <code>$a1</code> because x is second. The subtraction nevertheless reads x first.</p>
+        <pre><code>difference:
+    sub $v0, $a1, $a0   # x - y = 10 - 5
+    jr  $ra             # return to the caller</code></pre>
+        <p>At the return, <code>$v0</code> holds 5. The program counter takes the value in <code>$ra</code>. Follow the result separately from the instruction address even when both are shown in the same trace.</p>
+        <details class="foundation-more"><summary>What result does difference(10, 5) now return?</summary>
+          <p>Now <code>$a0</code> holds 10 and <code>$a1</code> holds 5. The same instructions compute 5 − 10 = −5 and return that value in <code>$v0</code>.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If jal ran at 2000 in the same lecture model, what address would it save in $ra? Where would the result be?</p>
@@ -92,6 +103,15 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
       </section>
       <p>Saving on top of the stack is often called a <strong>push</strong>. Retrieving the most recently saved item and releasing its space is a <strong>pop</strong>. The MIPS example does these jobs with address arithmetic and <code>sw</code> or <code>lw</code>. Releasing a slot changes the pointer. The old bits in memory can remain there until a later store replaces them.</p>
       <p>Saved registers (<code>$s0–$s7</code>) must have their incoming values when the called function returns. Temporary registers (<code>$t0–$t9</code>) can be changed across a call. If the caller needs a temporary value later, the caller protects it. In the <a href="#mips-functions">stack visualiser</a>, choose “Save and restore $s0” and watch the store and load use the same address.</p>
+      <section aria-label="Draw a frame with two saved registers">
+        <h2>Draw a frame with two saved registers</h2>
+        <p>Suppose <code>$sp</code> starts at 1000 and a function needs to change <code>$s0</code> and <code>$s1</code>. Reserve eight bytes with <code>addi $sp, $sp, -8</code>. The new base is 992. Save <code>$s0</code> at <code>4($sp)</code> and <code>$s1</code> at <code>0($sp)</code>.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Offset from 992</th><th scope="col">Byte addresses</th><th scope="col">Saved value</th></tr></thead><tbody><tr><td>0</td><td>992–995</td><td>Old <code>$s1</code></td></tr><tr><td>4</td><td>996–999</td><td>Old <code>$s0</code></td></tr></tbody></table></div>
+        <p>At the end, load <code>$s1</code> from offset 0 and <code>$s0</code> from offset 4 while <code>$sp</code> is still 992. Then add eight to <code>$sp</code>, returning it to 1000. Releasing the frame tells the next call that those bytes are available again.</p>
+        <details class="foundation-more"><summary>What address would 4($sp) point to if you released the frame first?</summary>
+          <p>After releasing the frame, <code>$sp</code> is 1000, so <code>4($sp)</code> points to 1004. The old <code>$s0</code> was stored at 996. Restore from 996 before changing the pointer.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>With $sp = 1000, where do two saved words start after allocating eight bytes?</p>
@@ -135,6 +155,15 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
           <li>The call at 1028 replaces <code>$ra</code> with 1032. The word at 996 still holds 1004. The helper uses 1032 to return to <code>outer</code>.</li>
           <li>At 1032, <code>outer</code> loads the saved 1004 back into <code>$ra</code>. It then frees the word, and its own <code>jr</code> jumps to 1004.</li>
         </ol>
+      </section>
+      <section aria-label="Find the bad jump when a return address is overwritten">
+        <h2>Find the bad jump when a return address is overwritten</h2>
+        <p>In the nested example above, <code>outer</code> initially needs to return to 1004. Its <code>jal helper</code> writes 1032 into <code>$ra</code>. That lets helper return to <code>outer</code> correctly. When <code>outer</code> reaches its own <code>jr $ra</code>, it needs 1004 again.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Moment</th><th scope="col">$ra</th><th scope="col">Saved slot at 996</th></tr></thead><tbody><tr><td>After the outer call and save</td><td>1004</td><td>1004</td></tr><tr><td>Inside helper</td><td>1032</td><td>1004</td></tr><tr><td>After outer loads its saved address</td><td>1004</td><td>1004</td></tr></tbody></table></div>
+        <p>Without the restore, <code>outer</code>’s <code>jr</code> would jump to 1032, back inside <code>outer</code>. Saving the incoming return address is what lets both calls finish.</p>
+        <details class="foundation-more"><summary>Which function must save the incoming $ra in this example?</summary>
+          <p><code>outer</code> must save it because <code>outer</code> executes another <code>jal</code>. Helper can return using the incoming value directly because it calls no other function.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

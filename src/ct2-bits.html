@@ -19,6 +19,14 @@
           <li>The CPU adds 3 + (−5), so <code>$t0</code> holds −2. As a 32-bit word that is <code>0xFFFFFFFE</code>.</li>
         </ol>
       </section>
+      <section aria-label="Use the same bits in two different ways">
+        <h2>Use the same bits in two different ways</h2>
+        <p>Take the four bits <code>1011</code>. As an unsigned number the place values are 8, 4, 2, 1. Add the enabled places to get 8 + 2 + 1 = 11. As a signed two’s complement number the leftmost place is worth −8, so the same pattern gives −8 + 2 + 1 = −5.</p>
+        <p>Make more room for that signed value by copying the sign bit to the left. Four-bit <code>1011</code> becomes eight-bit <code>11111011</code>, which still means −5. Padding it with zeros produces <code>00001011</code>, which means positive 11. Copying the sign this way is called <b>sign extension</b>.</p>
+        <details class="foundation-more"><summary>Why does addi need sign extension when its immediate says −5?</summary>
+          <p>The instruction contains a 16-bit constant and the register holds 32 bits. The CPU copies the constant’s sign bit into the added positions, so it still adds −5. With zero padding it would instead add a large positive value.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Read 1111 as a four-bit unsigned number and then as a four-bit signed number.</p>
@@ -106,6 +114,17 @@
         <p>The lowest four bits are <code>1010</code> for 10 and <code>0101</code> for 5. No position has two 1s, so AND gives 0. Each position has at least one 1, so OR gives 15. NOR flips the full 32-bit OR result and gives −16 when read as a signed number.</p>
         <p>Shifts also help you find a remainder when the divisor is a power of two. For <code>13 % 4</code>, shift 13 right twice to get 3, then left twice to get 12. Subtract 12 from 13 and get the remainder 1. This shortcut assumes the dividend is nonnegative.</p>
         <p class="lesson-source">Sources · Tasmin Sanjida, MIPS Assembly Basics and MIPS Loops.</p>
+      </section>
+      <section aria-label="Read a mask as a list of positions">
+        <h2>Read a mask as a list of positions</h2>
+        <p>Suppose <code>$t1</code> holds 5, whose four low bits are <code>0101</code>. In <code>andi $t0, $t1, 3</code>, the constant 3 has low bits <code>0011</code>. Every 1 in the mask tells AND to copy that bit from the source. Every 0 forces the result bit to 0. Follow the last four columns.</p>
+        <pre><code>source  0101
+mask    0011
+result  0001</code></pre>
+        <p>The low two bits of the source are <code>01</code>, so <code>$t0</code> gets 1. The mask leaves the original <code>$t1</code> at 5. All higher mask bits are zero, so all higher result bits are zero too.</p>
+        <details class="foundation-more"><summary>With the same input and constant, what changes if you use ori?</summary>
+          <p>OR leaves source bits alone where the constant is 0 and turns them on where it is 1. <code>0101 OR 0011</code> is <code>0111</code>, so the result is 7.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

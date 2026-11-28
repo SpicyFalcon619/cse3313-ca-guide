@@ -176,6 +176,18 @@ bne  $t0, $zero, Loop</code></pre>
       <h1>Unsigned multiplication by shifts and adds</h1>
       <p class="lede">Multiply 6 by 7 using four-bit inputs. Follow where the bits go at each step.</p>
     </header>
+    <section class="lesson" aria-label="Build the partial products before using the combined register">
+    <div class="ls-bar"><h2>Build the partial products before using the combined register</h2></div>
+    <div class="ls-main">
+      <p>Start with the multiplication you already know, 6 × 7. The multiplier is <code>0111</code>, so its bits stand for 0 copies of 8, 1 copy of 4, 1 copy of 2, and 1 copy of 1. Multiply 6 by the places that are on. The separate results are called <b>partial products</b>.</p>
+      <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Place</th><th scope="col">Bit in 0111</th><th scope="col">Contribution</th><th scope="col">Running total</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>6 × 1 = 6</td><td>6</td></tr><tr><td>2</td><td>1</td><td>6 × 2 = 12</td><td>18</td></tr><tr><td>4</td><td>1</td><td>6 × 4 = 24</td><td>42</td></tr><tr><td>8</td><td>0</td><td>Skip 6 × 8.</td><td>42</td></tr></tbody></table></div>
+      <p>A left shift by one place doubles each partial product. The combined-register method below gets the same answer while shifting the accumulating product right each time. Use four passes for a four-bit multiplier, including passes whose current bit is zero.</p>
+      <p><a href="#ct2-simulator">Open the simulator lab</a> and choose <b>Unsigned shift-and-add multiplication</b> under <b>Exam practice</b>. Set 14 and 10 to compare a different pattern with the example.</p>
+      <details class="exam"><summary>Work out 14 × 10 using only the 1s in binary 1010</summary><div class="in">
+        <p>The 1s are at places 2 and 8. The partial products are 14 × 2 = 28 and 14 × 8 = 112. Add them to get 140, or <code>10001100</code>. It needs eight bits even though both inputs fit in four.</p>
+      </div></details>
+    </div>
+  </section>
     <section class="lesson" aria-label="Worked example">
       <div class="ls-bar"><b>Worked example</b></div>
       <div class="ls-main">

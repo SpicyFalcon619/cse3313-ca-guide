@@ -24,6 +24,17 @@
           <li>The datapath produces 8. A later instruction sends the result to the screen. If the power goes off, the saved program on the SSD is still there.</li>
         </ol>
       </section>
+      <section aria-label="Follow an instruction, a value, and an address">
+        <h2>Follow an instruction, a value, and an address</h2>
+        <p>Imagine a program has <code>add $t0, $t1, $t2</code> stored as a machine instruction starting at byte address 1000. The program counter, or <b>PC</b>, tells the CPU where to fetch this instruction. The instruction tells the CPU which registers to read. Suppose <code>$t1</code> holds 5 and <code>$t2</code> holds 3.</p>
+        <div class="scroll"><table class="ls-t">
+          <thead><tr><th scope="col">Stage</th><th scope="col">What the CPU does</th></tr></thead>
+          <tbody><tr><td>Fetch</td><td>Read the four bytes of the instruction beginning at address 1000.</td></tr><tr><td>Decode</td><td>Recognize addition and the three register names.</td></tr><tr><td>Execute</td><td>Read 5 and 3, then add them.</td></tr><tr><td>Write back</td><td>Put 8 in the destination register <code>$t0</code>. Continue at 1004.</td></tr></tbody>
+        </table></div>
+        <details class="foundation-more"><summary>If the inputs change, what does the instruction still tell the CPU?</summary>
+          <p>It still says to add the contents of <code>$t1</code> and <code>$t2</code> and put the answer in <code>$t0</code>. The bytes encoding the instruction can stay the same, because they identify the operation and the registers. The values are read when the instruction runs.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Which part adds the numbers? Which place keeps the saved program after power is off?</p>
@@ -88,6 +99,14 @@ add  $s0, $t1, $t2  # $s0 = 10 + 5 = 15
 sub  $s1, $t1, $t2  # $s1 = 10 − 5 = 5</code></pre>
         <p class="lesson-source">Source · Tasmin Sanjida, MIPS Assembly Basics, Content 02.</p>
       </section>
+      <section aria-label="Trace a register that is both input and destination">
+        <h2>Trace a register that is both input and destination</h2>
+        <p>In <code>addi $t1, $t1, -5</code>, the first <code>$t1</code> is the destination and the second is the source. When <code>$t1</code> holds 10, the CPU reads the old 10, adds the immediate −5, then writes 5 back. The old contents are replaced only after they have been read.</p>
+        <p>The same read-then-write order applies to <code>sub $t1, $t1, $t2</code>. With <code>$t1 = 10</code> and <code>$t2 = 5</code>, it writes 5 into <code>$t1</code> and leaves <code>$t2</code> at 5. Read subtraction as first source minus second source.</p>
+        <details class="foundation-more"><summary>With the original inputs, what if you write sub $t1, $t2, $t1?</summary>
+          <p>Read the old <code>$t2 = 5</code> and <code>$t1 = 10</code>, then compute 5 − 10 = −5. The first operand is the destination, so <code>$t1</code> becomes −5 and <code>$t2</code> keeps 5.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If $t1 holds 6 and $t2 holds 4, where does add $t0, $t1, $t2 put the result?</p>
@@ -123,6 +142,17 @@ sub $s0, $t0, $t1   # f = left sum - right sum</code></pre>
           <li>The second <code>add</code> reads i from <code>$s3</code> and j from <code>$s4</code>. Now <code>$t1 = 6 + 2 = 8</code>.</li>
           <li><code>sub $s0, $t0, $t1</code> subtracts the second sum from the first. <code>$s0</code> holds f = 13 − 8 = 5.</li>
         </ol>
+      </section>
+      <section aria-label="Translate 12 + 8 − 5 without losing the intermediate result">
+        <h2>Translate 12 + 8 − 5 without losing the intermediate result</h2>
+        <p>For <code>f = g + h - 5;</code>, suppose <code>$s1</code> holds g = 12, <code>$s2</code> holds h = 8, and <code>$s0</code> will hold f. The expression on the right does two jobs. First calculate <code>g + h</code> in a temporary register. Then add −5 to that temporary and write the answer into f.</p>
+        <pre><code>add  $t0, $s1, $s2  # $t0 = 12 + 8 = 20
+addi $s0, $t0, -5   # $s0 = 20 + (-5) = 15</code></pre>
+        <p>If the C expression instead said <code>g - (h + 5)</code>, you would first use <code>addi</code> to get 13 from h and 5, then <code>sub</code> to compute 12 − 13 = −1. The parentheses tell you which operation feeds the next.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Assembly Basics, for the 12 + 8 − 5 example.</p>
+        <details class="foundation-more"><summary>Why can’t the second instruction use $s1 in place of $t0?</summary>
+          <p><code>$s1</code> still contains 12. Subtracting 5 from it would give 7 and skip the addition of h. <code>$t0</code> contains 20, the value the second instruction needs.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
@@ -162,6 +192,15 @@ sub $s0, $t0, $t1   # f = left sum - right sum</code></pre>
           <li>Take 4 out of 5. Write 1 in the 4s place. There is 1 left, so the 2s place gets 0.</li>
           <li>Use that last 1 in the 1s place. The pattern is <code>1101</code>. Write it as <code>00001101</code> in one byte. The extra leading zeros leave the value at 13.</li>
         </ol>
+      </section>
+      <section aria-label="Read a word that needs more than one byte">
+        <h2>Read a word that needs more than one byte</h2>
+        <p>One byte has places from 128 down to 1. Turn them all on and you get 255, the largest value an unsigned byte can hold. Now try 258. Split it as 256 + 2. The 256s place lies one bit beyond the eight positions in the first byte, so 258 needs at least two bytes.</p>
+        <div class="foundation-values foundation-bytes" aria-label="Four bytes for the value 258"><span><small>High byte</small><code>00000000</code></span><span><small>Next byte</small><code>00000000</code></span><span><small>Next byte</small><code>00000001</code></span><span><small>Low byte</small><code>00000010</code></span></div>
+        <p>Read the whole word from right to left. The low byte contributes 2. The bit in the byte immediately to its left is worth 256 in the whole word. This display shows the word’s value. The <a href="#ct2-memory">memory lesson</a> explains how a machine can arrange its bytes at addresses.</p>
+        <details class="foundation-more"><summary>What value would the word hold if you changed only the low byte to 00000101?</summary>
+          <p>The low byte would contribute 5 instead of 2, so the whole word would hold 256 + 5 = 261.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

@@ -64,3 +64,35 @@ test('worked instruction examples show the exact widths of a shift and a signed 
   assert.equal(store.fields[3].binary, '1111111111111100');
   assert.equal(memoryAddress(104, -4), 100);
 });
+
+test('mixed worked trace distinguishes a byte offset from a branch word offset', () => {
+  const memory = new Map();
+  const load = encodeMips('lw $t0, 4($s0)', 1000);
+  assert.equal(load.fields[3].value, 4);
+  const effective = memoryAddress(100, load.fields[3].value);
+  assert.equal(effective, 104);
+  storeWord(memory, effective, 8, 'big');
+  assert.equal(loadWord(memory, effective, 'big'), 8);
+  const branch = encodeMips('beq $t0, $t1, 1012', 1004);
+  assert.deepEqual(branch.fields.map(field => field.value), [4, 8, 9, 1]);
+  assert.equal(decodeMips(branch.hex, 1004).assembly, 'beq $t0, $t1, 0x000003F4');
+  assert.equal(encodeMips('beq $t0, $t1, 112', 108).fields[3].value, 0);
+});
+
+test('worked examples distinguish an unsigned mask from a signed immediate', () => {
+  const mask = encodeMips('andi $t0, $t1, 65535');
+  const add = encodeMips('addi $t0, $t1, -1');
+  assert.equal(mask.fields[3].binary, add.fields[3].binary);
+  assert.equal(mask.fields[3].value, 65535);
+  assert.equal(add.fields[3].value, -1);
+  assert.equal(0xABCDEF12 & mask.fields[3].value, 0xEF12);
+});
+
+test('factorial frames for the two-input and base-case walkthroughs', () => {
+  for (const [argument, low, result] of [[2, 976, 2], [0, 992, 1]]) {
+    const trace = traceProcedure('factorial', { argument });
+    assert.equal(Math.min(...trace.map(step => step.registers.$sp)), low);
+    assert.equal(trace.at(-1).registers.$sp, 1000);
+    assert.equal(trace.at(-1).registers.$v0, result);
+  }
+});

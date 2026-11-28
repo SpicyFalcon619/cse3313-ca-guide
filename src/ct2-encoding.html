@@ -30,6 +30,14 @@
         <p>For <code>add $s1, $s2, $t1</code>, the first input is register 18, the second is register 9 and the destination is register 17. The fields are <code>0 / 18 / 9 / 17 / 0 / 32</code>. For <code>srl $s1, $s2, 20</code>, the only register input goes in <code>rt</code> and 20 goes in <code>shamt</code>. The fields are <code>0 / 0 / 18 / 17 / 20 / 2</code>.</p>
         <p class="lesson-source">Source · Tasmin Sanjida, MIPS Machine Language, Content 08.</p>
       </section>
+      <section aria-label="Encode the shift and locate its count">
+        <h2>Encode the shift and locate its count</h2>
+        <p>Compare addition with <code>srl $s1, $s2, 20</code>. The only register input is <code>$s2</code>, register 18. The assembler puts it in <code>rt</code>. The destination is <code>$s1</code>, register 17, in <code>rd</code>. The immediate count 20 is 16 + 4, or <code>10100</code>, in <code>shamt</code>.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Field</th><th scope="col">Decimal</th><th scope="col">Bits</th><th scope="col">Why</th></tr></thead><tbody><tr><td>op</td><td>0</td><td>000000</td><td>R-format ALU group</td></tr><tr><td>rs</td><td>0</td><td>00000</td><td>Unused here</td></tr><tr><td>rt</td><td>18</td><td>10010</td><td>Source $s2</td></tr><tr><td>rd</td><td>17</td><td>10001</td><td>Destination $s1</td></tr><tr><td>shamt</td><td>20</td><td>10100</td><td>Shift by 20 places</td></tr><tr><td>funct</td><td>2</td><td>000010</td><td>Select srl</td></tr></tbody></table></div>
+        <details class="foundation-more"><summary>What is the largest count that fits in shamt?</summary>
+          <p>The field is five bits wide. Turning all five bits on gives <code>11111</code>, or 31. A shift count of 32 needs six bits and does not fit.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>In add $t0, $t1, $t2, what decimal value belongs in rd?</p>
@@ -63,6 +71,14 @@
           <li>The immediate is −4 bytes. Write −4 as <code>1111111111111100</code> in signed 16-bit binary. The decimal field row is <code>43 / 18 / 17 / −4</code>.</li>
           <li>At run time the CPU adds 104 + (−4) to get address 100 and writes 7 there. The machine instruction contains the offset −4, while the value 7 and the base 104 live in registers.</li>
         </ol>
+      </section>
+      <section aria-label="Predict whether the CPU extends with zeros or copies the sign">
+        <h2>Predict whether the CPU extends with zeros or copies the sign</h2>
+        <p>Compare a 16-bit immediate containing all 1s in <code>addi</code> and <code>andi</code>. <code>addi</code> interprets it as −1. It copies the sign bit until it has a 32-bit operand, <code>0xFFFFFFFF</code>. <code>andi</code> fills the new upper bits with zeros, giving <code>0x0000FFFF</code>. That makes the immediate useful as a mask.</p>
+        <p>For example, start with <code>$t1 = 0xABCDEF12</code>. <code>andi $t0, $t1, 65535</code> keeps the low half, so <code>$t0</code> becomes <code>0x0000EF12</code>. The register’s original upper half is dropped because the mask has zeros there. 65535 is the unsigned decimal name for the immediate’s 16 bits.</p>
+        <details class="foundation-more"><summary>Could you use addi with 65535 to add that positive number directly?</summary>
+          <p>No. A signed 16-bit field holds −32768 through 32767. The pattern with all bits on represents −1 under <code>addi</code>. To add positive 65535, you can put it in a separate register and use <code>add</code>.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
@@ -100,6 +116,14 @@
           <li>For the jump, the top four address bits are zero in this example. Divide the target address 100 by four and write 25 in the jump field. Reconstructing the target gives 25 × 4 = 100.</li>
         </ol>
       </section>
+      <section aria-label="Decode a branch field back to a byte address">
+        <h2>Decode a branch field back to a byte address</h2>
+        <p>Suppose a branch at address 108 has <code>1111111111111101</code> in its 16-bit immediate field. This is <code>0xFFFD</code>. Read it as signed, so it is −3. Each unit counts four bytes. Convert −3 to −12 bytes and add it to 108 + 4 = 112. The target is 100.</p>
+        <p>If you instead get 96, check where you started counting. Adding −12 to 108 starts at the branch itself; the architecture starts at the following instruction, 112.</p>
+        <details class="foundation-more"><summary>What target would the branch reach with a field of zero?</summary>
+          <p>112. Multiply zero by four, then add it to <code>PC + 4</code> = 112. A zero field points to the following instruction.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If a j instruction in the low address region targets byte address 100, what goes in its 26-bit field?</p>
@@ -132,6 +156,14 @@
           <li>Aligned element starts are even. The last one is 30, because a two-byte element there uses both 30 and 31.</li>
           <li>Index 15 starts at offset 15 × 2 = 30. Counting indices 0 through 15 gives 16 elements.</li>
         </ol>
+      </section>
+      <section aria-label="Rework the slide’s array question with a signed offset">
+        <h2>Rework the slide’s array question with a signed offset</h2>
+        <p>The modified design has five offset bits and two-byte elements. With an unsigned field it reaches offsets 0–31. Now suppose the same design interprets those bits as signed two’s complement. Its byte-offset range is −16 to +15. Negative offsets point before the base, so they do not reach elements starting at index 0 or above in this array.</p>
+        <p>From the base you can reach element starts at offsets 0, 2, 4, 6, 8, 10, 12 and 14. That gives eight elements. The last direct index is 14 ÷ 2 = 7. The signed and unsigned versions both have 32 patterns; signing them changes what those patterns mean.</p>
+        <details class="foundation-more"><summary>Can the signed field reach index 8 directly from the array base?</summary>
+          <p>No. Index 8 is 8 × 2 = 16 bytes from the base. +16 is outside the signed range; you could still compute the full address in a register and load with offset 0.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

@@ -22,6 +22,17 @@ mfhi $t3</code></pre>
           <li><code>mfhi $t3</code> copies −17 into <code>$t3</code>. A mask of 31 would give 15, which is a different answer.</li>
         </ol>
       </section>
+      <section aria-label="Read the signed quotient and remainder separately">
+        <h2>Read the signed quotient and remainder separately</h2>
+        <p>Start with <code>$t0 = -17</code> and <code>$t1 = 32</code>. <code>div $t0, $t1</code> finds the integer quotient by truncating toward zero, so it writes 0 to <code>LO</code>. The remainder is the original dividend minus the part accounted for by the quotient. Here it is <code>-17 - (0 × 32) = -17</code>, so <code>HI</code> holds −17.</p>
+        <pre><code>div  $t0, $t1
+mflo $t2        # $t2 = quotient = 0
+mfhi $t3        # $t3 = remainder = -17</code></pre>
+        <p>A bit mask for division by 32 would keep the low five bits and produce positive 15 in this case. For a signed remainder, get the value from <code>HI</code>.</p>
+        <details class="foundation-more"><summary>How can you check both outputs of division together?</summary>
+          <p>Multiply the divisor by the quotient and then add the remainder. Here <code>32 × 0 + (-17) = -17</code>. This gets you back to the dividend, and the remainder magnitude is smaller than 32.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>For 25 % 16, which instruction retrieves the answer after div, and what is it?</p>
@@ -79,6 +90,14 @@ j Check</code></pre><p>Each index is <code>i * 2</code>. Each integer takes four
           <li>The low bits of <code>10 &amp; 2</code> are <code>1010 AND 0010 = 0010</code>. Flipping that word gives −3, so <code>sw</code> writes −3 at 108. <code>addi</code> then sets i to 2.</li>
         </ol>
       </section>
+      <section aria-label="Trace the data and address before every store">
+        <h2>Trace the data and address before every store</h2>
+        <p>In the array-writing function above, take <code>n = 2</code>, <code>a = 10</code>, and an array base of 100. Start with the value for the right-hand side. The low bits of 10 are <code>1010</code> and those of 2 are <code>0010</code>. AND gives 2. Flipping all 32 bits of 2 gives −3. The value −3 is the same on each pass.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">i</th><th scope="col">Index 2 × i</th><th scope="col">Byte offset</th><th scope="col">Store</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td><td>Write −3 at 100.</td></tr><tr><td>1</td><td>2</td><td>8</td><td>Write −3 at 108.</td></tr><tr><td>2</td><td>4</td><td>16</td><td>Write −3 at 116.</td></tr><tr><td>3</td><td>—</td><td>—</td><td>Condition fails. No store.</td></tr></tbody></table></div>
+        <details class="foundation-more"><summary>Why does the function shift i by three rather than two?</summary>
+          <p>Shifting by two multiplies by four, which would get the byte offset for index i. Here the index is already 2 × i. Three shifts multiply i by eight and account for both the index expression and the four bytes per integer.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Why does the loop use sll by 3 for arr[i * 2], while arr[i] used sll by 2?</p>
@@ -126,6 +145,14 @@ Return: lw $ra, 4($sp)
           <li>The saved n at 984 is 2, so multiply 2 × 1. Finally <code>fact(3)</code> reloads its saved 3 at 992 and multiplies 3 × 2. The final result is 6, and <code>$sp</code> is back at 1000.</li>
         </ol>
       </section>
+      <section aria-label="Predict the deepest stack pointer for a new input">
+        <h2>Try another input and predict the deepest stack pointer</h2>
+        <p>For <code>fact(2)</code>, list calls until the base case: <code>fact(2)</code>, <code>fact(1)</code> and <code>fact(0)</code>. All three calls are still active right before the first return. Each frame takes eight bytes, so the deepest point uses 3 × 8 = 24 bytes. From <code>$sp = 1000</code>, that reaches 976.</p>
+        <p>The base case puts 1 in <code>$v0</code> and releases its eight bytes. The stack pointer returns to 984, where <code>fact(1)</code> has saved the n it needs for the next multiplication.</p>
+        <details class="foundation-more"><summary>For fact(0) by itself, does this program reserve any stack space?</summary>
+          <p>Yes. The first instruction reserves eight bytes before checking the condition. <code>$sp</code> reaches 992, then the base case returns 1 and releases those eight bytes.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Why does fact(3) reload 3 after fact(2) returns?</p>
@@ -169,6 +196,18 @@ sw  $v0, 8($s0)     # in the caller, after return</code></pre><p>The sum 8 retur
         <li>Try <b>Summer 2025 Q2(c)</b> for a modified machine. State the unit and the range before counting elements.</li>
         <li>Try <b>Summer 2025 Q2(a)</b> for a full translation. Write the register map, then the loop check, the body, and the return. These questions and answers are in the <a href="#s-ct2-papers">worked midterms</a>.</li>
       </ol>
+      <section aria-label="Put memory, control flow and encoding together">
+        <h2>Put memory, control flow and encoding together</h2>
+        <p>Suppose a program starts at address 1000 with <code>$s0 = 100</code>, <code>$t1 = 8</code> and the word at address 104 holding 8. Read and trace this small program before encoding anything.</p>
+        <pre><code>1000  lw   $t0, 4($s0)
+1004  beq  $t0, $t1, Done
+1008  sw   $t1, 4($s0)
+1012  Done: addi $v0, $zero, 1</code></pre>
+        <p>First write the address the load uses. Then decide whether the store runs. Finally calculate the immediate field for the branch. The load and branch both have immediate fields, but they count different units.</p>
+        <details class="foundation-more"><summary>Check the complete trace and the branch immediate</summary>
+          <p>The load uses 100 + 4 = 104 and puts 8 in <code>$t0</code>. The branch compares 8 and 8, so it jumps straight to 1012. The store is skipped and <code>$v0</code> becomes 1. For the branch field, the reference address is 1004 + 4 = 1008. The target is 4 bytes further on, so the field is 4 ÷ 4 = 1 instruction word.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Change the first value to 7 and the second to 4. Which part of the program changes to produce the new sum?</p>

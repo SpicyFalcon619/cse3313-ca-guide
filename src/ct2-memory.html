@@ -51,6 +51,14 @@ sw  $t0, 8($s0)       # A[2] gets 8</code></pre>
           <li><code>sw $t2, 8($s0)</code> uses address 100 + 8 = 108. It writes 3 into bytes 108–111. Both <code>A[1]</code> and <code>$t2</code> still hold 3.</li>
         </ol>
       </section>
+      <section aria-label="Copy a word out of memory, then edit the copy">
+        <h2>Copy a word out of memory, then edit the copy</h2>
+        <p>Suppose <code>$s0 = 100</code> and the word at address 100 holds 5. <code>lw $t0, 0($s0)</code> reads addresses 100–103 and copies the value into <code>$t0</code>. <code>addi $t0, $t0, 3</code> makes the register hold 8. The word in memory still holds 5. Only a subsequent <code>sw $t0, 0($s0)</code> writes the updated word back.</p>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">After executing</th><th scope="col">$t0</th><th scope="col">Word at 100</th></tr></thead><tbody><tr><td><code>lw</code></td><td>5</td><td>5</td></tr><tr><td><code>addi</code></td><td>8</td><td>5</td></tr><tr><td><code>sw</code></td><td>8</td><td>8</td></tr></tbody></table></div>
+        <details class="foundation-more"><summary>Change the final store offset to 4. Which word changes?</summary>
+          <p>Start at 100 + 4 = 104, so the store writes 8 across bytes 104–107. The original word starting at 100 keeps 5.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If A starts at byte 100, what offset loads A[2]? What address does the CPU use?</p>
@@ -93,6 +101,17 @@ sw  $t1, 40($s0)</code></pre>
           <li>The store uses A’s base plus 10 × 4, so it puts 237 in the word at 140.</li>
         </ol>
       </section>
+      <section aria-label="Find B[3], then use the word you find">
+        <h2>Find B[3], then use the word you find</h2>
+        <p>In <code>k = B[3] + 5;</code>, let <code>$s4</code> hold B’s starting address 200, and put k in <code>$s1</code>. B holds four-byte integers. Count the elements before B[3]: B[0], B[1] and B[2]. They take 12 bytes in total, so B[3] starts at 212. Imagine its value is 7.</p>
+        <pre><code>lw   $t0, 12($s4)  # read the word at 212 into $t0
+addi $s1, $t0, 5   # compute 7 + 5, so k is 12</code></pre>
+        <p>Track the three roles on paper. The index is 3, the address is 212, and the data read from that address is 7. The offset and the result both happen to be 12 here. The offset comes from 3 × 4. The result comes from 7 + 5.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Memory and Branches.</p>
+        <details class="foundation-more"><summary>What goes into k if B[3] holds 10 instead?</summary>
+          <p>The load still starts at 212 because neither the index nor the base changed. The value loaded is 10, so <code>addi</code> sets k to 15.</p>
+        </details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If i = 3 and B starts at 200, what are the index, byte offset, and address of B[i]?</p>
@@ -131,6 +150,18 @@ sw  $t1, 40($s0)</code></pre>
           <li>If the first input is 8 and the second is 9, <code>beq</code> falls through from 1000 to 1004. That line writes 1 to <code>$t2</code>. Then 1008 runs.</li>
           <li>In both cases the line at 1008 copies <code>$t0</code> into <code>$s1</code>. The branch only decides whether the middle line runs.</li>
         </ol>
+      </section>
+      <section aria-label="Read the branch as a C if statement">
+        <h2>Read the branch as a C if statement</h2>
+        <p>Use the program above. Treat <code>$t0</code>, <code>$t1</code>, <code>$t2</code> and <code>$s1</code> as value slots named <code>actual</code>, <code>expected</code>, <code>different</code> and <code>saved</code> for this trace. After the branch, the instruction at <code>Done</code> always runs.</p>
+        <pre><code>if (actual != expected) {
+    different = 1;
+}
+saved = actual;</code></pre>
+        <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Inputs</th><th scope="col">Instruction addresses</th><th scope="col">Effect</th></tr></thead><tbody><tr><td>8 and 8</td><td>1000 → 1008</td><td>Skip the assignment to different. Save 8.</td></tr><tr><td>7 and 8</td><td>1000 → 1004 → 1008</td><td>Set different to 1. Save 7.</td></tr></tbody></table></div>
+        <details class="foundation-more"><summary>If the values match and $t2 started at 9, what does $t2 hold at Done?</summary>
+          <p>It stays 9. Taken <code>beq</code> skips the only instruction that writes <code>$t2</code>. The final <code>add</code> writes <code>$s1</code>.</p>
+        </details>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
