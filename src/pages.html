@@ -2,13 +2,13 @@
   <a class="crest" href="#start" aria-label="CSE 3313 Computer Architecture Guide, start page"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#8EADFF"/><g fill="none" stroke="#16223A" stroke-width="1.6" stroke-linecap="round"><rect x="11" y="11" width="12" height="12" rx="2"/><path d="M14 8v3m6-3v3M14 23v3m6-3v3M8 14h3m-3 6h3m12-6h3m-3 6h3"/></g></svg><span>CA Guide</span></a>
   <nav class="groups" id="groups" aria-label="Sections">
     <a href="#start" data-section="Start here">Start here</a>
-    <a href="#performance-review" data-section="Performance">Performance<span class="ct t1">CT-1</span></a>
-    <a href="#ct2-start" data-section="CT-2 course">CT-2 course</a>
+    <a href="#ct2-computer" data-section="Foundations">Foundations</a>
+    <a href="#performance-review" data-section="Performance">Performance</a>
     <a href="#mips" data-section="MIPS">MIPS</a>
     <a href="#midterm-multiply" data-section="Arithmetic">Arithmetic</a>
-    <a href="#s-past" data-section="Exam">Exam</a>
+    <a href="#midterm-practice" data-section="Practice">Practice</a>
   </nav>
-  <div class="prog" hidden title="Pages marked as understood"><i><b id="progB"></b></i><span id="progT"></span></div>
+  <div class="prog" hidden title="Midterm lessons marked as understood"><i><b id="progB"></b></i><span id="progT"></span></div>
   <button id="calmBtn" class="tbtn" hidden type="button" aria-pressed="false" aria-label="Turn background animation off" title="Background animation"></button>
   <button id="themeBtn" class="tbtn" hidden type="button" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button>
 </header>
@@ -19,10 +19,10 @@
       <div class="hl">
         <p class="eyebrow"><b>CSE 3313</b> &middot; Study guide</p>
         <h1>Computer Architecture</h1>
-        <p class="lede">Learn how a computer runs a program, measure its performance, and practise reading and writing MIPS.</p>
+        <p class="lede">Study for the CSE 3313 midterm from the basics through performance, MIPS and computer arithmetic.</p>
         <div class="acts">
-          <a class="hbtn cream" href="#earlier">Start with the basics</a>
-          <a class="hbtn line" href="#ct2-start">Study for CT-2</a>
+          <a class="hbtn cream" href="#midterm">Follow the midterm study path</a>
+          <a class="hbtn line" href="#midterm-practice">Try mixed practice</a>
         </div>
       </div>
     </header>
@@ -45,7 +45,7 @@
             <li><a href="#s-clock-calc">Clock rate and cycles</a> <span>·</span> <a href="#s-cpi">Instruction count and CPI</a></li>
             <li><a href="#s-power">Power and heat</a> <span>·</span> <a href="#s-multi">Multicore</a> <span>·</span> <a href="#s-amdahl">Amdahl’s law</a></li>
           </ul>
-          <p><a href="#performance-review">Follow the CT-1 study order</a></p>
+          <p><a href="#performance-review">See the performance study order</a></p>
         </section>
         <section class="topic-unit">
           <h3>Memory and control flow</h3>
@@ -83,7 +83,7 @@
     </section>
     <section class="howto" aria-label="Practice and reference">
       <div><h3><a href="#ct2-simulator">Simulator lab</a></h3><p>Change the inputs and step through the result.</p></div>
-      <div><h3><a href="#midterm">Midterm study route</a></h3><p>Review by skill, then try the <a href="#s-past">solved past papers</a>.</p></div>
+      <div><h3><a href="#midterm">Midterm study path</a></h3><p>Review by skill, then try the <a href="#s-past">solved past papers</a>.</p></div>
       <div><h3><a href="#calculators">Calculators</a></h3><p>Check your work or look up a term in the <a href="#words">glossary</a>.</p></div>
     </section>
   </article>
@@ -92,7 +92,7 @@
 
   <!-- Midterm review -->
 
-  <article class="page" id="earlier" data-title="Computer basics" data-group="Start here" hidden>
+  <article class="page" id="earlier" data-title="Computer basics" data-group="Foundations" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
       <h1>How a computer runs a program</h1>
@@ -142,7 +142,7 @@
       </section>
       <p class="lesson-source">Sources • Lecture 1, slides 5, 8, 15–16 and 19–22. Lectures 2–3, slides 2–5 and 18–24.</p>
     </section>
-    <details class="exam notes-extra"><summary>Earlier lectures and CT-1 scope</summary><div class="in ca-notes">
+    <details class="exam notes-extra"><summary>Background for the performance lessons</summary><div class="in ca-notes">
     <p class="defline">&gt;sB | question=do_i_need_lectures_1_to_3</p>
     <h2><span class="num">B</span> Do you need the earlier lectures?</h2>
     <p><strong>No new material.</strong> Every formula and every sample question in Lecture 4 is explained inside Lecture 4. The deck even reviews the MIPS instructions it uses (L4 slide 55). It does reuse a few words from earlier, so skim these in about ten minutes.</p>
@@ -156,14 +156,14 @@
         <tr><td>MIPS instruction names</td><td>add, addi, slt, sll, and, beq, bne, j appear in sample questions. You are given their counts and CPI, so you never need to know what they do to get the answer.</td><td>L4 slide 55 reviews them</td></tr>
       </tbody>
     </table></div>
-    <p class="nt"><span class="k">NOTE</span>The syllabus puts this lecture in classes 2 and 3 (textbook 1.4 to 1.9). Lectures 2-3 on memory and MIPS basics and Lecture 5 on MIPS memory addressing are separate topics. Add them to your plan only if the CT announcement says so.</p>
+    <p class="nt"><span class="k">NOTE</span>The syllabus puts this lecture in classes 2 and 3 (textbook 1.4 to 1.9). Lectures 2-3 on memory and MIPS basics and Lecture 5 on MIPS memory addressing are separate topics. The midterm study path includes lessons on these topics.</p>
     </div></details>
   </article>
 
-  <article class="page" id="map" data-title="One-page map" data-group="Start here" data-skip="1" hidden>
+  <article class="page" id="map" data-title="One-page map" data-group="Performance" data-skip="1" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
-      <h1>CT-1 topic map</h1>
+      <h1>Performance topic map</h1>
       <p class="lede">Find the performance topics and track which skills you can do on your own.</p>
     </header>
     <section class="ca-notes">
@@ -255,10 +255,10 @@
     </section>
   </article>
 
-  <article class="page" id="qtypes" data-title="What can come" data-group="Start here" hidden>
+  <article class="page" id="qtypes" data-title="What can come" data-group="Performance" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
-      <h1>What can come on CT-1</h1>
+      <h1>Common performance questions</h1>
       <p class="lede">Identify what a question asks for and see how to set up an answer.</p>
     </header>
     <section class="ca-notes">
@@ -439,10 +439,10 @@
     </section>
   </article>
 
-  <article class="page" id="plan" data-title="Study plan" data-group="Start here" data-skip="1" hidden>
+  <article class="page" id="plan" data-title="Study plan" data-group="Performance" data-skip="1" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
-      <h1>CT-1 study plan</h1>
+      <h1>Performance study checklist</h1>
       <p class="lede">Tick off each skill as you learn it.</p>
     </header>
     <section class="ca-notes">
@@ -499,10 +499,10 @@
     </section>
   </article>
 
-  <article class="page" id="expect" data-title="How hard is it?" data-group="Start here" data-skip="1" hidden>
+  <article class="page" id="expect" data-title="How hard is it?" data-group="Performance" data-skip="1" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
-      <h1>What to practise for CT-1</h1>
+      <h1>What to practise for performance questions</h1>
       <p class="lede">Review the calculations, unit conversions and short written answers.</p>
     </header>
     <section class="ca-notes">
@@ -524,7 +524,7 @@
 
   <article class="page" id="s-define" data-title="Defining performance" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>What does faster mean?</h1>
       <p class="lede">Measure how long one job takes and how many jobs a computer can finish.</p>
     </header>
@@ -621,7 +621,7 @@
 
   <article class="page" id="s-time" data-title="Elapsed time vs CPU time" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Elapsed time and CPU time</h1>
       <p class="lede">Separate the time you wait from the time the processor spends working for your program.</p>
     </header>
@@ -719,7 +719,7 @@
 
   <article class="page" id="s-clock" data-title="The CPU clock" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>The CPU clock</h1>
       <p class="lede">Read a clock signal and turn a clock rate into the length of one cycle.</p>
     </header>
@@ -824,7 +824,7 @@
 
   <article class="page" id="s-clock-calc" data-title="CPU time from clock cycles" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>CPU time from clock cycles</h1>
       <p class="lede">Find how long a program takes when you know its cycle count and clock rate.</p>
     </header>
@@ -931,7 +931,7 @@
 
   <article class="page" id="s-cpi" data-title="Instruction count and CPI" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Instruction count and CPI</h1>
       <p class="lede">Count the instructions that actually run and the clock cycles they use.</p>
     </header>
@@ -1051,7 +1051,7 @@
 
   <article class="page" id="s-eq" data-title="The CPU performance equation" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>The CPU performance equation</h1>
       <p class="lede">Put instruction count, cycles per instruction and clock rate into one calculation.</p>
     </header>
@@ -1159,7 +1159,7 @@
 
   <article class="page" id="s-affects" data-title="What affects CPU performance" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>What changes CPU performance?</h1>
       <p class="lede">Trace how a program and a processor each change the work needed to finish a task.</p>
     </header>
@@ -1242,7 +1242,7 @@
 
   <article class="page" id="s-power" data-title="The power wall" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>The power wall</h1>
       <p class="lede">See why raising the clock rate increases power use and where voltage and cooling come in.</p>
     </header>
@@ -1357,7 +1357,7 @@
 
   <article class="page" id="s-multi" data-title="Multicore and parallelism" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Multicore and parallelism</h1>
       <p class="lede">See when two cores can work at the same time and when one step must wait.</p>
     </header>
@@ -1453,7 +1453,7 @@
 
   <article class="page" id="s-amdahl" data-title="Amdahl&#x27;s law" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Amdahl’s law</h1>
       <p class="lede">Calculate how much faster the whole program gets when you speed up only one part.</p>
     </header>
@@ -1560,7 +1560,7 @@
 
   <article class="page" id="s-notes" data-title="Class note problems" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Class note problems</h1>
       <p class="lede">Use the wording from class to split a response time into the part you can improve and the part that stays fixed.</p>
     </header>
@@ -1731,7 +1731,7 @@
 
   <article class="page" id="s-pitfalls" data-title="Fallacies and pitfalls" data-group="Performance" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Performance</p>
+      <p class="eyebrow"><b>Performance</b></p>
       <h1>Fallacies and pitfalls</h1>
       <p class="lede">Use measured time to check popular claims about power and processor speed.</p>
     </header>
@@ -1843,26 +1843,68 @@
     </ul>
     </div></details>
   </article>
-  <article class="page" id="mips" data-title="MIPS" data-group="MIPS" data-skip="1" hidden>
+  <article class="page" id="mips" data-title="MIPS" data-group="MIPS" data-topic-index data-skip="1" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-2</b> &middot; Class test</p>
       <h1>MIPS</h1>
-      <p class="lede">Learn how instructions move data, call functions and become machine code.</p>
+      <p class="lede">Learn to access memory, control the order of instructions, call functions and read machine code.</p>
     </header>
-    <p class="note">If registers, addresses, or assembly feel unfamiliar, try <a href="#ct2-start">CT-2 from scratch</a> before opening these full lessons.</p>
-    <div class="cols" id="mips-topics">
-      <div class="card"><h2><a href="#mips-memory">Memory and word addressing</a></h2><p>Read bytes, find array elements, and try lw and sw.</p></div>
-      <div class="card"><h2><a href="#mips-control">Labels, branches and loops</a></h2><p>See how a comparison changes which instruction runs next.</p></div>
-      <div class="card"><h2><a href="#mips-functions">Functions and the stack</a></h2><p>Step through calls, returns, saved registers and recursion.</p></div>
-      <div class="card"><h2><a href="#mips-translation">From C to MIPS</a></h2><p>Put memory, branches and procedure calls together.</p></div>
-      <div class="card"><h2><a href="#mips-machine">Machine language</a></h2><p>Read 32-bit instruction fields and try the encoder.</p></div>
-      <div class="card"><h2><a href="#mips-targets">Branch and jump fields</a></h2><p>Work from byte addresses to the fields you write on an exam.</p></div>
-    </div>
+    <section class="home-topics" aria-label="MIPS topics">
+      <p>New to registers or assembly? Start with <a href="#ct2-computer">Foundations</a>. For the full sequence, open the <a href="#midterm">midterm study path</a>.</p>
+      <div class="topic-grid">
+      <section class="topic-unit">
+        <h3>Memory and control flow</h3>
+        <p>Find the data, then follow the path the program takes.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-memory">Load and store a word</a></li>
+          <li><a href="#ct2-arrays">Arrays and byte addresses</a></li>
+          <li><a href="#ct2-branches">Branches and labels</a></li>
+          <li><a href="#ct2-logic">If, else and compound conditions</a></li>
+          <li><a href="#ct2-loops">While, for and do-while loops</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Functions and the stack</h3>
+        <p>Pass arguments, return results and keep values safe across calls.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-call">Function arguments, results and return addresses</a></li>
+          <li><a href="#ct2-stack">Save and restore registers</a></li>
+          <li><a href="#ct2-nested">Nested calls and stack frames</a></li>
+          <li><a href="#ct2-recursion">Recursion and factorial</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Machine language</h3>
+        <p>Convert assembly into bits, then put several ideas together in one program.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-encode">R-format instructions</a></li>
+          <li><a href="#ct2-immediate">I-format instructions</a></li>
+          <li><a href="#ct2-targets">Branch distances and J format</a></li>
+          <li><a href="#ct2-widths">Field widths on a modified processor</a></li>
+          <li><a href="#ct2-translation">Translate a C function into MIPS</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Visualisers and reference</h3>
+        <p>Open a tool when you want to change the inputs or check a trace.</p>
+        <ol class="foundation-list">
+          <li><a href="#mips-memory">Word memory visualiser</a></li>
+          <li><a href="#mips-functions">Stack and calls visualiser</a></li>
+          <li><a href="#mips-machine">Instruction encoder and decoder</a></li>
+          <li><a href="#ct2-simulator">MIPS simulator lab</a></li>
+          <li><a href="#ct2-words">Instruction and term index</a></li>
+          <li><a href="#mips-control">Branch and loop reference</a></li>
+          <li><a href="#mips-targets">Branch and jump field reference</a></li>
+          <li><a href="#mips-translation">C-to-MIPS reference</a></li>
+          <li><a href="#midterm-mips">MIPS revision notes</a></li>
+        </ol>
+      </section>
+      </div>
+    </section>
   </article>
 
 
-  <article class="page" id="mips-memory" data-title="Memory and word addressing" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lecture 5</p><h1>Memory and word addressing</h1><p class="lede">Follow one load from an address in memory to a register. Then change the address or store the word back.</p></header>
+  <article class="page" id="mips-memory" data-title="Memory and word addressing" data-group="MIPS" hidden data-unit="Memory and control flow">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lecture 5</p><h1>Memory and word addressing</h1><p class="lede">Follow one load from an address in memory to a register. Then change the address or store the word back.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Find the word at byte address 4</h3>
 <p>A <b>byte</b> is eight bits. Each byte in memory has its own number, called its <b>address</b>. A MIPS <b>word</b> is four bytes, or 32 bits. The lecture labels each word by its first byte, so consecutive words start four addresses apart. The memory below holds the lecture’s four initial values.</p><div class="scroll"><table><thead><tr><th scope="col">Word begins at</th><th scope="col">Byte addresses</th><th scope="col">Word value</th></tr></thead><tbody><tr><td>0</td><td>0–3</td><td>1</td></tr>
@@ -1904,8 +1946,8 @@ add $t0, $s2, $t0
 sw  $t0, 48($s3)</pre></div></details></div></details>
   </article>
 
-  <article class="page" id="mips-control" data-title="Labels, branches and loops" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lecture 5</p><h1>Labels, branches and loops</h1><p class="lede">Trace which instruction runs next when the program has a decision to make.</p></header>
+  <article class="page" id="mips-control" data-title="Labels, branches and loops" data-group="MIPS" hidden data-unit="Memory and control flow">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lecture 5</p><h1>Labels, branches and loops</h1><p class="lede">Trace which instruction runs next when the program has a decision to make.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Follow the lecture’s loop</h3>
 <p>The loop <code>while (save[5] == k) i++;</code> starts by loading <code>save[5]</code> from byte offset <code>5 × 4 = 20</code>. Compare the loaded value with <code>k</code>. Leave the loop if they differ. Otherwise increment <code>i</code> and repeat.</p><div class="scroll"><table><thead><tr><th scope="col">Instruction</th><th scope="col">What happens</th></tr></thead><tbody><tr><td><code>Loop: lw $t0, 20($s2)</code></td><td>Read save[5].</td></tr>
@@ -1938,8 +1980,8 @@ Exit:</pre></div></details></div></details>
   </section>
   </article>
 
-  <article class="page" id="mips-functions" data-title="Functions and the stack" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lecture 6</p><h1>Functions and the stack</h1><p class="lede">Pass an input, follow the return address, and see what the stack keeps safe during a call.</p></header>
+  <article class="page" id="mips-functions" data-title="Functions and the stack" data-group="MIPS" hidden data-unit="Functions and the stack">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lecture 6</p><h1>Functions and the stack</h1><p class="lede">Pass an input, follow the return address, and see what the stack keeps safe during a call.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Follow an input and an answer</h3>
 <p>A <b>function</b> is a named block of instructions you can call. The <b>caller</b> asks for the work and the <b>callee</b> does it. In the lecture, <code>calculate(10)</code> adds 5 and returns 15. Each instruction uses four bytes. The call at 1004 needs to remember 1008 so it can resume the caller.</p><div class="scroll"><table><thead><tr><th scope="col">When</th><th scope="col">Instruction or register change</th></tr></thead><tbody><tr><td>1000</td><td>Put the input 10 in $a0.</td></tr>
@@ -1993,8 +2035,8 @@ addi $sp, $sp, 4
 jr   $ra</pre></div></details></div></details>
   </article>
 
-  <article class="page" id="mips-translation" data-title="From C to MIPS" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lectures 5–7</p><h1>From C to MIPS</h1><p class="lede">Give each value a register, trace the condition, and translate one operation at a time.</p></header>
+  <article class="page" id="mips-translation" data-title="From C to MIPS" data-group="MIPS" hidden data-unit="Machine language">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lectures 5–7</p><h1>From C to MIPS</h1><p class="lede">Give each value a register, trace the condition, and translate one operation at a time.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Plan the lecture’s array store</h3>
 <p>The C function on slides 37–40 stores <code>~(a &amp; n)</code> in <code>arr[i * 2]</code> for <code>i = 0</code> through <code>n</code>. Assume the array has room for those writes. The tilde <code>~</code> flips every bit. Start by assigning <code>i</code>, <code>n</code>, and the array base to <code>$a0</code>, <code>$a1</code>, and <code>$a2</code>.</p><div class="scroll"><table><thead><tr><th scope="col">Piece of C</th><th scope="col">Assembly idea</th></tr></thead><tbody><tr><td>i &lt;= n</td><td>Set a temporary when n &lt; i, then branch to the exit.</td></tr>
@@ -2019,8 +2061,8 @@ jr   $ra</pre></div></details></div></details>
   </section>
   </article>
 
-  <article class="page" id="mips-machine" data-title="Machine language" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lecture 7</p><h1>Machine language</h1><p class="lede">Take one line of assembly apart. Then read the same instruction as bits and hexadecimal digits.</p></header>
+  <article class="page" id="mips-machine" data-title="Machine language" data-group="MIPS" hidden data-unit="Machine language">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lecture 7</p><h1>Machine language</h1><p class="lede">Take one line of assembly apart. Then read the same instruction as bits and hexadecimal digits.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Start with an addition you can read</h3>
 <p><code>add $t0, $t1, $t2</code> reads two registers, adds their values, and puts the result in <code>$t0</code>. A register is a small storage location inside the CPU. The instruction names the locations. If the two inputs hold 15 and 20, they produce 35. Change those inputs and the machine instruction itself stays the same.</p><p>The processor reads 32 bits for this instruction. A <b>field</b> is a group of bits with its own job. Here are the six fields for the addition.</p><div class="scroll"><table><thead><tr><th scope="col">Field</th><th scope="col">Job</th><th scope="col">Decimal</th><th scope="col">Bits</th></tr></thead><tbody><tr><td>op</td><td>Operation group</td><td>0</td><td>000000</td></tr>
@@ -2078,8 +2120,8 @@ jr   $ra</pre></div></details></div></details>
 <details class="exam"><summary>Exam practice</summary><div class="in"><p>Decode <code>0x012A4020</code>. Identify the two sources and destination.</p><details class="exam"><summary>Worked answer</summary><div class="in"><p>Split the word as <code>000000 01001 01010 01000 00000 100000</code>. Opcode 0 selects R-type. Function code 32 means <code>add</code>. The fields are <code>rs=9, rt=10, rd=8</code>. The line is <strong><code>add $t0, $t1, $t2</code></strong>.</p></div></details></div></details>
   </article>
 
-  <article class="page" id="mips-targets" data-title="Branch and jump fields" data-group="MIPS" hidden>
-    <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Lecture 7</p><h1>Branch and jump fields</h1><p class="lede">Find the target address, then decide what the instruction actually stores.</p></header>
+  <article class="page" id="mips-targets" data-title="Branch and jump fields" data-group="MIPS" hidden data-unit="Machine language">
+    <header class="hero"><p class="eyebrow"><b>MIPS</b> &middot; Lecture 7</p><h1>Branch and jump fields</h1><p class="lede">Find the target address, then decide what the instruction actually stores.</p></header>
 <section class="lesson" aria-label="Learn it first"><div class="ls-bar"><b>Learn it first</b></div><div class="ls-grid"><div class="ls-main">
 <div class="beat"><span class="bn" aria-hidden="true">1</span><div><h3>Start at the next address</h3>
 <p>The <b>program counter</b> (PC) is the address of the current instruction. With four-byte instructions, the next address is <code>PC + 4</code>. A label is a name for an address. For the lecture’s branch from 1000 to 1104, start measuring from 1004.</p><div class="scroll"><table><thead><tr><th scope="col">Step</th><th scope="col">Working</th></tr></thead><tbody><tr><td>Origin</td><td>1000 + 4 = 1004</td></tr>
@@ -2106,9 +2148,9 @@ jr   $ra</pre></div></details></div></details>
 
   <!-- CT-2 foundations -->
 
-  <article class="page" id="s-past" data-title="Past midterm questions" data-group="Exam" hidden>
+  <article class="page" id="s-past" data-title="Past midterm questions" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Past midterm performance questions</h1>
       <p class="lede">Work through the performance questions from the 20-paper collection.</p>
     </header>
@@ -2305,11 +2347,11 @@ jr   $ra</pre></div></details></div></details>
 
   <!-- CT-2 papers -->
 
-  <article class="page" id="s-ct1" data-title="Class test 1" data-group="Exam" hidden>
+  <article class="page" id="s-ct1" data-title="Worked performance class test" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
-      <h1>Class Test 1</h1>
-      <p class="lede">Try the three parts from the class test, then compare your working with the instructor’s answer key.</p>
+      <p class="eyebrow"><b>Practice</b></p>
+      <h1>Worked performance class test</h1>
+      <p class="lede">Try the three parts from the paper titled Class Test 1, then compare your working with the instructor’s answer key.</p>
     </header>
 
     <section class="ca-notes" aria-label="Class test question">
@@ -2334,9 +2376,9 @@ jr   $ra</pre></div></details></div></details>
     </div></details>
   </article>
 
-  <article class="page" id="s-formulas" data-title="Formula sheet" data-group="Exam" hidden>
+  <article class="page" id="s-formulas" data-title="Formula sheet" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Performance formula sheet</h1>
       <p class="lede">Check which formula fits the quantities in your problem.</p>
     </header>
@@ -2374,9 +2416,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="s-worked" data-title="Worked problems" data-group="Exam" hidden>
+  <article class="page" id="s-worked" data-title="Worked problems" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Worked exam problems</h1>
       <p class="lede">Attempt a problem on paper, then reveal the worked solution.</p>
     </header>
@@ -2457,9 +2499,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="s-written" data-title="Written answers" data-group="Exam" hidden>
+  <article class="page" id="s-written" data-title="Written answers" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Model written answers</h1>
       <p class="lede">Practise explaining the ideas in a few sentences.</p>
     </header>
@@ -2480,9 +2522,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="s-drill" data-title="Random drill" data-group="Exam" hidden>
+  <article class="page" id="s-drill" data-title="Random drill" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Random drill</h1>
       <p class="lede">Choose a problem type and practise with fresh numbers.</p>
     </header>
@@ -2521,9 +2563,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="s-pairs" data-title="Pairs to double-check" data-group="Exam" hidden>
+  <article class="page" id="s-pairs" data-title="Pairs to double-check" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Pairs to double-check</h1>
       <p class="lede">Review the terms and formulas that are easy to mix up.</p>
     </header>
@@ -2548,9 +2590,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="practice" data-title="Quiz" data-group="Exam" hidden>
+  <article class="page" id="practice" data-title="Quiz" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Performance quiz</h1>
       <p class="lede">Choose an answer and read the explanation for each question.</p>
     </header>
@@ -2567,9 +2609,9 @@ jr   $ra</pre></div></details></div></details>
     </section>
   </article>
 
-  <article class="page" id="calculators" data-title="Calculators" data-group="Exam" data-skip="1" hidden>
+  <article class="page" id="calculators" data-title="Calculators" data-group="Practice" data-skip="1" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>Performance calculators</h1>
       <p class="lede">Choose the calculation you want to check. On the lesson page, use Try it to go straight to its calculator.</p>
     </header>
@@ -2582,9 +2624,9 @@ jr   $ra</pre></div></details></div></details>
     </div>
   </article>
 
-  <article class="page" id="s-every" data-title="One of every type" data-group="Exam" hidden>
+  <article class="page" id="s-every" data-title="One of every type" data-group="Practice" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CT-1</b> &middot; Exam</p>
+      <p class="eyebrow"><b>Practice</b></p>
       <h1>One worked question of every type</h1>
       <p class="lede">Look up a question type and follow the working line by line.</p>
     </header>

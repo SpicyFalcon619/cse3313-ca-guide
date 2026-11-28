@@ -1099,7 +1099,7 @@
   .foundation-body p { max-width: 70ch; }
   .foundation-body .ls-t { display: table; }
   .foundation-body .ls-t :is(th, td) { white-space: normal; }
-  .foundation .pager { display: none; }
+  .foundation .pager { width: min(100%, 720px); margin-inline: auto; }
   .foundation-position, .foundation .lesson-source { color: var(--muted); font-size: .91rem; }
   .foundation-list { padding-inline-start: 1.35em; }
   .foundation-list li { margin-block: 10px; }
@@ -1215,14 +1215,16 @@
   /* Topic index and the route shown while the page initializes. */
   body:not(.guide-ready) .page:target { display: block !important; }
   body:not(.guide-ready):has(.page:target) #start:not(:target) { display: none; }
-  #start .hero .hbtn { text-decoration: none; }
-  #start .hero .hbtn.cream { color: #12293B; }
-  #start .hero .hbtn.line { color: var(--on-top); }
+  :is(#start, #midterm) .hero .hbtn { text-decoration: none; }
+  :is(#start, #midterm) .hero .hbtn.cream { color: #12293B; }
+  :is(#start, #midterm) .hero .hbtn.line { color: var(--on-top); }
   .home-topics { display: grid; gap: 16px; }
   .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .topic-unit { padding: 16px 20px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); }
   .topic-unit h3 { font-size: 1.15rem; }
   .topic-unit ul { list-style: none; padding: 0; margin: 8px 0 0; }
+  .topic-unit ol { margin: 8px 0 0; }
+  .study-outline { justify-self: start; }
   .topic-unit li + li { margin-top: 5px; }
   .topic-unit p { margin: 10px 0 0; }
   .topic-unit li span { color: var(--muted); }

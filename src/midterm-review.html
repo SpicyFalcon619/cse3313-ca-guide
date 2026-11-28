@@ -1,28 +1,107 @@
-  <article class="page" id="midterm" data-title="Midterm study route" data-group="Start here" data-skip="1" hidden>
+  <article class="page" id="midterm" data-title="Midterm study path" data-group="Start here" data-topic-index data-skip="1" hidden>
     <header class="hero">
-      <p class="eyebrow"><b>CSE 3313</b> &middot; Midterm review</p>
-      <h1>What to study for the midterm</h1>
-      <p class="lede">Start with one worked example at a time. Then close the answer and solve a similar question on paper.</p>
-    </header>
-    <section class="plan-wrap">
-      <h2>Study in this order</h2>
-      <ol class="plan">
-        <li><a href="#performance-review"><span class="pn" aria-hidden="true">1</span><span class="pt"><b>Measure performance</b><span>Compare run times, calculate CPU time from a clock rate and CPI, then work through power and Amdahl’s law.</span></span></a></li>
-        <li><a href="#ct2-start"><span class="pn" aria-hidden="true">2</span><span class="pt"><b>Learn CT-2 from scratch</b><span>Follow one addition through registers, memory, functions and machine code.</span></span></a></li>
-        <li><a href="#s-past"><span class="pn" aria-hidden="true">3</span><span class="pt"><b>Try a past question</b><span>Start with Trimester 233 Q1 for performance. Then try a worked CT-2 question under the matching MIPS topic.</span></span></a></li>
-      </ol>
-      <p>If <em>register</em>, <em>memory</em> or <em>instruction</em> feels unfamiliar, read <a href="#earlier">How a computer runs a program</a> first. Use the topics in your instructor’s exam announcement to decide how far to go.</p>
-      <p>The last three notebook pages cover <a href="#midterm-multiply">unsigned multiplication</a>. Review that after the core topics if it is in your exam scope.</p>
-    </section>
-    <section class="lesson" aria-label="How to use this review">
-      <div class="ls-bar"><b>Check your understanding</b></div>
-      <div class="ls-main">
-        <p>For a performance problem, write the given numbers with units and circle what you need to find. For MIPS, write down what each register holds before tracing the first instruction.</p>
-        <p>Already comfortable with registers? Use the <a href="#midterm-mips">short MIPS review</a> to revise. For performance practice, try the <a href="#s-drill">drill</a> or <a href="#practice">quiz</a> without looking at the worked answers.</p>
+      <div class="hl">
+        <p class="eyebrow"><b>CSE 3313</b> &middot; Midterm</p>
+        <h1>Midterm study path</h1>
+        <p class="lede">Start with how a computer runs a program. Follow the lessons in order until you can solve mixed midterm questions on your own.</p>
+        <div class="acts">
+          <a class="hbtn cream" href="#ct2-computer" data-course-start>Start with Foundations</a>
+          <a class="hbtn line" href="#midterm-practice">Open mixed practice</a>
+        </div>
+        <p class="lede" data-course-progress hidden></p>
       </div>
-      <p class="lesson-source">Based on the 33-page CA midterm notebook, with corrections checked against the relevant course slides and past papers.</p>
+    </header>
+    <section class="home-topics" aria-labelledby="midterm-path-title">
+      <h2 id="midterm-path-title">Lessons in study order</h2>
+      <p>Read a worked example, solve the practice question on paper, then reveal the answer. Mark the lesson understood when you can explain why the steps work.</p>
+      <div class="topic-grid">
+      <section class="topic-unit">
+        <h3>Foundations</h3>
+        <p>Read your first instructions and learn how numbers are stored.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-computer" data-study-lesson>How the CPU runs a program</a></li>
+          <li><a href="#ct2-registers" data-study-lesson>Registers, addi, add and sub</a></li>
+          <li><a href="#ct2-c" data-study-lesson>Read C and translate arithmetic</a></li>
+          <li><a href="#ct2-bits" data-study-lesson>Binary, bits and bytes</a></li>
+          <li><a href="#ct2-signed" data-study-lesson>Signed numbers, field widths and overflow</a></li>
+          <li><a href="#ct2-shifts" data-study-lesson>Shifts and bitwise operations</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Processor performance</h3>
+        <p>Start with what time measures, then calculate and compare it.</p>
+        <ol class="foundation-list">
+          <li><a href="#s-define" data-study-lesson>Performance, latency and throughput</a></li>
+          <li><a href="#s-time" data-study-lesson>Elapsed time and CPU time</a></li>
+          <li><a href="#s-clock" data-study-lesson>Clock rate and period</a></li>
+          <li><a href="#s-clock-calc" data-study-lesson>Calculate cycles, time or clock rate</a></li>
+          <li><a href="#s-cpi" data-study-lesson>Instruction count and average CPI</a></li>
+          <li><a href="#s-eq" data-study-lesson>The CPU time equation</a></li>
+          <li><a href="#s-affects" data-study-lesson>What changes CPU time</a></li>
+          <li><a href="#s-power" data-study-lesson>Power and heat</a></li>
+          <li><a href="#s-multi" data-study-lesson>Multicore and parallelism</a></li>
+          <li><a href="#s-amdahl" data-study-lesson>Amdahl’s law</a></li>
+          <li><a href="#s-pitfalls" data-study-lesson>Common performance mistakes</a></li>
+          <li><a href="#s-notes" data-study-lesson>Worked performance problems</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Memory and control flow</h3>
+        <p>Find the data, then follow the path the program takes.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-memory" data-study-lesson>Load and store a word</a></li>
+          <li><a href="#ct2-arrays" data-study-lesson>Arrays and byte addresses</a></li>
+          <li><a href="#ct2-branches" data-study-lesson>Branches and labels</a></li>
+          <li><a href="#ct2-logic" data-study-lesson>If, else and compound conditions</a></li>
+          <li><a href="#ct2-loops" data-study-lesson>While, for and do-while loops</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Functions and the stack</h3>
+        <p>Pass arguments, return results and keep values safe across calls.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-call" data-study-lesson>Function arguments, results and return addresses</a></li>
+          <li><a href="#ct2-stack" data-study-lesson>Save and restore registers</a></li>
+          <li><a href="#ct2-nested" data-study-lesson>Nested calls and stack frames</a></li>
+          <li><a href="#ct2-recursion" data-study-lesson>Recursion and factorial</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Machine language</h3>
+        <p>Convert assembly into bits, then put several ideas together in one program.</p>
+        <ol class="foundation-list">
+          <li><a href="#ct2-encode" data-study-lesson>R-format instructions</a></li>
+          <li><a href="#ct2-immediate" data-study-lesson>I-format instructions</a></li>
+          <li><a href="#ct2-targets" data-study-lesson>Branch distances and J format</a></li>
+          <li><a href="#ct2-widths" data-study-lesson>Field widths on a modified processor</a></li>
+          <li><a href="#ct2-translation" data-study-lesson>Translate a C function into MIPS</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Computer arithmetic</h3>
+        <p>Trace multiplication and division, including MIPS quotient and remainder.</p>
+        <ol class="foundation-list">
+          <li><a href="#midterm-multiply" data-study-lesson>Binary multiplication</a></li>
+          <li><a href="#binary-division" data-study-lesson>Restoring binary division</a></li>
+          <li><a href="#ct2-division" data-study-lesson>Division, remainder, HI and LO</a></li>
+        </ol>
+      </section>
+      <section class="topic-unit">
+        <h3>Practice</h3>
+        <p>Switch between subjects before opening a past paper.</p>
+        <ol class="foundation-list">
+          <li><a href="#midterm-practice" data-study-lesson>Mixed midterm practice</a></li>
+        </ol>
+      </section>
+      </div>
+    </section>
+    <section class="howto" aria-label="Study tools">
+      <div><h3><a href="#calculators">Performance calculators</a></h3><p>Check clock, CPI, power and speedup calculations.</p></div>
+      <div><h3><a href="#ct2-simulator">MIPS simulator lab</a></h3><p>Change inputs and step through a program.</p></div>
+      <div><h3><a href="#s-past">Solved past midterms</a></h3><p>Find performance questions or <a href="#s-ct2-papers">MIPS questions</a> by term.</p></div>
     </section>
   </article>
+
 
   <article class="page" id="performance-review" data-title="Performance study order" data-group="Performance" hidden>
     <header class="hero">
@@ -210,4 +289,58 @@ bne  $t0, $zero, Loop</code></pre>
       </section>
       <p class="lesson-source">Sources · Tasmin Sanjida, Computer Arithmetic, slides 3–8. CA midterm notebook, pp. 31–33. Patterson and Hennessy, 5th ed., §3.3.</p>
     </section>
+  </article>
+
+
+  <article class="page foundation" id="midterm-practice" data-title="Mixed midterm practice" data-group="Practice" data-topic-index hidden>
+    <header class="hero">
+      <h1>Mixed midterm practice</h1>
+      <p class="lede">Work through one question from each subject. Write the steps before revealing the answer.</p>
+    </header>
+    <div class="foundation-body">
+      <section>
+        <h2>Foundations · What does the CPU read?</h2>
+        <p>At byte address 1000, memory contains the machine code for <code>add $t0, $t1, $t2</code>. The input registers hold 5 and 3. What does 1000 identify? What does <code>$t0</code> hold after the instruction, and what is the next address?</p>
+        <details class="foundation-more"><summary>Show the worked answer</summary>
+          <p>1000 is the byte address where this instruction starts. The CPU fetches four bytes, decodes the operation and reads the two register values. It writes 5 + 3 = 8 to <code>$t0</code>. With no branch or jump, the next instruction starts at 1000 + 4 = 1004.</p>
+        </details>
+      </section>
+      <section>
+        <h2>Performance · Calculate time from CPI</h2>
+        <p>A program executes 5 instructions with an average CPI of 2. Its clock rate is 2.5 GHz. How many cycles does it use and how much CPU time does it take?</p>
+        <details class="foundation-more"><summary>Show the worked answer</summary>
+          <p>Multiply 5 instructions by 2 cycles per instruction to get 10 cycles. A 2.5 GHz CPU runs 2.5 cycles per nanosecond. Divide 10 cycles by 2.5 cycles/ns to get 4 ns of CPU time. Elapsed time can be higher if the program waits for something.</p>
+        </details>
+      </section>
+      <section>
+        <h2>MIPS · Trace a load and a decision</h2>
+        <p><code>$s0</code> holds 100. Memory has the word 8 at address 104. <code>$t1</code> also holds 8. What does the load read, which lines run, and what branch immediate gets encoded?</p>
+        <pre><code>1000  lw   $t0, 4($s0)
+1004  beq  $t0, $t1, Done
+1008  sw   $t1, 4($s0)
+1012  Done: addi $v0, $zero, 1</code></pre>
+        <details class="foundation-more"><summary>Show the worked answer</summary>
+          <p>The load offset counts bytes. Add 100 + 4 and load 8 from address 104. At 1004 the values match. Run the instruction at 1012 next and set <code>$v0</code> to 1. The store at 1008 is skipped.</p>
+          <p>For the branch immediate, count from the following address 1004 + 4 = 1008. The target is 1012, a difference of four bytes. Divide by four bytes per instruction to write +1 in the immediate field.</p>
+        </details>
+      </section>
+      <section>
+        <h2>Functions · Tell the result from the return address</h2>
+        <p>In the simplified lecture model, a <code>jal</code> at address 1008 calls a function to add 5 and 3. What happens to <code>$ra</code> and <code>$v0</code>? Which value will the outer function need to save if it calls another function before returning?</p>
+        <details class="foundation-more"><summary>Show the worked answer</summary>
+          <p><code>jal</code> saves 1012 in <code>$ra</code>. The called function puts 8 in <code>$v0</code>. Another <code>jal</code> would overwrite <code>$ra</code>, so save 1012 first and restore it before the outer return. If the outer function also needs to keep a result across a later call, save that result separately.</p>
+        </details>
+      </section>
+      <section>
+        <h2>Arithmetic · Check the quotient and remainder</h2>
+        <p>Divide binary <code>1110</code> by binary <code>0011</code>. What are the quotient bits and the remainder?</p>
+        <details class="foundation-more"><summary>Show the worked answer</summary>
+          <p>Bring down bits 1, 1, 1, 0. Before subtraction, the partial remainders are 1, 3, 1, 2. Only the second subtraction succeeds, giving quotient bits <code>0100</code> (4). The final remainder is 2. Check using the original dividend: 3 × 4 + 2 = 14.</p>
+        </details>
+      </section>
+      <section class="foundation-check">
+        <h2>Try a full past paper</h2>
+        <p>For the same term, combine a <a href="#s-past">performance question</a> and a <a href="#s-ct2-papers">MIPS question</a>. Try Fall 2025 for both types. For extra questions on particular skills, open the <a href="#s-drill">performance drill</a>, the <a href="#practice">performance quiz</a> or the <a href="#ct2-check">MIPS practice set</a>.</p>
+      </section>
+    </div>
   </article>

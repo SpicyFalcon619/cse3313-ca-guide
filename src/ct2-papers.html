@@ -1,9 +1,9 @@
-<article class="page" id="s-ct2-papers" data-title="MIPS past papers" data-group="Exam" hidden>
-  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2023–2026</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+<article class="page" id="s-ct2-papers" data-title="MIPS past papers" data-group="Practice" hidden>
+  <header class="hero"><p class="eyebrow"><b>Practice</b> &middot; Past papers</p><h1>MIPS past papers, 2023–2026</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
   <div class="ca-notes">
-    <p class="note">Working through these for the first time? Start with the <a href="#ct2-check">guided practice and past-paper study order</a>, or <a href="#ct2-start">take the CT-2 course from lesson 1</a>.</p>
+    <p class="note">Working through these for the first time? Start with the <a href="#ct2-check">guided practice and past-paper study order</a>, or <a href="#midterm">start the midterm study path</a>.</p>
     <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
-    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">Performance past papers</a></p>
 <section data-paper="261" class="ct2-paper">
     <h2>Spring 2026 <span class="mono">261</span></h2>
     <details class="wk"><summary>Q2(a) · Translate main computing a=25, b=a%16, c=~(a|5), d=~b, and choosing a call to <code>myfunction(y,x)</code> returning x−y. <span class="src">pp. 1–2</span></summary>
@@ -319,7 +319,7 @@ Done:
         <div class="write">
           <span class="wh">Worked answer</span>
           <div class="step"><span class="s">FIX</span><div>Use addi for stack deltas, $zero for the zero register, and numeric byte offsets. Use slt for a register-to-register test and j for a direct jump. Save and restore each register at the same offset and free exactly eight bytes.</div></div>
-          <div class="step"><span class="s">TRACE</span><div>The loop adds 1, 2 and 3 into $v0 = 6, then stops with its working $s0 = 4. The epilogue restores the caller’s original $s0, which the paper does not specify. The return address is restored too. The timing parts are in the CT-1 paper page.</div></div>
+          <div class="step"><span class="s">TRACE</span><div>The loop adds 1, 2 and 3 into $v0 = 6, then stops with its working $s0 = 4. The epilogue restores the caller’s original $s0, which the paper does not specify. The return address is restored too. The timing parts are in the <a href="#s-past">performance past papers</a>.</div></div>
         </div>
         <h3>Corrected code</h3><pre>block:
   addi $sp, $sp, -8
@@ -562,11 +562,11 @@ End:
   </div>
 </article>
 
-<article class="page" id="s-ct2-middle" data-title="MIPS papers 2021–23" data-group="Exam" hidden>
-  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2021–2023</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+<article class="page" id="s-ct2-middle" data-title="MIPS papers 2021–23" data-group="Practice" hidden>
+  <header class="hero"><p class="eyebrow"><b>Practice</b> &middot; Past papers</p><h1>MIPS past papers, 2021–2023</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
   <div class="ca-notes">
     <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
-    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">Performance past papers</a></p>
 <section data-paper="231" class="ct2-paper">
     <h2>Spring 2023 <span class="mono">231</span></h2>
     <details class="wk"><summary>Q2(a, b) · Start s at 1. For i from n1 through n2−1, if arr[i] &lt; 5 add 5s to arr[i] and add i to s. Otherwise increment s. Return s. Encode the first ten instructions from 1000. <span class="src">pp. 1–2</span></summary>
@@ -941,11 +941,11 @@ End:
   </div>
 </article>
 
-<article class="page" id="s-ct2-early" data-title="MIPS papers 2017–19" data-group="Exam" hidden>
-  <header class="hero"><p class="eyebrow"><b>CT-2</b> &middot; Exam</p><h1>MIPS past papers, 2017–2019</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
+<article class="page" id="s-ct2-early" data-title="MIPS papers 2017–19" data-group="Practice" hidden>
+  <header class="hero"><p class="eyebrow"><b>Practice</b> &middot; Past papers</p><h1>MIPS past papers, 2017–2019</h1><p class="lede">Practise arrays, branches, calls and machine code using the questions that match Lectures 5–7.</p></header>
   <div class="ca-notes">
     <p class="note">Use four-byte words and the lecture’s no-delay-slot model unless the question changes those rules. In a field row, R is op, rs, rt, rd, shamt, funct. I is op, rs, rt, immediate. J is op, address. Negative I values are shown as signed decimals.</p>
-    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">CT-1 performance questions</a></p>
+    <p class="notice-links"><a href="#s-ct2-papers">2023–2026</a> · <a href="#s-ct2-middle">2021–2023</a> · <a href="#s-ct2-early">2017–2019</a> · <a href="#s-past">Performance past papers</a></p>
 <section data-paper="192" class="ct2-paper">
     <h2>Summer 2019 <span class="mono">192</span></h2>
     <details class="wk"><summary>Q2(a) · Find the two largest values in an array of ten. Start with the first two, order them, then compare each remaining element. <span class="src">pp. 1–2</span></summary>

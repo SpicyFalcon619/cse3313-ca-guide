@@ -1,10 +1,10 @@
-  <article class="page foundation" id="ct2-call" data-title="Function calls from scratch" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-call" data-title="Function calls from scratch" data-group="MIPS" hidden data-unit="Functions and the stack">
     <header class="hero">
       <h1>How does a function return?</h1>
       <p class="lede">Give a function 5 and 3, then follow its result and its return address.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 12 of 22 / Lecture 6</p>
+      <p class="foundation-position">Functions and the stack</p>
       <h2>Tell the caller and the function what to share</h2>
       <p>A <strong>function</strong> is a named piece of a program that performs a job. The <strong>caller</strong> is the part asking for that job. Our caller asks <code>addNumbers</code> to add 5 and 3. Those input values are <strong>arguments</strong>. In MIPS, the first argument goes in <code>$a0</code>, the second in <code>$a1</code>, and the result here comes back in <code>$v0</code>. The function receiving the request is the <strong>callee</strong>. For more inputs, <code>$a2</code> and <code>$a3</code> can hold a third and fourth argument. In C, <code>return a + b;</code> means give the caller the result of that addition.</p>
       <pre><code>1000  addi $a0, $zero, 5
@@ -49,21 +49,17 @@
         <p>If jal ran at 2000 in the same lecture model, what address would it save in $ra? Where would the result be?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>It saves 2004, the address of the next instruction. The function puts the result in $v0.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-loops">Previous lesson</a>
-        <a class="btn pri" href="#ct2-stack">Next · Save and restore one register</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 6, slides 3–8. The lecture examples use PC + 4 and omit delay slots.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-stack" data-title="The stack from scratch" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-stack" data-title="The stack from scratch" data-group="MIPS" hidden data-unit="Functions and the stack">
     <header class="hero">
       <h1>Where can a function save a value?</h1>
       <p class="lede">Watch a function borrow a register and give it back with the original value.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 13 of 22 / Lecture 6</p>
+      <p class="foundation-position">Functions and the stack</p>
       <h2>Give the old value somewhere to wait</h2>
       <p>Suppose <code>$s0</code> contains 50 and a function wants to use it while it works. The caller expects 50 back. The function can store 50 in the <strong>stack</strong>, an area of memory used for temporary data during calls.</p>
       <p><code>$sp</code> is the <strong>stack pointer</strong>. It holds the address of the current top of the stack. In our example, it starts at 1000. To reserve space for one four-byte word, subtract four. The word starts at byte 996 and occupies bytes 996–999.</p>
@@ -117,18 +113,14 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
         <p>With $sp = 1000, where do two saved words start after allocating eight bytes?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The new $sp is 992. The words start at 992 and 996, at offsets 0 and 4. Restore the words before setting $sp back to 1000.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-call">Previous lesson</a>
-        <a class="btn pri" href="#ct2-nested">Next · Save a return address and build a frame</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 6, slides 9–21. Lecture 7, slides 54–63, for recursion.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-nested" data-title="Nested calls and full stack frames" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-nested" data-title="Nested calls and full stack frames" data-group="MIPS" hidden data-unit="Functions and the stack">
     <header class="hero"><h1>Nested calls and full stack frames</h1><p class="lede">Save a return address across a second call, and track where every saved word lives.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 14 of 22 / Lecture 6</p>
+      <p class="foundation-position">Functions and the stack</p>
       <h2>Why a second call needs a saved return address</h2>
       <p>Imagine <code>main</code> calls <code>outer</code>, which calls <code>helper</code>. If the first call is at byte 1000, <code>$ra</code> gets 1004. When the second call at 1028 runs, it replaces that 1004 with 1032. Save 1004 before the second call and restore it after the helper returns.</p>
       <pre><code>1000  jal outer
@@ -170,10 +162,6 @@ addi $sp, $sp, 4      # release those four bytes</code></pre>
         <p>What address does helper return to in this example? What address does outer return to?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>Helper’s jr uses 1032. Outer restores the original 1004 from its frame and uses that address to return to main.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-stack">Previous lesson</a>
-        <a class="btn pri" href="#ct2-encode">Next · Encode or decode an R-type instruction</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 6, slides 9–21; lecture 7, slides 54–63.</p>
     </div>
   </article>

@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-computer" data-group-entry data-title="The computer before MIPS" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-computer" data-group-entry data-title="The computer before MIPS" data-group="Foundations" hidden>
     <header class="hero"><h1>The computer before MIPS</h1><p class="lede">Follow what happens when you open a program that adds 5 and 3.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 1 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>What runs the program?</h2>
       <p>A <strong>program</strong> is a set of instructions for a computer. An <strong>instruction</strong> tells the computer to do one small job. <strong>Data</strong> is what the job works on. In an addition program, “add” is the job and 5 and 3 are the data.</p>
       <div class="foundation-flow" role="img" aria-label="The saved program moves from storage into main memory. The CPU fetches and runs its instructions."><div><span>Storage</span><b>Saved program</b></div><span aria-hidden="true">→</span><div><span>Main memory</span><b>Program ready to run</b></div><span aria-hidden="true">→</span><div><span>CPU</span><b>Runs instructions</b></div></div>
@@ -40,21 +40,17 @@
         <p>Which part adds the numbers? Which place keeps the saved program after power is off?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The CPU’s datapath does the addition under the direction of control. Secondary storage, such as an SSD, keeps the saved program.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-start">Course outline</a>
-        <a class="btn pri" href="#ct2-registers">Next · Run your first three instructions</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 2–17.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-registers" data-title="Your first MIPS instructions" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-registers" data-title="Your first MIPS instructions" data-group="Foundations" hidden>
     <header class="hero">
       <h1>Where does 5 + 3 happen?</h1>
       <p class="lede">Start with three named places inside the CPU and watch what each instruction changes.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 2 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>Give names to three places that hold numbers</h2>
       <p>The computer in Lesson 1 needs somewhere to hold 5 and 3 during the addition. We’ll use <code>$t1</code> and <code>$t2</code> for the inputs, and <code>$t0</code> for the answer. The letter t is for temporary. Each of these registers is a small named slot inside the CPU.</p>
       <h2>Run one instruction at a time</h2>
@@ -112,18 +108,14 @@ sub  $s1, $t1, $t2  # $s1 = 10 − 5 = 5</code></pre>
         <p>If $t1 holds 6 and $t2 holds 4, where does add $t0, $t1, $t2 put the result?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>It puts 10 in $t0. The first register is the destination. The two source registers still hold 6 and 4.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-computer">Previous lesson</a>
-        <a class="btn pri" href="#ct2-c">Next · Translate a line of C</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 2–12 and 14–26.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-c" data-title="Reading C and translating arithmetic" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-c" data-title="Reading C and translating arithmetic" data-group="Foundations" hidden>
     <header class="hero"><h1>Reading C and translating arithmetic</h1><p class="lede">Give every variable a register. Then translate one calculation at a time.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 3 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>Read the little C program first</h2>
       <p><strong>C</strong> is a programming language people write. In <code>int total = 5 + 3;</code>, <code>int</code> means the value is a whole number, <code>total</code> is the name we give that value, and <code>=</code> means put the result on the right into the variable on the left. A variable is a name for a value a program can use or change. The semicolon ends the statement.</p>
       <p>A <b>compiler</b> can turn C into <b>assembly</b>, the readable names for the processor’s instructions. An <b>assembler</b> turns assembly into machine code, the bits the CPU understands. The <b>instruction set architecture (ISA)</b> is the agreement about the instructions, registers, and how the bits are interpreted. MIPS is the ISA in this course. The slides call MIPS a <b>RISC</b> architecture, which means its instruction design favours relatively simple, regular operations.</p>
@@ -159,21 +151,17 @@ addi $s0, $t0, -5   # $s0 = 20 + (-5) = 15</code></pre>
         <p>If $s0 is 8, what does addi $s0, $s0, -5 do? What is the immediate?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The CPU adds −5 to 8 and leaves 3 in $s0. The number −5 is the immediate.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-registers">Previous lesson</a>
-        <a class="btn pri" href="#ct2-bits">Next · Read a number in binary</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 14–24, 30–32.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-bits" data-title="Bits and bytes" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-bits" data-title="Bits and bytes" data-group="Foundations" hidden>
     <header class="hero">
       <h1>How does a computer hold a number?</h1>
       <p class="lede">Read the bits for 5 before working with addresses or machine code.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 4 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>Read 0101 as a number</h2>
       <p>A <strong>bit</strong> is a digit with two possibilities, 0 or 1. In decimal, place values go 1, 10, 100 from right to left. In <strong>binary</strong>, where there are two possible digits, the place values double instead.</p>
       <div class="foundation-values foundation-bits" aria-label="Binary 0101 with place values"><span><small>8</small><strong>0</strong></span><span class="foundation-active"><small>4</small><strong>1</strong></span><span><small>2</small><strong>0</strong></span><span class="foundation-active"><small>1</small><strong>1</strong></span></div>
@@ -207,10 +195,6 @@ addi $s0, $t0, -5   # $s0 = 20 + (-5) = 15</code></pre>
         <p>How many bytes are in one MIPS word? What number is binary 0011?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>One word is four bytes. In 0011 the 2 and 1 places are on, giving 3.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-c">Previous lesson</a>
-        <a class="btn pri" href="#ct2-signed">Next · Use signed and unsigned numbers</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 27–44.</p>
     </div>
   </article>

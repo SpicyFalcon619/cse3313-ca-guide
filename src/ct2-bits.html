@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-signed" data-title="Negative numbers and field widths" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-signed" data-title="Negative numbers and field widths" data-group="Foundations" hidden>
     <header class="hero"><h1>Negative numbers and field widths</h1><p class="lede">Use a fixed number of bits to write −5 and recognise a number that will not fit.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 5 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>See what eight 1s can mean</h2>
       <p><code>11111111</code> means 255 when we read it as <strong>unsigned</strong>, so every position adds its positive place value. If the same eight bits are read as <strong>signed two’s complement</strong>, the leftmost place is −128 and the other places add up to 127. The result is −1. The bits stay the same. The instruction or the question tells you how to read them.</p>
       <h2>Write a negative number</h2>
@@ -27,23 +27,26 @@
           <p>The instruction contains a 16-bit constant and the register holds 32 bits. The CPU copies the constant’s sign bit into the added positions, so it still adds −5. With zero padding it would instead add a large positive value.</p>
         </details>
       </section>
+      <section aria-label="Worked example of signed overflow">
+        <h2>Tell overflow from an ordinary negative result</h2>
+        <p>With four signed two’s complement bits, the range is −8 through +7. Add 5 and 5. The ordinary result is +10, which is beyond +7. Keeping only four bits gives <code>1010</code>, whose signed value is −8 + 2 = −6. Two positive inputs gave a negative-looking bit pattern because their true sum did not fit.</p>
+        <p>Compare 5 + (−5). Its true result is 0, which fits. Adding <code>0101 + 1011</code> leaves low bits <code>0000</code>, even though there is a carry out of the top bit. A carry alone does not tell you whether signed overflow occurred.</p>
+        <p>Four bits are just for tracing. In MIPS, the signed <code>add</code>, <code>addi</code> and <code>sub</code> instructions signal overflow when the true result falls outside the signed 32-bit range.</p>
+        <details class="foundation-more"><summary>Does 7 + 1 fit in four signed bits?</summary><p>No. +8 exceeds the maximum +7. The low four bits would be <code>1000</code>, which represents −8.</p></details>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Read 1111 as a four-bit unsigned number and then as a four-bit signed number.</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>Unsigned gives 8 + 4 + 2 + 1 = 15. Signed gives −8 + 4 + 2 + 1 = −1.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-bits">Previous lesson</a>
-        <a class="btn pri" href="#ct2-shifts">Next · Shift bits, AND, OR, and NOR</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 32–36.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-shifts" data-title="Shifts and bitwise operations" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-shifts" data-title="Shifts and bitwise operations" data-group="Foundations" hidden>
     <header class="hero"><h1>Shifts and bitwise operations</h1><p class="lede">Watch bits slide, then compare them one column at a time.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 6 of 22 / Lectures 2–3</p>
+      <p class="foundation-position">Foundations</p>
       <h2>What does sll mean?</h2>
       <p><code>sll</code> stands for <strong>shift left logical</strong>. In <code>sll $t0, $t1, 2</code>, <code>$t0</code> is where the result goes, <code>$t1</code> supplies the bits, and 2 is how many places to shift. Each move fills the new rightmost place with 0 and discards whichever bit leaves the left edge. “Logical” means the new places are filled with zeros. The small display below shows eight of the register’s 32 positions.</p>
       <p>For small numbers that fit, one left shift doubles the number. Two make it four times as large. <code>srl</code> stands for <strong>shift right logical</strong>. It fills from the left with 0 and drops bits on the right. For an unsigned value, one right shift divides by two and drops the remainder. So 5 becomes 2. For signed negative numbers, logical right shift does a different job from signed division.</p>
@@ -138,10 +141,6 @@ ori  $t0, $t1, 3</code></pre>
           <li><code>ori</code> sets the rightmost two bits to 1 while keeping the other input bits. The result is <code>0111</code> (7).</li>
         </ol></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-signed">Previous lesson</a>
-        <a class="btn pri" href="#ct2-memory">Next · Load and store four bytes</a>
-      </nav>
       <p class="lesson-source">Sources · Lectures 2–3, slides 37–48.</p>
     </div>
   </article>

@@ -1,7 +1,7 @@
-  <article class="page foundation" id="ct2-division" data-title="Division, remainder, HI and LO" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-division" data-title="Division, remainder, HI and LO" data-group="Arithmetic" hidden>
     <header class="hero"><h1>Division, remainder, HI and LO</h1><p class="lede">Split 45 by 32 and copy both answers into ordinary registers.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 19 of 22 / Lecture 7</p>
+      <p class="foundation-position">Computer arithmetic</p>
       <h2>There are two answers to integer division</h2>
       <p>From 45 you can take out one complete group of 32, with 13 left over. That makes 1 the <strong>quotient</strong> and 13 the <strong>remainder</strong>. C writes whole-number division with <code>/</code> and remainder with <code>%</code>.</p>
       <pre><code>addi $t0, $zero, 45
@@ -38,18 +38,14 @@ mfhi $t3        # $t3 = remainder = -17</code></pre>
         <p>For 25 % 16, which instruction retrieves the answer after div, and what is it?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>Use mfhi. One group of 16 fits in 25 and 9 remains, so HI holds 9.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-widths">Previous lesson</a>
-        <a class="btn pri" href="#ct2-translation">Next · Translate a whole C function</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 41–46.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-translation" data-title="Translate a full C function" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-translation" data-title="Translate a full C function" data-group="MIPS" hidden data-unit="Machine language">
     <header class="hero"><h1>Translate a full C function</h1><p class="lede">Build a real Lecture 7 answer one block at a time, then trace it by hand.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 20 of 22 / Lecture 7</p>
+      <p class="foundation-position">Machine language</p>
       <h2>Read the job and label the values</h2>
       <pre><code>int fill(int i, int n, int arr[]) {
     int a = 10;
@@ -103,18 +99,14 @@ j Check</code></pre><p>Each index is <code>i * 2</code>. Each integer takes four
         <p>Why does the loop use sll by 3 for arr[i * 2], while arr[i] used sll by 2?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The index in this question is twice i. Four bytes per element times two indices per step is eight bytes. One left shift gives two, two give four, and three give eight.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-division">Previous lesson</a>
-        <a class="btn pri" href="#ct2-recursion">Next · Trace recursive factorial</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 37–52.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-recursion" data-title="Recursion and factorial" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-recursion" data-title="Recursion and factorial" data-group="MIPS" hidden data-unit="Functions and the stack">
     <header class="hero"><h1>Recursion and factorial</h1><p class="lede">Follow several calls to the same function and see what each call needs to remember.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 21 of 22 / Lecture 7</p>
+      <p class="foundation-position">Functions and the stack</p>
       <h2>Work out factorial without assembly</h2>
       <p><strong>Factorial</strong> multiplies the integers from 1 up to a number. For example, 3 factorial is 3 × 2 × 1 = 6. The lecture expresses that as <code>fact(3) = 3 * fact(2)</code>. A function that calls itself is <strong>recursive</strong>. The <strong>base case</strong> stops the calls. Here, <code>fact(0)</code> returns 1 immediately. In the deck, the test is <code>n &lt; 1</code>.</p>
       <h2>What must survive the next call?</h2>
@@ -158,21 +150,17 @@ Return: lw $ra, 4($sp)
         <p>Why does fact(3) reload 3 after fact(2) returns?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>$a0 was changed to 2 for the smaller call. The old 3 is still in fact(3)’s own frame, and the next multiply needs it to turn the returned 2 into 6.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-translation">Previous lesson</a>
-        <a class="btn pri" href="#ct2-check">Next · Try a practice problem on your own</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 54–63.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-check" data-title="First CT-2 practice" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-check" data-title="MIPS practice set" data-group="MIPS" hidden>
     <header class="hero">
       <h1>Can you trace the whole example?</h1>
       <p class="lede">Try this on paper one question at a time and reveal each answer when you’re ready.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 22 of 22 / CT-2 practice</p>
+      <p class="foundation-position">MIPS practice</p>
       <p>Array <code>A</code> starts at byte 100 and holds <code>[5, 3, 0]</code>. <code>$s0</code> holds 100. You want to pass the first two values to a function and write the answer into <code>A[2]</code>. Assume the course’s simplified call model.</p>
       <details class="foundation-more"><summary>1. What two instructions put the inputs in $a0 and $a1?</summary><pre><code>lw $a0, 0($s0)
 lw $a1, 4($s0)</code></pre><p>The first word starts at the base. The second starts four bytes later.</p></details>

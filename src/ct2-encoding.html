@@ -1,10 +1,10 @@
-  <article class="page foundation" id="ct2-encode" data-title="Machine code from scratch" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-encode" data-title="Machine code from scratch" data-group="MIPS" hidden data-unit="Machine language">
     <header class="hero">
       <h1>How do instructions become bits?</h1>
       <p class="lede">Turn your first addition into one 32-bit instruction.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 15 of 22 / Lecture 7</p>
+      <p class="foundation-position">Machine language</p>
       <h2>Give each part of the instruction its own space</h2>
       <p>Think back to <code>add $t0, $t1, $t2</code>. The CPU needs to know the operation, the two inputs and where the answer goes. The assembler puts that information in separate groups of bits called <strong>fields</strong>. It writes register numbers (8 for <code>$t0</code>, 9 for <code>$t1</code>, 10 for <code>$t2</code>). The current numbers inside those registers, such as 5 and 3, stay in the registers.</p>
       <p>The format for this instruction is <strong>R type</strong>. For a regular <code>add</code>, the opcode is 0, the function code is 32 and the unused shift amount is 0. The <code>rs</code> and <code>rt</code> fields name the two inputs. <code>rd</code> names the destination.</p>
@@ -43,18 +43,14 @@
         <p>In add $t0, $t1, $t2, what decimal value belongs in rd?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>8, the number of $t0. That register will receive the result. Its number goes in rd even if the result it will hold happens to be 8 as well.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-nested">Previous lesson</a>
-        <a class="btn pri" href="#ct2-immediate">Next · Encode an I-type instruction</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 2–20.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-immediate" data-title="I-format instructions" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-immediate" data-title="I-format instructions" data-group="MIPS" hidden data-unit="Machine language">
     <header class="hero"><h1>I-format instructions</h1><p class="lede">Read the 16-bit field in context. It can hold a number, a byte distance, or a branch distance.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 16 of 22 / Lecture 7</p>
+      <p class="foundation-position">Machine language</p>
       <h2>Start with addi</h2>
       <p><code>addi $t0, $t1, 5</code> needs an operation, one input register, one output register, and the number 5. Its <strong>I format</strong> (immediate format) has exactly four fields. Use the opcode table and the register numbers.</p>
       <div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Field</th><th scope="col">Why this value?</th><th scope="col">Bits</th></tr></thead><tbody><tr><td><code>op</code></td><td>Opcode 8 selects <code>addi</code></td><td><code>001000</code></td></tr><tr><td><code>rs</code></td><td>Input <code>$t1</code> is register 9</td><td><code>01001</code></td></tr><tr><td><code>rt</code></td><td>Destination <code>$t0</code> is register 8</td><td><code>01000</code></td></tr><tr><td><code>immediate</code></td><td>The instruction says add 5</td><td><code>0000000000000101</code></td></tr></tbody></table></div>
@@ -85,18 +81,14 @@
         <p>For sw $s1, 200($s2), which register supplies the address? Which supplies the stored value? Do you divide 200 by four?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>$s2 supplies the base (rs). $s1 supplies the value to store (rt). Keep 200 as written because the load/store field already counts bytes.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-encode">Previous lesson</a>
-        <a class="btn pri" href="#ct2-targets">Next · Count branch and jump distances</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 12–18 and 20.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-targets" data-title="Branch distances and J format" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-targets" data-title="Branch distances and J format" data-group="MIPS" hidden data-unit="Machine language">
     <header class="hero"><h1>Branch distances and J format</h1><p class="lede">Work backwards from a label’s byte address, then decode the target from the field.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 17 of 22 / Lecture 7</p>
+      <p class="foundation-position">Machine language</p>
       <h2>Count from the next instruction for a branch</h2>
       <p>In the lecture’s example, a <code>bne</code> at byte 1000 has a target at 1104. <strong>Target</strong> is the place you want to reach. Start from <code>PC + 4</code>, 1004, then ask how many four-byte instructions away the target is.</p>
       <div class="foundation-values"><span><small>Branch at</small><b>1000</b></span><span><small>Start counting at</small><b>1004</b></span><span class="foundation-active"><small>Target</small><b>1104</b></span></div>
@@ -129,18 +121,14 @@
         <p>If a j instruction in the low address region targets byte address 100, what goes in its 26-bit field?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>25, because 100 ÷ 4 = 25. Subtract PC + 4 only when finding the signed field of a conditional branch.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-immediate">Previous lesson</a>
-        <a class="btn pri" href="#ct2-widths">Next · Check what fits on a modified processor</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 17–28.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-widths" data-title="Modified MIPS and what fits" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-widths" data-title="Modified MIPS and what fits" data-group="MIPS" hidden data-unit="Machine language">
     <header class="hero"><h1>Modified MIPS and what fits</h1><p class="lede">Count the patterns, then check how many bytes or elements a field can describe.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 18 of 22 / Lecture 7</p>
+      <p class="foundation-position">Machine language</p>
       <h2>Find the number of bits needed for a register name</h2>
       <p>Each extra bit doubles the number of names. Four bits name 16 registers. For 1000 registers, nine bits give only 512 names, and ten give 1024, so use ten. Use the smallest width that covers every register even when some of its patterns go unused.</p>
       <h2>Work the slide’s 16-bit example</h2>
@@ -170,10 +158,6 @@
         <p>In the 16-bit example, why is the last element at byte offset 30 when there are 32 bytes?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The last two-byte element occupies offsets 30 and 31. Starting it at 31 would put its second byte outside the range, and 31 is off the two-byte alignment.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-targets">Previous lesson</a>
-        <a class="btn pri" href="#ct2-division">Next · Divide and read HI and LO</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 7, slides 29–36.</p>
     </div>
   </article>

@@ -1,10 +1,10 @@
-  <article class="page foundation" id="ct2-memory" data-title="Load and store from scratch" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-memory" data-title="Load and store from scratch" data-group="MIPS" hidden data-unit="Memory and control flow">
     <header class="hero">
       <h1>How do values reach the CPU?</h1>
       <p class="lede">Fetch the same 5 and 3 from an array, then save the result.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 7 of 22 / Lecture 5</p>
+      <p class="foundation-position">Memory and control flow</p>
       <h2>Find the number’s address</h2>
       <p>An <strong>address</strong> is the number of a location in memory. Each address names one byte. An array is a list stored in order. In our example, <code>A</code> holds three four-byte integers, 5, 3 and 0. Its <strong>base address</strong> is where the first element starts. Assume <code>$s0</code> holds that base, 100.</p>
       <div class="foundation-values foundation-bits"><span><code>A[0]</code><strong>5</strong><small>Bytes 100–103</small></span><span class="foundation-active"><code>A[1]</code><strong>3</strong><small>Bytes 104–107</small></span><span><code>A[2]</code><strong>0</strong><small>Bytes 108–111</small></span></div>
@@ -64,18 +64,14 @@ sw  $t0, 8($s0)       # A[2] gets 8</code></pre>
         <p>If A starts at byte 100, what offset loads A[2]? What address does the CPU use?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The offset is 2 × 4 = 8. The CPU uses address 100 + 8 = 108, so the instruction can be lw $t0, 8($s0).</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-shifts">Previous lesson</a>
-        <a class="btn pri" href="#ct2-arrays">Next · Find an array element</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 5, slides 1–10. Example values adapted for the beginner path.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-arrays" data-title="Arrays and calculated addresses" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-arrays" data-title="Arrays and calculated addresses" data-group="MIPS" hidden data-unit="Memory and control flow">
     <header class="hero"><h1>Arrays and calculated addresses</h1><p class="lede">Distinguish the index, the byte offset, the address, and the value stored there.</p></header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 8 of 22 / Lecture 5</p>
+      <p class="foundation-position">Memory and control flow</p>
       <h2>Use the base to find the correct element</h2>
       <p>Imagine four-byte integers in a row. <code>A[0]</code> means the first integer, <code>A[1]</code> means the second, and 1 is the <strong>index</strong>. The base is the byte address of <code>A[0]</code>. The <strong>byte offset</strong> is the distance from that base in bytes. Each integer takes four bytes, so the offset is <strong>index × 4</strong>.</p>
       <p>For the slide’s <code>A[12] = h + A[8];</code>, <code>$s3</code> holds A’s base and <code>$s2</code> holds <code>h</code>. Load the value at offset 32, add <code>h</code>, and store at offset 48.</p>
@@ -117,21 +113,17 @@ addi $s1, $t0, 5   # compute 7 + 5, so k is 12</code></pre>
         <p>If i = 3 and B starts at 200, what are the index, byte offset, and address of B[i]?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>The index is 3. The byte offset is 12, because each integer takes four bytes. The address is 212. A load from that address gives the value stored in B[3].</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-memory">Previous lesson</a>
-        <a class="btn pri" href="#ct2-branches">Next · Branch or jump to a label</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 5, slides 3–10. Tasmin Sanjida, MIPS Memory and Branches, slides 12–14, for the variable-index example.</p>
     </div>
   </article>
 
-  <article class="page foundation" id="ct2-branches" data-title="Branches from scratch" data-group="CT-2 course" hidden>
+  <article class="page foundation" id="ct2-branches" data-title="Branches from scratch" data-group="MIPS" hidden data-unit="Memory and control flow">
     <header class="hero">
       <h1>How does the CPU choose its next line?</h1>
       <p class="lede">Trace two possible paths using the sum you already know.</p>
     </header>
     <div class="foundation-body">
-      <p class="foundation-position">Lesson 9 of 22 / Lecture 5</p>
+      <p class="foundation-position">Memory and control flow</p>
       <h2>Read one address at a time</h2>
       <p>The <strong>program counter</strong>, or <code>PC</code>, is the address of the instruction being run in our lecture examples. Each MIPS instruction is four bytes wide, so when nothing redirects the CPU, address 1000 is followed by 1004. A <strong>label</strong> is a name for an instruction address.</p>
       <h2>Skip a line if the values match</h2>
@@ -168,10 +160,6 @@ saved = actual;</code></pre>
         <p>In the first example, if $t1 held 9, which address would run after 1000? Why?</p>
         <details class="foundation-more"><summary>Check my answer</summary><p>1004. 8 and 9 differ, so beq does not take the branch.</p></details>
       </section>
-      <nav class="foundation-next" aria-label="Beginner path">
-        <a href="#ct2-arrays">Previous lesson</a>
-        <a class="btn pri" href="#ct2-logic">Next · Translate if and else</a>
-      </nav>
       <p class="lesson-source">Sources · Lecture 5, slides 11–23. Addresses use the course’s simplified execution model.</p>
     </div>
   </article>

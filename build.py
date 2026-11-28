@@ -49,7 +49,7 @@ HEAD = f"""<!doctype html>
 
 def build():
     ct2_course = "\n".join(read(name) for name in (
-        "ct2-foundations.html", "ct2-basics.html", "ct2-bits.html",
+        "ct2-basics.html", "ct2-bits.html",
         "ct2-memory.html", "ct2-control.html", "ct2-functions.html",
         "ct2-encoding.html", "ct2-exercises.html", "ct2-index.html", "ct2-simulator.html",
     ))
@@ -74,6 +74,11 @@ def build():
     dupes = sorted({i for i in ids if ids.count(i) > 1})
     if dupes:
         raise SystemExit(f"duplicate element ids: {dupes}")
+    pages = set(re.findall(r'<article class="page[^"]*" id="([^"]+)"', html))
+    lessons = re.findall(r'<a href="#([^"]+)" data-study-lesson>', html)
+    missing = sorted(set(lessons) - pages)
+    if not lessons or missing or len(lessons) != len(set(lessons)):
+        raise SystemExit(f"Invalid midterm study path: missing pages {missing}, or an empty or duplicate sequence")
     print(f"built {out} ({len(html):,} bytes)")
 
 
