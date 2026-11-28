@@ -11,29 +11,52 @@
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Study guide</p>
       <h1>Computer Architecture</h1>
-      <p class="lede">Start with what happens when you run a program. Then learn to measure its speed, practise the calculations, and work up to reading MIPS instructions.</p>
+      <p class="lede">Study Computer Architecture in the order of Tasmin Sanjida’s nine decks, with worked examples and practice you can check as you go.</p>
     </header>
     <section class="plan-wrap">
-      <h2>Where to begin</h2>
-      <p class="note">Studying for the midterm? <a href="#midterm"><b>Follow the midterm study route</b></a> to see what to learn first and try a worked problem for each skill.</p>
+      <h2>Course sequence</h2>
       <ol class="plan">
-        <li><a href="#earlier"><span class="pn" aria-hidden="true">01</span><span class="pt"><b>How a computer runs a program</b><span>Meet the processor, memory and instructions with a small example.</span></span></a></li>
-        <li><a href="#performance-review"><span class="pn" aria-hidden="true">02</span><span class="pt"><b>Performance</b><span>Clock rate, CPI, power and Amdahl&rsquo;s law.</span></span><span class="pm">CT-1</span></a></li>
-        <li><a href="#ct2-computer"><span class="pn" aria-hidden="true">03</span><span class="pt"><b>CT-2 course</b><span>Start with one instruction, then learn memory, functions and machine language.</span></span><span class="pm">CT-2</span></a></li>
-        <li><a href="#s-past"><span class="pn" aria-hidden="true">04</span><span class="pt"><b>Exam</b><span>Past midterms, drills, quiz and calculators.</span></span></a></li>
+          <li><a href="#tasmin-01"><span class="pt"><b>Computer architecture</b><span>Follow a program from storage to the CPU.</span></span></a></li>
+          <li><a href="#tasmin-02"><span class="pt"><b>MIPS assembly basics</b><span>Put 10 and 5 in registers, then calculate with them.</span></span></a></li>
+          <li><a href="#tasmin-03"><span class="pt"><b>Processor performance, part 1</b><span>Calculate CPU time from the clock and the instruction mix.</span></span></a></li>
+          <li><a href="#tasmin-04"><span class="pt"><b>Processor performance, part 2</b><span>Use the deck’s power and Amdahl problems to see what an improvement buys.</span></span></a></li>
+          <li><a href="#tasmin-05"><span class="pt"><b>MIPS memory and branches</b><span>Load an array word, then trace what happens when a condition changes.</span></span></a></li>
+          <li><a href="#tasmin-06"><span class="pt"><b>MIPS loops</b><span>Follow a while, for and do-while in the order the CPU runs them.</span></span></a></li>
+          <li><a href="#tasmin-07"><span class="pt"><b>MIPS functions and stack</b><span>Follow the deck’s calls, returned values and saved registers.</span></span></a></li>
+          <li><a href="#tasmin-08"><span class="pt"><b>MIPS machine language</b><span>Encode R, I and J instructions using the deck’s examples.</span></span></a></li>
+          <li><a href="#tasmin-09"><span class="pt"><b>Computer arithmetic</b><span>Multiply and divide in binary one step at a time.</span></span></a></li>
       </ol>
     </section>
     <section class="howto" aria-label="Study resources">
-      <div><h3><a href="#map">CT-1 topic map</a></h3><p>See which lessons go together and track the skills you can do on your own.</p></div>
-      <div><h3><a href="#words">Plain-English glossary</a></h3><p>Look up a term when you meet it in a lesson or practice question.</p></div>
-      <div><h3><a href="#qtypes">What exam questions ask</a></h3><p>Match the wording of a question to the first line you should write.</p></div>
+      <div><h3><a href="#ct2-simulator">Simulator lab</a></h3><p>Change the inputs and predict the next step.</p></div>
+      <div><h3><a href="#s-past">Past papers</a></h3><p>Try a question before revealing its worked answer.</p></div>
+      <div><h3><a href="#practice-library">Previous notes and extra practice</a></h3><p>Open the older lessons, midterm notes, calculators and reference pages.</p></div>
     </section>
   </article>
 
 
+  <!-- Tasmin Sanjida course -->
+
+  <article class="page foundation" id="practice-library" data-title="Supplementary practice" data-group="Supplementary practice" data-skip="1" hidden>
+    <header class="hero"><h1>Supplementary practice</h1><p class="lede">Use the earlier guide’s explanations, simulators and calculators for extra practice alongside the nine-deck course.</p></header>
+    <div class="foundation-body">
+      <h2>Work through an example</h2>
+      <ul class="foundation-list">
+        <li><a href="#earlier">How a computer runs a program</a></li>
+        <li><a href="#midterm">Earlier midterm study route and notes</a></li>
+        <li><a href="#performance-review">Performance study order</a></li>
+        <li><a href="#mips">Memory, stack and machine-language visualisers</a></li>
+        <li><a href="#ct2-start">22 beginner CT-2 lessons</a></li>
+        <li><a href="#ct2-simulator">Simulator lab</a></li>
+        <li><a href="#calculators">Calculators</a></li>
+        <li><a href="#s-past">Past midterm questions</a></li>
+      </ul>
+    </div>
+  </article>
+
   <!-- Midterm review -->
 
-  <article class="page" id="earlier" data-title="Computer basics" data-group="Start here" hidden>
+  <article class="page" id="earlier" data-title="Computer basics" data-group="Previous notes" hidden>
     <header class="hero">
       <p class="eyebrow"><b>CSE 3313</b> &middot; Start here</p>
       <h1>How a computer runs a program</h1>

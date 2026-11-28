@@ -1,0 +1,134 @@
+  <article class="page foundation" id="tasmin-01" data-title="Computer architecture" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>Computer architecture</h1><p class="lede">Follow a program from storage to the CPU.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 01 of 09</p>
+      <h2>Follow 5 and 3 through the computer</h2><p>The SSD keeps the saved program. When you open it, the operating system puts the parts needed to run into RAM. The keyboard supplies 5 and 3. The CPU fetches the addition instruction. Inside the CPU, control works out what to do and the datapath adds the values. A later instruction sends 8 to the screen.</p><h2>Why do we have different kinds of memory?</h2><p>Main memory is typically DRAM, which must refresh the electrical charge that holds each bit. Cache typically uses faster SRAM for copies the CPU wants close by. Both lose data when power goes off. The SSD keeps saved files, and nonvolatile ROM can keep startup instructions. A compiler can translate C into assembly, and an assembler turns assembly into the bits the CPU reads.</p>
+      <p><a href="#earlier">Review computer basics</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>Which component holds the saved file after power goes off?</p><details class="foundation-more"><summary>Check my answer</summary><p>The SSD. RAM held the copy in use while the program ran.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#start">Course overview</a><a class="btn pri" href="#tasmin-02">Next · MIPS assembly basics</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 01, slides 9–19. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-02" data-title="MIPS assembly basics" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>MIPS assembly basics</h1><p class="lede">Put 10 and 5 in registers, then calculate with them.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 02 of 09</p>
+      <h2>Read the destination first</h2><p>A register is a named slot inside the CPU. Here <code>$t1</code> holds 10, <code>$t2</code> holds 5, and <code>$zero</code> supplies 0. An immediate is a number written directly in the instruction.</p><pre><code>addi $t1, $zero, 10  # $t1 = 0 + 10
+addi $t2, $zero, 5   # $t2 = 0 + 5
+add  $s0, $t1, $t2  # $s0 = 10 + 5 = 15
+sub  $s1, $t1, $t2  # $s1 = 10 - 5 = 5</code></pre><p>For the deck’s 12 + 8 − 5, add the registers holding the first two numbers, then use <code>addi</code> with −5. The intermediate result is 20 and the final result is 15. MIPS uses two’s complement for negative integers. In a four-bit example, start with 5 = <code>0101</code>, flip every bit to get <code>1010</code>, and add 1 to get <code>1011</code>, which represents −5. MIPS applies the same rule to the 16-bit immediate and copies its sign bit to fill the 32-bit operand.</p><h2>Work one bit at a time</h2><pre><code>10          1010
+ 5          0101
+AND         0000
+OR          1111
+NOR         0000  # low 4 bits</code></pre><p>AND requires two 1s in a column. OR requires at least one. NOR flips the entire OR result. The other 28 bits become 1, so NOR gives −16 in signed 32-bit MIPS. <code>andi $s2, $t1, 3</code> keeps the last two bits of 10 and gives 2. <code>ori $s3, $t1, 8</code> gives 10 because the 8s bit was already 1. A byte is eight bits, and a MIPS word is four bytes. Shifts move all the bits together and fill the empty spots with zeros. If <code>$t0</code> holds 4 (<code>0100</code>), <code>sll $t1, $t0, 1</code> writes 8 (<code>1000</code>) and <code>srl $t2, $t0, 1</code> writes 2 (<code>0010</code>).</p>
+      <p><a href="#ct2-registers">Practise with the register lab</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>If $t1 holds 10, what does addi $s0, $t1, -7 write?</p><details class="foundation-more"><summary>Check my answer</summary><p>It writes 3 into $s0. The source $t1 keeps 10.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-01">Previous content</a><a class="btn pri" href="#tasmin-03">Next · Processor performance, part 1</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 02, slides 2–14. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-03" data-title="Processor performance, part 1" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>Processor performance, part 1</h1><p class="lede">Calculate CPU time from the clock and the instruction mix.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 03 of 09</p>
+      <h2>Decide what you are measuring</h2><p>Response time is how long one job takes. Throughput is how many jobs finish per unit of time. Elapsed time includes waiting. CPU time counts CPU work for the task, including both user and system CPU time.</p><p>The deck gives A a 2 GHz clock and 10 seconds of CPU time. That is 20 billion cycles. B uses 1.2 × 20 billion = 24 billion cycles. To finish in 6 seconds it needs 24 billion ÷ 6 = <strong>4 GHz</strong>.</p><h2>Count cycles before averaging</h2><p>The deck’s instruction classes A, B and C take 1, 2 and 3 cycles each. Sequence 1 uses 2 A, 1 B and 2 C, giving 10 cycles for 5 instructions. Its average CPI is 2. Sequence 2 uses 4 A, 1 B and 1 C, giving 9 cycles for 6 instructions. Its average CPI is 1.5. Divide cycles by clock rate for CPU time and by instruction count for average CPI.</p>
+      <p><a href="#calculators">Open the performance calculators</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>At 2 GHz, how long do 10 cycles take?</p><details class="foundation-more"><summary>Check my answer</summary><p>There are two cycles per nanosecond, so 10 cycles take 5 ns.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-02">Previous content</a><a class="btn pri" href="#tasmin-04">Next · Processor performance, part 2</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 03, slides 3–23. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-04" data-title="Processor performance, part 2" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>Processor performance, part 2</h1><p class="lede">Use the deck’s power and Amdahl problems to see what an improvement buys.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 04 of 09</p>
+      <h2>Square the voltage ratio</h2><p>In the deck, capacitance, voltage and frequency each become 85% of the old value. Dynamic power is proportional to capacitance × voltage² × frequency, so the new-to-old ratio is 0.85 × 0.85² × 0.85 ≈ 0.522. The new CPU uses about 52.2% as much dynamic power. Power and heat can constrain speed, and more cores help when the work can be split.</p><h2>Set aside the time that stays the same</h2><p>The deck’s 280 ns program spends 180 ns on loads and stores, 80 ns on floating-point work and 20 ns on branches. Doubling overall speed gives a 140 ns budget. The unchanged work uses 100 ns, leaving 40 ns for loads and stores. The required speedup is <strong>180 ÷ 40 = 4.5×</strong>.</p><p>The previous subquestion says “reduced by 20.” The slide treats this as 20 times as fast. Floating-point time becomes 4 ns and total time becomes 204 ns, saving 76 ns. State the assumption because 20% would give a different answer. Millions of instructions per second, also abbreviated MIPS, can be misleading because two programs may run different numbers of instructions.</p>
+      <p><a href="#s-amdahl">Open the Amdahl explorer</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>Can a finite upgrade to the 80-second part of a 100-second program make the whole program 5× as fast?</p><details class="foundation-more"><summary>Check my answer</summary><p>No. The 20 seconds of unchanged work already uses the entire new time budget.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-03">Previous content</a><a class="btn pri" href="#tasmin-05">Next · MIPS memory and branches</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 04, slides 2–20. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-05" data-title="MIPS memory and branches" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>MIPS memory and branches</h1><p class="lede">Load an array word, then trace what happens when a condition changes.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 05 of 09</p>
+      <h2>Find the address before reading the value</h2><p>Use the deck’s <code>k = B[3] + 5;</code>. Put B’s base in <code>$s4</code> and k in <code>$s1</code>. If B starts at byte 200 and B[3] holds 7, the index 3 gives offset 12 bytes. The load starts at 200 + 12 = 212.</p><pre><code>lw   $t0, 12($s4)    # read the 7 at 212
+addi $s1, $t0, 5     # k = 7 + 5 = 12</code></pre><p>For the deck’s <code>A[10] = h + B[i]</code>, shift i left twice to get i × 4. Add it to B’s base in a register, then load using <code>0(register)</code>. The offset in <code>lw</code> must be a constant. With h = 230 and B[i] = 7, store 237 at byte offset 40 from A’s base.</p>
+      <p>Here <code>$s0</code> holds A’s base, <code>$s4</code> holds B’s base, <code>$s2</code> holds i, and <code>$s3</code> holds h. Follow <code>$t0</code> from 12, to 212, to the value 7 when i = 3 and B starts at 200.</p>
+      <pre><code>sll $t0, $s2, 2       # $t0 = i × 4
+add $t0, $s4, $t0     # $t0 = address of B[i]
+lw  $t0, 0($t0)       # $t0 = value of B[i]
+add $t0, $s3, $t0     # $t0 = h + B[i]
+sw  $t0, 40($s0)      # A[10] = $t0</code></pre><h2>Try both sides of the branch</h2><p>The deck adds x and y when they match and sets x to y/2 otherwise. Put x in <code>$s0</code>, y in <code>$s1</code>, and sum in <code>$s3</code>. Use a nonnegative y for this logical shift.</p><pre><code>      bne $s0, $s1, Else
+      add $s3, $s0, $s1
+      j   Done
+Else: srl $s0, $s1, 1
+Done:</code></pre><p>With 8 and 8, the branch falls through and sum is 16. With 7 and 8, it branches and x becomes 4. <code>beq</code> jumps on equal values. <code>slt</code> writes 1 if the first source is smaller. A separate branch can test that 1. <code>slti</code> compares against a constant. For a C condition joined by <code>&amp;&amp;</code>, skip the true path if either test fails.</p>
+      <p><a href="#mips-memory">Open the word memory visualiser</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>What byte address does lw $t0, 12($s4) use when $s4 holds 200?</p><details class="foundation-more"><summary>Check my answer</summary><p>212. The loaded number is whatever word is stored there.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-04">Previous content</a><a class="btn pri" href="#tasmin-06">Next · MIPS loops</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 05, slides 3–27. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-06" data-title="MIPS loops" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>MIPS loops</h1><p class="lede">Follow a while, for and do-while in the order the CPU runs them.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 06 of 09</p>
+      <h2>Test before running the body</h2><p>The deck uses <code>while (array[5] == k) { i++; }</code>. Load array[5] at offset 20 and exit with <code>bne</code> when it differs from k. If they are equal and the body changes only i, the comparison stays true. The follow-up examples can change k in the body.</p><p>For <code>for (i = 0; i &lt; 10; i++) { k++; }</code>, initialize i once. Use <code>slti</code> for the check and <code>beq</code> to exit when it writes 0. On each pass update k, increment i, and jump back. Starting at k = 5, ten passes give k = 15.</p>
+      <pre><code>      addi $t0, $zero, 0   # i = 0, once
+Loop: slti $t1, $t0, 10    # $t1 = 1 while i &lt; 10
+      beq  $t1, $zero, End # leave when $t1 = 0
+      addi $s0, $s0, 1     # k++
+      addi $t0, $t0, 1     # i++
+      j    Loop
+End:</code></pre><h2>Test after running the body</h2><p>For <code>do { sum += i; i++; } while (i &lt;= 10);</code>, start i at 1 and sum at 0. Add 1 before the first check. Eventually add 10 to 45, increment i to 11, and exit because i &lt; 11 is false. The sum is 55.</p><p>For the deck’s remainder shortcut, try 13 % 4. Shift right twice to get 3, then left twice to get 12. Subtract 12 from 13 to get 1. This logical-shift shortcut assumes a nonnegative dividend.</p>
+      <p><a href="#ct2-simulator">Trace a loop in the simulator</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>If the do-while starts at i = 11 and sum = 0, what is the final sum?</p><details class="foundation-more"><summary>Check my answer</summary><p>The body runs once before the check, so the sum is 11.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-05">Previous content</a><a class="btn pri" href="#tasmin-07">Next · MIPS functions and stack</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 06, slides 3–11. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-07" data-title="MIPS functions and stack" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>MIPS functions and stack</h1><p class="lede">Follow the deck’s calls, returned values and saved registers.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 07 of 09</p>
+      <h2>Follow add(5, 10)</h2><p>The caller puts 5 in <code>$a0</code> and 10 in <code>$a1</code>. <code>jal add</code> jumps to the function and saves the resume address in <code>$ra</code>. The function writes <code>5 + 10 = 15</code> in <code>$v0</code>. <code>jr $ra</code> returns and the caller adds another 15 to get 30. In the course’s simplified model, a call at byte 1008 saves 1012. The address 1012 and the result 15 are separate values.</p><h2>Do the four-argument example with real numbers</h2><p>With x = 15 and y = 7, the caller computes m = 32 and n = 2. It passes 15, 7, 32 and 2 in <code>$a0</code> through <code>$a3</code>. The function returns <code>50 + (15 + 7) − (32 + 2) = 38</code>. The caller then sets n = 38 − 7 = 31.</p><p>The function needs <code>$s0</code> through <code>$s3</code> for its own values. Save the caller’s four words first. Four words use 16 bytes. Starting with <code>$sp = 1000</code>, subtract 16, then the slots start at 984, 988, 992 and 996. Use <code>sw</code> to save and restore each with <code>lw</code> from the same slot before adding 16 back. A nested call writes a new <code>$ra</code>, so save the old one if you still need it.</p>
+      <p><a href="#mips-functions">Open the stack visualiser</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>What does jr $ra read, and which register holds the numerical result?</p><details class="foundation-more"><summary>Check my answer</summary><p>It reads the return address from $ra. The numerical result is in $v0.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-06">Previous content</a><a class="btn pri" href="#tasmin-08">Next · MIPS machine language</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 07, slides 3–35. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-08" data-title="MIPS machine language" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>MIPS machine language</h1><p class="lede">Encode R, I and J instructions using the deck’s examples.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 08 of 09</p>
+      <h2>Fill the R-format fields</h2><p>For <code>add $s1, $s2, $t1</code>, use source numbers 18 and 9 and destination number 17. The opcode selects the group, and the function field selects addition.</p><pre><code>op     rs    rt    rd    shamt funct
+0      18    9     17    0     32
+000000 10010 01001 10001 00000 100000</code></pre><p><code>srl $s1, $s2, 20</code> uses <code>0 / 0 / 18 / 17 / 20 / 2</code>. The input goes in rt. The shift count goes in shamt, whose five bits can hold 0 through 31. <code>jr $ra</code> uses register 31 in rs and function code 8.</p><h2>Work out what the last field measures</h2><ul class="foundation-list"><li><code>andi $s1, $s2, 223</code> uses <code>12 / 18 / 17 / 223</code>. Its immediate is unsigned.</li><li><code>lw $s1, 200($s2)</code> uses <code>35 / 18 / 17 / 200</code>. The final number already counts bytes. A store uses opcode 43. Use a numeric zero in <code>sw $ra, 0($sp)</code>.</li><li>For <code>bne $s1, $s2, Target</code>, rs is 17 and rt is 18. Count instruction words from PC + 4. The deck’s 25 is correct if 100 means a displacement of 100 bytes from PC + 4. For example, a branch at 1000 targeting 1104 encodes (1104 − 1004) ÷ 4 = 25. If 100 means the target address, you need the PC to calculate the displacement.</li><li>For <code>j 2000</code> in the low address region, encode opcode 2 and field 500. For <code>jal 10000</code>, use 3 and 2500. The field holds target bits 27 through 2. The CPU takes the top four bits from PC + 4 and appends two zeros.</li></ul>
+      <p><a href="#mips-machine">Open the instruction encoder</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>Do you divide the offset in lw $s1, 200($s2) by four? Which field names $s2?</p><details class="foundation-more"><summary>Check my answer</summary><p>No. Keep 200 because load offsets count bytes. rs gets the register number 18.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-07">Previous content</a><a class="btn pri" href="#tasmin-09">Next · Computer arithmetic</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 08, slides 3–21. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>
+
+  <article class="page foundation" id="tasmin-09" data-title="Computer arithmetic" data-group="Tasmin Sanjida course" data-skip="1" hidden>
+    <header class="hero"><h1>Computer arithmetic</h1><p class="lede">Multiply and divide in binary one step at a time.</p></header>
+    <div class="foundation-body">
+      <p class="foundation-position">Content 09 of 09</p>
+      <h2>Multiply 6 × 7 by shifting and adding</h2><p>Write the factors as <code>0110</code> and <code>0111</code>. Read the multiplier from the right. Its first three bits are 1, so add 6, 12 and 24. Its last bit is 0, so skip it. The product is 42, or <code>00101010</code>.</p><p>In the optimized version, start with <code>0000 0111</code>. If the rightmost bit is 1, add 6 to the upper half, then shift the entire register right, including any carry. The four results are <code>0011 0011</code>, <code>0100 1001</code>, <code>0101 0100</code>, and <code>0010 1010</code>.</p><h2>Divide 10 by 3 one quotient bit at a time</h2><p>In <code>1010 ÷ 0011</code>, bring down each dividend bit. If you can subtract 3, write quotient bit 1 and keep the difference. Otherwise write 0 and keep the partial remainder. A restoring divider tries the subtraction and adds 3 back when it goes negative.</p><div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Bit brought down</th><th scope="col">Partial remainder</th><th scope="col">Quotient bit</th><th scope="col">Remainder kept</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>0</td><td>2</td><td>0</td><td>2</td></tr><tr><td>1</td><td>5</td><td>1</td><td>2</td></tr><tr><td>0</td><td>4</td><td>1</td><td>1</td></tr></tbody></table></div><p>The quotient is <code>0011</code> (3), and the remainder is 1. Check 3 × 3 + 1 = 10. A zero divisor is invalid. The deck lists overflow and floating point as broader topics. Its worked algorithms focus on multiplication and division.</p>
+      <p><a href="#midterm-multiply">Practise the multiplication trace</a> · <a href="#ct2-simulator">Try binary division in the simulator</a></p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>What quotient and remainder do you get for binary 1110 divided by binary 0011?</p><details class="foundation-more"><summary>Check my answer</summary><p>14 ÷ 3 gives quotient 4 and remainder 2. Check 3 × 4 + 2 = 14.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#tasmin-08">Previous content</a><a class="btn pri" href="#s-past">Practise past papers</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Content 09, slides 2–13. Worked explanations adapted for this guide.</p>
+    </div>
+  </article>

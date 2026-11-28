@@ -7,20 +7,22 @@
   /* ---------------- pages ---------------- */
   var pages = $$('article.page'), current = null;
   var course = pages.filter(function (p) { return p.classList.contains('foundation') && p.dataset.skip !== '1'; });
-  var groups = [], groupTags = { Performance: 'CT1', MIPS: 'CT2' };
+  var groups = [];
+  var archives = new Set(['Previous notes', 'Performance', 'CT-2 course', 'MIPS']);
   function buildNav() {
     var n = 0;
     pages.forEach(function (p) {
       n++; p.dataset.num = n;
       var g = groups.filter(function (x) { return x.name === p.dataset.group; })[0];
-      if (!g) { g = { name: p.dataset.group, tag: groupTags[p.dataset.group], pages: [] }; groups.push(g); }
+      if (!g) { g = { name: p.dataset.group, pages: [] }; groups.push(g); }
       g.pages.push(p);
     });
-    var order = { 'Start here': 0, Performance: 1, 'CT-2 course': 2, MIPS: 3, Exam: 4 };
+    var order = { 'Start here': 0, 'Tasmin Sanjida course': 1, 'Supplementary practice': 2, Exam: 3 };
     groups.sort(function (a, b) { return (order[a.name] ?? 5) - (order[b.name] ?? 5); });
     $('#groups').innerHTML = groups.map(function (g, i) {
+      if (archives.has(g.name)) return '';
       var entry = g.pages.find(function (p) { return p.hasAttribute('data-group-entry'); }) || g.pages[0];
-      return '<a href="#' + entry.id + '" data-g="' + i + '">' + g.name + (g.tag ? '<span class="ct' + (g.tag === 'CT1' ? ' t1' : '') + '">' + g.tag + '</span>' : '') + '</a>';
+      return '<a href="#' + entry.id + '" data-g="' + i + '">' + g.name + '</a>';
     }).join('');
     pages.forEach(function (p, i) {
       var prev = pages[i - 1], next = pages[i + 1], pg = document.createElement('nav'); pg.className = 'pager'; pg.setAttribute('aria-label', 'Page');
@@ -29,21 +31,24 @@
         var db = document.createElement('button'); db.type = 'button'; db.className = 'btn donebtn'; db.dataset.done = p.id;
         ($('.foundation-check', p) || p).appendChild(db);
       }
-      p.appendChild(pg);
+      if (p.dataset.group !== 'Tasmin Sanjida course') p.appendChild(pg);
     });
   }
   function buildSub(p) {
     var g = groups.filter(function (x) { return x.name === p.dataset.group; })[0];
     $$('#groups a').forEach(function (a) {
-      var on = groups[+a.dataset.g] === g; a.setAttribute('aria-current', String(on));
+      var tab = groups[+a.dataset.g];
+      var on = tab === g || (archives.has(g.name) && tab.name === 'Supplementary practice');
+      a.setAttribute('aria-current', String(on));
       if (on) { var t = $('#groups'); t.scrollTo({ left: a.offsetLeft - t.clientWidth / 2 + a.clientWidth / 2 }); }
     });
     var hero = $('header.hero', p);
-    var isCourse = p.classList.contains('foundation');
+    var isCourse = g.name === 'CT-2 course';
+    var isPrimary = g.name === 'Tasmin Sanjida course';
     if (hero && !$('.chips', hero) && g.pages.length > 1) {
       var ch = document.createElement('nav'); ch.className = 'chips'; ch.setAttribute('aria-label', 'Pages in ' + g.name);
       ch.innerHTML = g.pages.map(function (q) {
-        var number = isCourse ? course.indexOf(q) + 1 : q.dataset.num;
+        var number = isCourse ? course.indexOf(q) + 1 : isPrimary ? g.pages.indexOf(q) + 1 : q.dataset.num;
         var label = number ? '<span class="n">' + String(number).padStart(2, '0') + '</span>' : '';
         return '<a href="#' + q.id + '" data-p="' + q.id + '"' + (q === p ? ' aria-current="page"' : '') + '>' + label + q.dataset.title + (q.dataset.skip === '1' ? '' : '<span class="ok" aria-hidden="true"></span>') + '</a>';
       }).join('');
@@ -51,7 +56,7 @@
       var toggle = document.createElement('button');
       toggle.type = 'button';
       toggle.className = 'chip-toggle';
-      toggle.textContent = isCourse ? 'CT-2 lessons' : g.name + ' pages';
+      toggle.textContent = isCourse ? 'CT-2 lessons' : isPrimary ? 'Course lessons' : g.name + ' pages';
       toggle.setAttribute('aria-controls', ch.id);
       toggle.setAttribute('aria-expanded', 'false');
       toggle.addEventListener('click', function () {
@@ -59,7 +64,7 @@
       });
       hero.append(toggle, ch);
     }
-    if (isCourse && hero) $('.chip-toggle', hero)?.setAttribute('aria-expanded', 'false');
+    if ((isCourse || isPrimary) && hero) $('.chip-toggle', hero)?.setAttribute('aria-expanded', 'false');
   }
   function doneSet() { try { return JSON.parse(store('cse3313-done') || '{}'); } catch (e) { return {}; } }
   function refreshDone() {
@@ -84,7 +89,7 @@
   });
   /* ---------- course route and page heroes ---------- */
   function routeSVG() {
-    var labels = { Performance: 'CPU', MIPS: 'ISA', Exam: 'Q' };
+    var labels = { 'Tasmin Sanjida course': 'CA', 'Supplementary practice': 'P', Exam: 'Q' };
     var stops = groups.filter(function (g) { return g.name in labels; });
     var svg = '<svg class="ill route" viewBox="0 0 420 162" role="group" aria-label="Course map"><g class="d">';
     svg += '<path d="M70 57 H128 V86 H210 H292 V57 H350" style="--i:0"/>';
@@ -96,7 +101,7 @@
       svg += '<a href="#' + g.pages[0].id + '" aria-label="' + g.name + '" class="rnode">';
       svg += '<circle cx="' + x + '" cy="' + y + '" r="25"/>';
       svg += '<text class="k" x="' + x + '" y="' + (y + 1) + '">' + labels[g.name] + '</text>';
-      svg += '<text class="s" x="' + x + '" y="' + (y + 46) + '">' + g.name + '</text>';
+      svg += '<text class="s" x="' + x + '" y="' + (y + 46) + '">' + (g.name === 'Tasmin Sanjida course' ? 'Course' : g.name === 'Supplementary practice' ? 'Practice' : g.name) + '</text>';
       if (lessons.length) svg += '<text class="c" x="' + x + '" y="' + (y + 62) + '">' + '0/' + lessons.length + '</text>';
       svg += '</a>';
     });

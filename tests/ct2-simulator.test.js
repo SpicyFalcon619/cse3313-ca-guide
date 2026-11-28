@@ -8,6 +8,18 @@ function run(topic, example, ...values) {
   return ct2SimulatorTopics[topic].examples[example].run(...values);
 }
 
+test('Tasmin Sanjida Content 09, slide 12: binary division gives 3 remainder 1', () => {
+  const trace = run(5, 3, 10, 3);
+  assert.deepEqual(trace.slice(1, -1).map(step => step.answer), [0, 0, 1, 1]);
+  assert.deepEqual(trace.at(-1).cells, [['Quotient', 3], ['Remainder', 1]]);
+  for (let dividend = 0; dividend <= 15; dividend++) {
+    for (let divisor = 1; divisor <= 15; divisor++) {
+      assert.deepEqual(run(5, 3, dividend, divisor).at(-1).cells,
+        [['Quotient', Math.floor(dividend / divisor)], ['Remainder', dividend % divisor]]);
+    }
+  }
+});
+
 const value = (step, label) => Object.fromEntries(step.cells)[label];
 
 test('every simulator example has a complete trace with the default inputs', () => {

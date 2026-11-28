@@ -213,6 +213,26 @@ const ct2SimulatorTopics = (() => {
     return steps;
   }
 
+  function binaryDivision(dividend, divisor) {
+    let remainder = 0;
+    let quotient = 0;
+    const source = bits(dividend, 4);
+    const steps = [step('Start at the leftmost bit', 'Bring down one dividend bit at a time. Subtract the divisor only if the result will be nonnegative.', [['Dividend', source], ['Divisor', bits(divisor, 4)]])];
+    for (const bit of source) {
+      const partial = 2 * remainder + Number(bit);
+      const trial = partial - divisor;
+      const digit = Number(trial >= 0);
+      quotient = quotient * 2 + digit;
+      remainder = digit ? trial : partial;
+      steps.push(step('Bring down ' + bit, digit
+        ? partial + ' − ' + divisor + ' = ' + trial + '. Keep the difference and write 1.'
+        : partial + ' − ' + divisor + ' would be negative. Keep ' + partial + ' and write 0.',
+      [['Partial remainder', partial], ['Next quotient bit', digit], ['Quotient so far', bits(quotient, 4)], ['Remainder', remainder]], digit, 'Will this step write 0 or 1?'));
+    }
+    steps.push(step('Read the answer', divisor + ' × ' + quotient + ' + ' + remainder + ' = ' + dividend + '.', [['Quotient', quotient], ['Remainder', remainder]]));
+    return steps;
+  }
+
   const small = (label, value) => num(label, value, -99, 99);
   const shiftDir = choice('Direction', 'left', [['left', 'Left (sll)'], ['right', 'Right (srl)']]);
   const pc = num('Instruction address (PC)', 1000, 0, 0xfffffffc);
@@ -248,6 +268,7 @@ const ct2SimulatorTopics = (() => {
       example('Divide and read HI and LO', 'ct2-division', [small('Dividend', 45), small('Divisor', 32)], divide),
       example('Translate an array-writing function', 'ct2-translation', [num('Loop limit n', 2, 0, 8), small('Value of a', 10)], fill),
       example('Unsigned shift-and-add multiplication', 'midterm-multiply', [num('Multiplicand', 6, 0, 15), num('Multiplier', 7, 0, 15)], multiply),
+      example('Restoring binary division', 'tasmin-09', [num('Dividend', 10, 0, 15), num('Divisor', 3, 1, 15)], binaryDivision),
     ] },
   ];
 })();
