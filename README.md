@@ -2,23 +2,22 @@
 
 **[Open the live Computer Architecture guide](https://spicyfalcon619.github.io/cse3313-ca-guide/)**
 
-A beginner study guide for CSE 3313, organized around Tasmin Sanjida’s nine Computer Architecture decks. Each lesson teaches a worked example from its deck, gives you a question to try, and points to the relevant practice tool.
+A beginner study guide for CSE 3313. Learn how a processor runs instructions, work through performance calculations, then use MIPS to write and trace small programs.
 
-## Course sequence
+## Study by topic
 
-| Content | What you will work through |
+| Topic | Where to start |
 | --- | --- |
-| [01 · Introduction to Computer Architecture](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-01) | Trace how software, memory and the processor work together. |
-| [02 · MIPS Assembly Basics](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-02) | Read registers, translate an arithmetic expression and trace bitwise operations. |
-| [03 · Processor Performance, Part 1](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-03) | Compare clock rates, CPU time and instruction mixes. |
-| [04 · Processor Performance, Part 2](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-04) | Calculate the effect of a voltage change and use Amdahl’s law to estimate speedup. |
-| [05 · MIPS Memory and Branches](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-05) | Compute a word address and follow both paths of a conditional branch. |
-| [06 · MIPS Loops](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-06) | Trace while, for and do-while loops and calculate a remainder using shifts. |
-| [07 · MIPS Functions and Stack](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-07) | Pass arguments, return a result and save registers in a stack frame. |
-| [08 · MIPS Machine Language](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-08) | Fill R-, I- and J-format instruction fields and calculate branch displacements. |
-| [09 · Computer Arithmetic](https://spicyfalcon619.github.io/cse3313-ca-guide/#tasmin-09) | Multiply with shifts and addition, and divide one quotient bit at a time. |
+| Computer and MIPS basics | [CPU, registers and memory](https://spicyfalcon619.github.io/cse3313-ca-guide/#earlier) · [First MIPS instructions](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-registers) · [Binary, bits and bytes](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-bits) |
+| Processor performance | [CT-1 study order](https://spicyfalcon619.github.io/cse3313-ca-guide/#performance-review) · [CPI](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-cpi) · [Power](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-power) · [Amdahl’s law](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-amdahl) |
+| Memory and control flow | [Arrays and word addresses](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-arrays) · [Branches](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-branches) · [Loops](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-loops) |
+| Functions and the stack | [Arguments and return addresses](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-call) · [Stack frames](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-stack) · [Recursion](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-recursion) |
+| Machine language | [R, I and J formats](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-encode) · [Instruction encoder and decoder](https://spicyfalcon619.github.io/cse3313-ca-guide/#mips-machine) |
+| Computer arithmetic | [Binary multiplication](https://spicyfalcon619.github.io/cse3313-ca-guide/#midterm-multiply) · [Restoring binary division](https://spicyfalcon619.github.io/cse3313-ca-guide/#binary-division) |
 
-The [simulator lab](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-simulator) lets you change inputs and step through the result. The [supplementary practice library](https://spicyfalcon619.github.io/cse3313-ca-guide/#practice-library) links to the earlier lessons, calculators, quiz and questions from 20 past midterms.
+Follow the [CT-2 beginner course](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-start) for a guided sequence, trace examples in the [simulator lab](https://spicyfalcon619.github.io/cse3313-ca-guide/#ct2-simulator), and practise on [solved past midterms](https://spicyfalcon619.github.io/cse3313-ca-guide/#s-past).
+
+Worked examples draw on lecture materials, including Tasmin Sanjida’s slides, class tests and the course textbook. The relevant lessons credit their sources.
 
 The guide runs in your browser. It saves your progress and your choice of paper, dark or charcoal theme on that device.
 
@@ -37,7 +36,7 @@ Open `dist/index.html` in your browser. The build bundles the lessons, styles an
 
 | Path | Purpose |
 | --- | --- |
-| `src/tasmin-course.html` | Nine lessons based on Tasmin Sanjida’s decks |
+| `src/arithmetic.html` | Restoring binary division lesson |
 | `src/pages.html`, `src/ct2-*.html`, `src/midterm-review.html` | Main lessons, CT-2 course and worked questions, and midterm review |
 | `src/engine.js`, `src/practice.js` | Performance calculations, drills and quiz |
 | `src/mips.js`, `src/mips-ui.js` | MIPS instruction fields, memory and stack traces, and visualisers |

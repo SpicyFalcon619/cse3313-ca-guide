@@ -101,6 +101,12 @@
           <li>The low eight bits become <code>00000010</code>, so <code>$t0</code> holds 2. This matches whole-number division of 5 by 2.</li>
         </ol>
       </section>
+      <section aria-label="Compare 10 and 5 bit by bit">
+        <h2>Compare 10 and 5 bit by bit</h2>
+        <p>The lowest four bits are <code>1010</code> for 10 and <code>0101</code> for 5. No position has two 1s, so AND gives 0. Each position has at least one 1, so OR gives 15. NOR flips the full 32-bit OR result and gives −16 when read as a signed number.</p>
+        <p>Shifts also help you find a remainder when the divisor is a power of two. For <code>13 % 4</code>, shift 13 right twice to get 3, then left twice to get 12. Subtract 12 from 13 and get the remainder 1. This shortcut assumes the dividend is nonnegative.</p>
+        <p class="lesson-source">Sources · Tasmin Sanjida, MIPS Assembly Basics and MIPS Loops.</p>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p><code>$t1</code> holds 6 (<code>0110</code>). Try each line separately. What value does it put in <code>$t0</code>?</p>

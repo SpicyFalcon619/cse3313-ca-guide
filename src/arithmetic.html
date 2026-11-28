@@ -1,0 +1,10 @@
+  <article class="page foundation" id="binary-division" data-title="Binary division" data-group="Arithmetic" hidden>
+    <header class="hero"><h1>Restoring binary division</h1><p class="lede">Divide ten by three in binary and see where each quotient bit comes from.</p></header>
+    <div class="foundation-body">
+      <h2>Divide 10 by 3 one quotient bit at a time</h2><p>In <code>1010 ÷ 0011</code>, bring down each dividend bit. If you can subtract 3, write quotient bit 1 and keep the difference. Otherwise write 0 and keep the partial remainder. A restoring divider tries the subtraction and adds 3 back when it goes negative.</p><div class="scroll"><table class="ls-t"><thead><tr><th scope="col">Bit brought down</th><th scope="col">Partial remainder</th><th scope="col">Quotient bit</th><th scope="col">Remainder kept</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>0</td><td>2</td><td>0</td><td>2</td></tr><tr><td>1</td><td>5</td><td>1</td><td>2</td></tr><tr><td>0</td><td>4</td><td>1</td><td>1</td></tr></tbody></table></div><p>The quotient is <code>0011</code> (3), and the remainder is 1. Check 3 × 3 + 1 = 10. A zero divisor is invalid.</p>
+      <p><a href="#ct2-simulator">Open the simulator lab</a> and choose <b>Restoring binary division</b> under <b>Exam practice</b>. Change the dividend or divisor to trace a different calculation.</p>
+      <section class="foundation-check"><h2>Try it yourself</h2><p>What quotient and remainder do you get for binary 1110 divided by binary 0011?</p><details class="foundation-more"><summary>Check my answer</summary><p>14 ÷ 3 gives quotient 4 and remainder 2. Check 3 × 4 + 2 = 14.</p></details></section>
+      <nav class="foundation-next" aria-label="Course sequence"><a href="#midterm-multiply">Binary multiplication</a><a class="btn pri" href="#ct2-division">Division in MIPS</a></nav>
+      <p class="lesson-source">Source · Tasmin Sanjida, Computer Arithmetic, slides 9–13.</p>
+    </div>
+  </article>

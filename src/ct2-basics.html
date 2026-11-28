@@ -79,6 +79,15 @@
         <div class="foundation-values beginner-state" data-lab-cells aria-label="Current values"></div>
       </section>
       <p>Read the name of the job first. That short name, such as <code>add</code>, is called the <strong>mnemonic</strong>. Each piece after it is an <strong>operand</strong>. In the last line, <code>$t0</code> is the destination and <code>$t1</code> and <code>$t2</code> are sources. A source supplies an input. The destination receives the answer.</p>
+      <section aria-label="Try a second set of inputs">
+        <h2>Try a second set of inputs</h2>
+        <p>Load 10 into <code>$t1</code> and 5 into <code>$t2</code>. Then write the sum and difference into separate registers.</p>
+        <pre><code>addi $t1, $zero, 10  # $t1 = 0 + 10
+addi $t2, $zero, 5   # $t2 = 0 + 5
+add  $s0, $t1, $t2  # $s0 = 10 + 5 = 15
+sub  $s1, $t1, $t2  # $s1 = 10 − 5 = 5</code></pre>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Assembly Basics, Content 02.</p>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If $t1 holds 6 and $t2 holds 4, where does add $t0, $t1, $t2 put the result?</p>

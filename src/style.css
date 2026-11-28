@@ -1211,3 +1211,32 @@
     .ct2-sim-trace ol { max-height: 155px; }
     .ct2-sim-fields label { flex-basis: 120px; }
   }
+
+  /* Topic index and the route shown while the page initializes. */
+  body:not(.guide-ready) .page:target { display: block !important; }
+  body:not(.guide-ready):has(.page:target) #start:not(:target) { display: none; }
+  #start .hero .hbtn { text-decoration: none; }
+  #start .hero .hbtn.cream { color: #12293B; }
+  #start .hero .hbtn.line { color: var(--on-top); }
+  .home-topics { display: grid; gap: 16px; }
+  .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .topic-unit { padding: 16px 20px; border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); }
+  .topic-unit h3 { font-size: 1.15rem; }
+  .topic-unit ul { list-style: none; padding: 0; margin: 8px 0 0; }
+  .topic-unit li + li { margin-top: 5px; }
+  .topic-unit p { margin: 10px 0 0; }
+  .topic-unit li span { color: var(--muted); }
+  .topic-unit a { text-underline-offset: .16em; }
+  @media (max-width: 640px) {
+    .topic-grid { grid-template-columns: minmax(0, 1fr); }
+    .topic-unit { padding: 14px; }
+  }
+  @media (max-width: 480px) {
+    :root { --nav-h: 86px; }
+    .top { flex-wrap: wrap; align-content: center; padding-inline: 8px; }
+    .top .crest { margin-right: auto; }
+    .top .groups { order: 1; flex-basis: 100%; }
+    .top .groups a[href="#start"] { display: none; }
+    .top .groups a { min-height: 30px; padding-inline: 5px; }
+    .top .prog { position: static; background: transparent; color: inherit; }
+  }

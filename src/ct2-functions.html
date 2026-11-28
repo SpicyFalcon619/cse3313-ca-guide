@@ -25,6 +25,14 @@
         </ol>
       </section>
       <p>The jump at 1016 keeps the caller from running through the function body again. Track two separate things when you trace the code. <code>$v0</code> holds the answer (8). <code>$ra</code> holds the address where work resumes (1012).</p>
+      <section aria-label="Use a result after returning">
+        <h2>Use a result after returning</h2>
+        <p>Call <code>add(5, 10)</code> with <code>$a0 = 5</code> and <code>$a1 = 10</code>. The function puts 15 in <code>$v0</code>, returns with <code>jr $ra</code>, and the caller adds another 15 to make 30.</p>
+        <h3>What changes with four arguments?</h3>
+        <p>Suppose the caller computes m = 32 and n = 2 from x = 15 and y = 7. It passes x, y, m and n in <code>$a0</code>, <code>$a1</code>, <code>$a2</code> and <code>$a3</code>. The callee computes <code>50 + (x + y) − (m + n)</code>, so it puts 38 in <code>$v0</code>. After <code>jr $ra</code>, the caller uses that result to set n to 38 − 7 = 31.</p>
+        <p>In the slide’s implementation, the callee copies the four inputs into <code>$s0</code> through <code>$s3</code>. It saves those registers before using them and restores them before returning. The <a href="#ct2-stack">stack lesson</a> shows how to save a register.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Functions and Stack, Content 07.</p>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>If jal ran at 2000 in the same lecture model, what address would it save in $ra? Where would the result be?</p>

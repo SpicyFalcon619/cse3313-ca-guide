@@ -31,6 +31,17 @@ Done:</code></pre>
           <li>If k were 4, the second test would pass too. The addition path would give f = 9 + 4 = 13.</li>
         </ol>
       </section>
+      <section aria-label="Choose between addition and halving">
+        <h2>Choose between addition and halving</h2>
+        <p>In C, use <code>if (x == y) sum = x + y; else x = y / 2;</code>. Here x is <code>$s0</code>, y is <code>$s1</code> and sum is <code>$s3</code>. Assume y is nonnegative so a logical right shift can halve it and discard any remainder.</p>
+        <pre><code>      bne $s0, $s1, Else
+      add $s3, $s0, $s1
+      j   Done
+Else: srl $s0, $s1, 1
+Done:</code></pre>
+        <p>With x = 8 and y = 8, the branch falls through and sum becomes 16. With x = 7 and y = 8, it goes to <code>Else</code> and x becomes 4.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Memory and Branches, Content 05.</p>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>Does slt $t0, $s0, $s1 jump? If both source registers hold 5, what goes in $t0?</p>
@@ -72,6 +83,19 @@ Done:</code></pre>
           <li>The shift gives 16 and adding the base gives 116. Load 7 from 116, add 2, then store 9 at the same address.</li>
           <li>The increment changes i to 5. The jump goes back to the test, which now writes 0. The branch reaches <code>Done</code> before another load.</li>
         </ol>
+      </section>
+      <section aria-label="Trace a do-while that sums 1 through 10">
+        <h2>Trace a for loop and a do-while</h2>
+        <p>For <code>for (i = 0; i &lt; 10; i++) { k++; }</code>, put i in <code>$t0</code> and k in <code>$s0</code>. The first check compares 0 with 10. On the tenth pass i is 9, so k increments once more. The next check sees i = 10 and exits. Starting with k = 5 gives k = 15.</p>
+        <pre><code>      addi $t0, $zero, 0
+Loop: slti $t1, $t0, 10
+      beq  $t1, $zero, End
+      addi $s0, $s0, 1
+      addi $t0, $t0, 1
+      j    Loop
+End:</code></pre>
+        <p>Start with i = 1 and sum = 0. Run <code>do { sum += i; i++; } while (i &lt;= 10);</code>. The first pass adds 1 before checking. The last pass adds 10 to 45, then increments i to 11. The check is false and the final sum is 55. Starting at i = 11 with sum = 0 still runs the body once and gives sum = 11.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Loops, Content 06.</p>
       </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>

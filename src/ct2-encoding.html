@@ -25,6 +25,11 @@
           <li>Write each field in its own width. The bits are <code>000000 00000 01001 01000 00010 000000</code>. The register’s current value 5 and the result 20 are both decided at run time.</li>
         </ol>
       </section>
+      <section aria-label="Encode a second add and a right shift">
+        <h2>Encode a second add and a right shift</h2>
+        <p>For <code>add $s1, $s2, $t1</code>, the first input is register 18, the second is register 9 and the destination is register 17. The fields are <code>0 / 18 / 9 / 17 / 0 / 32</code>. For <code>srl $s1, $s2, 20</code>, the only register input goes in <code>rt</code> and 20 goes in <code>shamt</code>. The fields are <code>0 / 0 / 18 / 17 / 20 / 2</code>.</p>
+        <p class="lesson-source">Source · Tasmin Sanjida, MIPS Machine Language, Content 08.</p>
+      </section>
       <section class="foundation-check">
         <h2>Try it before you move on</h2>
         <p>In add $t0, $t1, $t2, what decimal value belongs in rd?</p>
@@ -48,6 +53,8 @@
       <p>The widths are 6 / 5 / 5 / 16. If the question asks for decimal fields, write <code>8 / 9 / 8 / 5</code>. If it asks for binary, write each field at its required width. For −5, the last 16 bits are <code>1111111111111011</code>, from the signed-number lesson.</p>
       <h2>Find the roles before filling rs and rt</h2>
       <ul class="foundation-list"><li><b>Arithmetic and bitwise.</b> <code>addi</code>, <code>andi</code>, <code>ori</code>, and <code>slti</code> read <code>rs</code> and write <code>rt</code>. <code>addi</code> and <code>slti</code> read a signed immediate. <code>andi</code> and <code>ori</code> zero-extend theirs.</li><li><b>Memory.</b> In <code>lw $s1, 200($s2)</code>, the base goes in <code>rs</code>, the destination in <code>rt</code>, and 200 goes in the last field as a signed byte offset. For <code>sw</code>, <code>rt</code> supplies the value to write. Decimal fields for the load are <code>35 / 18 / 17 / 200</code>.</li><li><b>Conditional branches.</b> <code>beq</code> and <code>bne</code> put the compared registers in <code>rs</code> and <code>rt</code>. Both are inputs. The 16-bit field uses a signed instruction distance, which you will calculate in the next lesson.</li></ul>
+      <p>For <code>andi $s1, $s2, 223</code>, the fields are <code>12 / 18 / 17 / 223</code>. To save the return address at the top of the stack, write <code>sw $ra, 0($sp)</code>. The immediate field is the number 0. The other fields are opcode 43, base register 29 and source register 31.</p>
+      <p class="lesson-source">Source · Tasmin Sanjida, MIPS Machine Language, for the <code>andi</code> and stack store examples.</p>
       <section aria-label="Worked example">
         <h2>Encode a store with a negative byte offset</h2>
         <p>Use <code>sw $s1, -4($s2)</code> with <code>$s2 = 104</code> and <code>$s1 = 7</code>.</p>
@@ -78,6 +85,7 @@
       <p>In the lecture’s example, a <code>bne</code> at byte 1000 has a target at 1104. <strong>Target</strong> is the place you want to reach. Start from <code>PC + 4</code>, 1004, then ask how many four-byte instructions away the target is.</p>
       <div class="foundation-values"><span><small>Branch at</small><b>1000</b></span><span><small>Start counting at</small><b>1004</b></span><span class="foundation-active"><small>Target</small><b>1104</b></span></div>
       <p>The difference is 100 bytes. Divide by four to get 25 instruction words. That 25 goes in the 16-bit field. To decode the target, multiply the field by four and add <code>PC + 4</code>. If the target comes before <code>PC + 4</code>, the distance is negative. For a branch at 108 back to 100, the field is (100 − 112) ÷ 4 = −3.</p>
+      <p>In Tasmin Sanjida’s <cite>MIPS Machine Language</cite> deck, slide 14’s branch distance of 25 applies when 100 is a byte displacement from PC + 4. In <code>bne $s1, $s2, Target</code>, <code>rs</code> is 17 and <code>rt</code> is 18, in the order the registers appear.</p>
       <h2>Use a different rule for j and jal</h2>
       <p><strong>J format</strong> has two fields, a 6-bit opcode and a 26-bit target field. The target must be divisible by four, so its last two binary bits are zeros. Store bits 27 through 2 of the target address. When decoding, append two zeros on the right and take the upper four bits from <code>PC + 4</code>. A jump can reach targets that share those upper four bits.</p>
       <p>For a low address such as <code>j 2000</code>, the upper four bits are all zero, so the field is simply 2000 ÷ 4 = 500. The opcode for <code>j</code> is 2 and the opcode for <code>jal</code> is 3. Neither field uses the branch subtraction formula.</p>

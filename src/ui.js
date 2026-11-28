@@ -6,9 +6,15 @@
 
   /* ---------------- pages ---------------- */
   var pages = $$('article.page'), current = null;
-  var course = pages.filter(function (p) { return p.classList.contains('foundation') && p.dataset.skip !== '1'; });
+  var course = pages.filter(function (p) { return p.dataset.group === 'CT-2 course' && p.dataset.skip !== '1'; });
   var groups = [];
-  var archives = new Set(['Previous notes', 'Performance', 'CT-2 course', 'MIPS']);
+  var formerRoutes = new Map([
+    ['tasmin-01', 'earlier'], ['tasmin-02', 'ct2-registers'],
+    ['tasmin-03', 'performance-review'], ['tasmin-04', 's-power'],
+    ['tasmin-05', 'ct2-arrays'], ['tasmin-06', 'ct2-loops'],
+    ['tasmin-07', 'ct2-call'], ['tasmin-08', 'ct2-encode'],
+    ['tasmin-09', 'binary-division'], ['practice-library', 'ct2-simulator'],
+  ]);
   function buildNav() {
     var n = 0;
     pages.forEach(function (p) {
@@ -17,38 +23,30 @@
       if (!g) { g = { name: p.dataset.group, pages: [] }; groups.push(g); }
       g.pages.push(p);
     });
-    var order = { 'Start here': 0, 'Tasmin Sanjida course': 1, 'Supplementary practice': 2, Exam: 3 };
-    groups.sort(function (a, b) { return (order[a.name] ?? 5) - (order[b.name] ?? 5); });
-    $('#groups').innerHTML = groups.map(function (g, i) {
-      if (archives.has(g.name)) return '';
-      var entry = g.pages.find(function (p) { return p.hasAttribute('data-group-entry'); }) || g.pages[0];
-      return '<a href="#' + entry.id + '" data-g="' + i + '">' + g.name + '</a>';
-    }).join('');
-    pages.forEach(function (p, i) {
-      var prev = pages[i - 1], next = pages[i + 1], pg = document.createElement('nav'); pg.className = 'pager'; pg.setAttribute('aria-label', 'Page');
+    pages.forEach(function (p) {
+      var groupPages = groups.find(function (group) { return group.name === p.dataset.group; }).pages;
+      var position = groupPages.indexOf(p);
+      var prev = groupPages[position - 1], next = groupPages[position + 1], pg = document.createElement('nav'); pg.className = 'pager'; pg.setAttribute('aria-label', 'Page');
       pg.innerHTML = (prev ? '<a href="#' + prev.id + '"><span>&#8592; PREVIOUS</span><b>' + prev.dataset.title + '</b></a>' : '') + (next ? '<a class="nx" href="#' + next.id + '"><span>NEXT &#8594;</span><b>' + next.dataset.title + '</b></a>' : '');
       if (p.dataset.skip !== '1') {
         var db = document.createElement('button'); db.type = 'button'; db.className = 'btn donebtn'; db.dataset.done = p.id;
         ($('.foundation-check', p) || p).appendChild(db);
       }
-      if (p.dataset.group !== 'Tasmin Sanjida course') p.appendChild(pg);
+      if (pg.children.length && !$('.foundation-next', p)) p.appendChild(pg);
     });
   }
   function buildSub(p) {
     var g = groups.filter(function (x) { return x.name === p.dataset.group; })[0];
     $$('#groups a').forEach(function (a) {
-      var tab = groups[+a.dataset.g];
-      var on = tab === g || (archives.has(g.name) && tab.name === 'Supplementary practice');
-      a.setAttribute('aria-current', String(on));
-      if (on) { var t = $('#groups'); t.scrollTo({ left: a.offsetLeft - t.clientWidth / 2 + a.clientWidth / 2 }); }
+      var on = a.dataset.section === g.name; a.setAttribute('aria-current', String(on));
+      if (on) { var t = $('#groups'); t.scrollTo({ left: a.offsetLeft - t.offsetLeft - t.clientWidth / 2 + a.clientWidth / 2 }); }
     });
     var hero = $('header.hero', p);
     var isCourse = g.name === 'CT-2 course';
-    var isPrimary = g.name === 'Tasmin Sanjida course';
-    if (hero && !$('.chips', hero) && g.pages.length > 1) {
+    if (p.id !== 'start' && hero && !$('.chips', hero) && g.pages.length > 1) {
       var ch = document.createElement('nav'); ch.className = 'chips'; ch.setAttribute('aria-label', 'Pages in ' + g.name);
       ch.innerHTML = g.pages.map(function (q) {
-        var number = isCourse ? course.indexOf(q) + 1 : isPrimary ? g.pages.indexOf(q) + 1 : q.dataset.num;
+        var number = isCourse ? course.indexOf(q) + 1 : q.dataset.num;
         var label = number ? '<span class="n">' + String(number).padStart(2, '0') + '</span>' : '';
         return '<a href="#' + q.id + '" data-p="' + q.id + '"' + (q === p ? ' aria-current="page"' : '') + '>' + label + q.dataset.title + (q.dataset.skip === '1' ? '' : '<span class="ok" aria-hidden="true"></span>') + '</a>';
       }).join('');
@@ -56,7 +54,7 @@
       var toggle = document.createElement('button');
       toggle.type = 'button';
       toggle.className = 'chip-toggle';
-      toggle.textContent = isCourse ? 'CT-2 lessons' : isPrimary ? 'Course lessons' : g.name + ' pages';
+      toggle.textContent = isCourse ? 'CT-2 lessons' : g.name + ' pages';
       toggle.setAttribute('aria-controls', ch.id);
       toggle.setAttribute('aria-expanded', 'false');
       toggle.addEventListener('click', function () {
@@ -64,7 +62,7 @@
       });
       hero.append(toggle, ch);
     }
-    if ((isCourse || isPrimary) && hero) $('.chip-toggle', hero)?.setAttribute('aria-expanded', 'false');
+    if (isCourse && hero) $('.chip-toggle', hero)?.setAttribute('aria-expanded', 'false');
   }
   function doneSet() { try { return JSON.parse(store('cse3313-done') || '{}'); } catch (e) { return {}; } }
   function refreshDone() {
@@ -73,7 +71,7 @@
     pages.forEach(function (p) { if (p.dataset.skip !== '1') { tot++; if (d[p.id]) cnt++; } });
     $$('button[data-done]').forEach(function (b) { var on = !!d[b.dataset.done]; b.classList.toggle('on', on); b.innerHTML = on ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Understood' : 'Mark this page as understood'; });
     $('.prog').hidden = tot === 0;
-    $('#progT').textContent = cnt + '/' + tot; refreshRoute(d); $('#progB').style.width = (tot ? cnt / tot * 100 : 0) + '%';
+    $('#progT').textContent = cnt + '/' + tot; $('#progB').style.width = (tot ? cnt / tot * 100 : 0) + '%';
     var complete = course.filter(function (p) { return d[p.id]; }).length;
     var next = course.find(function (p) { return !d[p.id]; });
     if (course.length) {
@@ -88,30 +86,14 @@
     var b = e.target.closest('button[data-done]'); if (b) { var d = doneSet(); d[b.dataset.done] = !d[b.dataset.done]; store('cse3313-done', JSON.stringify(d)); refreshDone(); }
   });
   /* ---------- course route and page heroes ---------- */
-  function routeSVG() {
-    var labels = { 'Tasmin Sanjida course': 'CA', 'Supplementary practice': 'P', Exam: 'Q' };
-    var stops = groups.filter(function (g) { return g.name in labels; });
-    var svg = '<svg class="ill route" viewBox="0 0 420 162" role="group" aria-label="Course map"><g class="d">';
-    svg += '<path d="M70 57 H128 V86 H210 H292 V57 H350" style="--i:0"/>';
-    svg += '<path class="t" d="M70 39 H147 V65 H182 M238 65 H273 V39 H350 M210 61 V27 H233" style="--i:1"/>';
-    svg += '<circle cx="233" cy="27" r="3"/></g>';
-    stops.forEach(function (g, i) {
-      var x = 70 + i * 140, y = i === 1 ? 86 : 57;
-      var lessons = g.pages.filter(function (p) { return p.dataset.skip !== '1'; });
-      svg += '<a href="#' + g.pages[0].id + '" aria-label="' + g.name + '" class="rnode">';
-      svg += '<circle cx="' + x + '" cy="' + y + '" r="25"/>';
-      svg += '<text class="k" x="' + x + '" y="' + (y + 1) + '">' + labels[g.name] + '</text>';
-      svg += '<text class="s" x="' + x + '" y="' + (y + 46) + '">' + (g.name === 'Tasmin Sanjida course' ? 'Course' : g.name === 'Supplementary practice' ? 'Practice' : g.name) + '</text>';
-      if (lessons.length) svg += '<text class="c" x="' + x + '" y="' + (y + 62) + '">' + '0/' + lessons.length + '</text>';
-      svg += '</a>';
-    });
-    return svg + '</svg>';
-  }
   function buildHero(p) {
     var h = $('header.hero', p); if (!h || h.__done) return; h.__done = 1;
-    var left = document.createElement('div'); left.className = 'hl';
-    while (h.firstChild) left.appendChild(h.firstChild);
-    h.appendChild(left);
+    var left = $('.hl', h);
+    if (!left) {
+      left = document.createElement('div'); left.className = 'hl';
+      while (h.firstChild) left.appendChild(h.firstChild);
+      h.appendChild(left);
+    }
     var eb = $('.eyebrow', left);
     if (eb) eb.outerHTML = '<p class="kick"><span class="num">' + String(p.dataset.num).padStart(2, '0') + '</span><span>' + eb.innerHTML + '</span></p>';
     var acts = document.createElement('div'); acts.className = 'acts';
@@ -119,28 +101,6 @@
     if (p.dataset.skip !== '1' && !p.classList.contains('foundation')) acts.innerHTML += '<button type="button" class="hbtn line" data-done="' + p.id + '"></button>';
     if (acts.innerHTML) ($('.lede', left) || left.lastChild).insertAdjacentElement('afterend', acts);
     addField(h);
-    var pl = p.id === 'start' ? [routeSVG(), 'Choose a section to open it.'] : null;
-    if (pl) {
-      h.classList.add('has-plate');
-      var f = document.createElement('figure'); f.className = 'plate';
-      f.innerHTML = '<div class="pin">' + pl[0] + '</div><figcaption>' + pl[1] + '</figcaption>';
-      h.appendChild(f);
-      var ill = $('.ill', f); if (ill) { $$('.d *', ill).forEach(function (e) { e.setAttribute('pathLength', '1'); }); ill.classList.remove('inking'); void ill.getBoundingClientRect(); ill.classList.add('inking'); }
-    }
-  }
-  function refreshRoute(done) {
-    var s = $('#start .plate .pin');
-    if (!s) return;
-    groups.forEach(function (g) {
-      var link = $('a[href="#' + g.pages[0].id + '"]', s);
-      if (!link) return;
-      var lessons = g.pages.filter(function (p) { return p.dataset.skip !== '1'; });
-      var count = lessons.filter(function (p) { return done[p.id]; }).length;
-      link.classList.toggle('done', lessons.length > 0 && count === lessons.length);
-      link.classList.toggle('open', count > 0 && count < lessons.length);
-      var label = $('.c', link);
-      if (label) label.textContent = count + '/' + lessons.length;
-    });
   }
   document.addEventListener('click', function (e) {
     var j = e.target.closest('[data-jump]'); if (!j) return;
@@ -212,9 +172,13 @@
   });
   document.addEventListener('pointerout', function (e) { if (e.target.closest && e.target.matches('header.hero') && !e.relatedTarget?.closest?.('header.hero')) { var f = $('.plate', e.target); if (f) f.style.transform = ''; } });
   function show() {
-    var id = location.hash.replace('#', '') || 'start', p = document.getElementById(id);
+    var hash = location.hash.slice(1);
+    var id = formerRoutes.get(hash) || hash || 'start';
+    if (formerRoutes.has(hash)) history.replaceState(history.state, '', '#' + id);
+    var p = document.getElementById(id);
     if (!p || !p.classList.contains('page')) { id = 'start'; p = document.getElementById(id); }
     pages.forEach(function (x) { x.hidden = x !== p; });
+    document.body.classList.add('guide-ready');
     buildSub(p); buildHero(p); refreshDone(); enterPage(p);
     lastY = 0; setHidden(false); setTimeout(adaptNav, 80);
     if (current !== id) { current = id; window.scrollTo(0, 0); }
@@ -303,6 +267,8 @@
     });
   }
   buildNav(); themeInit(); calmInit();
+  $('#themeBtn').hidden = false;
+  $('#calmBtn').hidden = false;
   window.addEventListener('hashchange', show);
   show();
 })();

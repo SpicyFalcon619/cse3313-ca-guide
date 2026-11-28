@@ -268,7 +268,7 @@ const ct2SimulatorTopics = (() => {
       example('Divide and read HI and LO', 'ct2-division', [small('Dividend', 45), small('Divisor', 32)], divide),
       example('Translate an array-writing function', 'ct2-translation', [num('Loop limit n', 2, 0, 8), small('Value of a', 10)], fill),
       example('Unsigned shift-and-add multiplication', 'midterm-multiply', [num('Multiplicand', 6, 0, 15), num('Multiplier', 7, 0, 15)], multiply),
-      example('Restoring binary division', 'tasmin-09', [num('Dividend', 10, 0, 15), num('Divisor', 3, 1, 15)], binaryDivision),
+      example('Restoring binary division', 'binary-division', [num('Dividend', 10, 0, 15), num('Divisor', 3, 1, 15)], binaryDivision),
     ] },
   ];
 })();
